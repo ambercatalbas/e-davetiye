@@ -5,21 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <meta name="description" content="Sevdiklerinize özel, zarif ve yeniden kullanılabilir e-davetiye.">
-<title>Kahvaltı Davetiyesi</title>
+<title>E-Davetiye</title>
 </head>
 <body>
 <!-- ICERIK-BASLANGIC -->
 <style>
   /* ============================================================
-     E-DAVETİYE — "Şafak" tasarım sistemi
+     E-DAVETİYE — çok temalı davetiye sistemi
      Tek dosya, harici bağımlılık yok. İçerik alttaki DAVETIYELER
      objesinden gelir; yeni davetiye eklemek için oraya giriş ekleyin.
+     Temalar: "safak" (varsayılan) ve "yaz" (Akdeniz).
      ============================================================ */
 
   *, *::before, *::after { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
 
-  /* ---- Açık tema: "gün doğumu" (varsayılan) ---- */
+  /* ===================== TEMA: ŞAFAK (varsayılan) ===================== */
+  /* Açık tema: "gün doğumu" */
   :root {
     --sky-1:#E6E3F0;   --sky-2:#EDE6EC;   --glow:rgba(230,148,96,.30);
     --card:#FFFFFF;     --card-edge:rgba(35,40,63,.06);
@@ -29,7 +31,7 @@
     --on-gold:#FFFFFF;
     --shadow:rgba(60,50,90,.28);
   }
-  /* ---- Koyu tema: "şafaktan önce" ---- */
+  /* Koyu tema: "şafaktan önce" */
   @media (prefers-color-scheme: dark) {
     :root {
       --sky-1:#0D111E; --sky-2:#151830; --glow:rgba(228,187,99,.16);
@@ -41,7 +43,7 @@
       --shadow:rgba(0,0,0,.5);
     }
   }
-  /* Görüntüleyenin tema düğmesi bunları geçersiz kılar (iki yönde de) */
+  /* Tema düğmesiyle elle seçim (iki yönde de geçersiz kılar) */
   :root[data-theme="light"] {
     --sky-1:#E6E3F0;   --sky-2:#EDE6EC;   --glow:rgba(230,148,96,.30);
     --card:#FFFFFF;     --card-edge:rgba(35,40,63,.06);
@@ -57,6 +59,40 @@
     --hairline:rgba(231,190,104,.42);   --on-gold:#20160A;   --shadow:rgba(0,0,0,.5);
   }
 
+  /* ===================== TEMA: YAZ (Akdeniz) ===================== */
+  /* Açık: "Akdeniz günü" — turkuaz deniz + gün batımı mercan */
+  :root[data-tema="yaz"] {
+    --sky-1:#DCEFEC; --sky-2:#E8F4EF; --glow:rgba(242,180,65,.30);
+    --card:#FFFFFF;  --card-edge:rgba(18,58,64,.07);
+    --ink:#123A40;   --ink-soft:#4E6E70;
+    --gold:#0E6E78;  --gold-bright:#17A2AD;  --coral:#E4633B;
+    --hairline:rgba(14,110,120,.42);  --on-gold:#FFFFFF;  --shadow:rgba(20,60,64,.26);
+  }
+  /* Koyu: "Akdeniz gecesi" */
+  @media (prefers-color-scheme: dark) {
+    :root[data-tema="yaz"] {
+      --sky-1:#061F24; --sky-2:#0A2A30; --glow:rgba(28,166,176,.16);
+      --card:#0E2E33;  --card-edge:rgba(120,220,225,.10);
+      --ink:#E6F1EE;   --ink-soft:#97B4B4;
+      --gold:#3FC9D2;  --gold-bright:#6FE0E6;  --coral:#FF8A62;
+      --hairline:rgba(63,201,210,.40);  --on-gold:#052227;  --shadow:rgba(0,0,0,.5);
+    }
+  }
+  :root[data-tema="yaz"][data-theme="light"] {
+    --sky-1:#DCEFEC; --sky-2:#E8F4EF; --glow:rgba(242,180,65,.30);
+    --card:#FFFFFF;  --card-edge:rgba(18,58,64,.07);
+    --ink:#123A40;   --ink-soft:#4E6E70;
+    --gold:#0E6E78;  --gold-bright:#17A2AD;  --coral:#E4633B;
+    --hairline:rgba(14,110,120,.42);  --on-gold:#FFFFFF;  --shadow:rgba(20,60,64,.26);
+  }
+  :root[data-tema="yaz"][data-theme="dark"] {
+    --sky-1:#061F24; --sky-2:#0A2A30; --glow:rgba(28,166,176,.16);
+    --card:#0E2E33;  --card-edge:rgba(120,220,225,.10);
+    --ink:#E6F1EE;   --ink-soft:#97B4B4;
+    --gold:#3FC9D2;  --gold-bright:#6FE0E6;  --coral:#FF8A62;
+    --hairline:rgba(63,201,210,.40);  --on-gold:#052227;  --shadow:rgba(0,0,0,.5);
+  }
+
   body {
     background: var(--sky-2);
     color: var(--ink);
@@ -65,14 +101,14 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Tipografi rolleri (değişkenle) */
+  /* Tipografi rolleri */
   :root {
     --f-serif: "Hoefler Text","Baskerville","Big Caslon","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
     --f-script: "Snell Roundhand","Zapfino","Apple Chancery","Segoe Script","Brush Script MT",cursive;
     --f-sans: -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","Segoe UI",Roboto,system-ui,sans-serif;
   }
 
-  /* ---- Sahne + şafak ışığı ---- */
+  /* ---- Sahne + ışık ---- */
   .sahne {
     position: relative;
     min-height: 100dvh;
@@ -98,7 +134,7 @@
     100% { transform: translate(-50%,-2%) scale(1.05); opacity:1; }
   }
 
-  /* ---- Davetiye kartı (gravür levha hissi) ---- */
+  /* ---- Davetiye kartı ---- */
   .kart {
     position: relative; z-index: 1;
     width: min(100%, 620px);
@@ -127,8 +163,10 @@
 
   /* Süslemeler */
   .orn { color: var(--gold); line-height: 0; }
-  .orn.gunes svg { width: clamp(58px, 16vw, 76px); height: auto; display: block; }
-  .orn.cup svg  { width: 34px; height: 34px; display: block; }
+  .orn.gunes svg  { width: clamp(58px, 16vw, 76px); height: auto; display: block; }
+  .orn.deniz svg  { width: clamp(64px, 18vw, 84px); height: auto; display: block; }
+  .orn.cup svg    { width: 34px; height: 34px; display: block; }
+  .orn.bardak svg { width: 34px; height: 34px; display: block; }
   .buhar { opacity: 0; transform-box: fill-box; transform-origin: center;
            animation: buhar 3s ease-in-out infinite; }
   .b2 { animation-delay: .6s; } .b3 { animation-delay: 1.2s; }
@@ -142,7 +180,7 @@
   .ust.kucuk { font-size:.64rem; letter-spacing:.24em; color: var(--ink-soft); }
 
   .alici { font-family: var(--f-script); font-size: clamp(2rem, 9vw, 3rem);
-           color: var(--ink); line-height:1; margin:0; }
+           color: var(--ink); line-height:1.05; margin:0; }
 
   .baslik { font-family: var(--f-serif); font-weight:500;
             font-size: clamp(1.9rem, 6.5vw, 3rem); line-height:1.1;
@@ -190,14 +228,29 @@
   .birimBlok.gizli { display:none; }
   .gerisayim-bitti { font-family:var(--f-script); font-size:clamp(1.5rem,6vw,2rem); color:var(--coral); }
 
-  /* İnce yazı (şartlar) + mühür */
+  /* İnce yazı (şartlar) */
   .sartlar-blok { display:flex; flex-direction:column; align-items:center; gap:16px; width:100%; }
   .sartlar { list-style:none; margin:0; padding:0; display:flex; flex-direction:column;
              gap:9px; max-width:46ch; text-align:left; }
   .sart { position:relative; padding-left:22px; font-family:var(--f-serif);
           font-size:.95rem; line-height:1.5; color:var(--ink-soft); }
   .sart::before { content:"§"; position:absolute; left:0; top:0; color:var(--gold); }
-  .muhur { color:var(--gold); opacity:.85; margin-top:2px; }
+
+  /* İkram / sofra menüsü (yaz) */
+  .ikram-blok { width:100%; display:flex; flex-direction:column; align-items:center; gap:18px; }
+  .ikram-gruplar { display:flex; flex-direction:column; gap:18px; width:100%; max-width:54ch; }
+  .ikram-grup { display:flex; flex-direction:column; gap:9px; }
+  .ikram-grup-ad { font-family:var(--f-sans); font-size:.64rem; letter-spacing:.2em;
+                   text-transform:uppercase; color:var(--gold); text-align:center; }
+  .ikram-ogeler { list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap;
+                  justify-content:center; align-items:baseline; }
+  .ikram-oge { font-family:var(--f-serif); font-size:1.02rem; color:var(--ink); }
+  .ikram-oge:not(:last-child)::after { content:"·"; margin:0 10px; color:var(--gold); }
+  .ikram-not { font-family:var(--f-serif); font-style:italic; color:var(--ink-soft);
+               font-size:1rem; text-align:center; max-width:46ch; }
+
+  /* Mühür */
+  .muhur { color:var(--gold); opacity:.85; }
   .muhur svg { width:clamp(90px,24vw,110px); height:auto; display:block; }
   .muhur-yazi { font-family:var(--f-sans); font-size:8px; letter-spacing:2px; }
 
@@ -260,10 +313,9 @@
     <div id="davetiye"></div>
     <noscript>
       <div class="icerik">
-        <p class="ust">Resmî Kahvaltı Davetiyesi</p>
-        <h1 class="baslik">Kahvaltıya Dâvetlisiniz</h1>
-        <p class="giris">Çay demlendi, sofra kuruldu; eksik olan yalnızca sizsiniz. Yarın sabah 10.00’da salon yemek masasında — zamanında — bekliyoruz.</p>
-        <p class="imza-kurum">Sevgiyle, Ev Kahvaltı Komitesi</p>
+        <p class="ust">E-Davetiye</p>
+        <h1 class="baslik">Davetlisiniz</h1>
+        <p class="giris">Bu davetiyeyi görüntülemek için tarayıcınızda JavaScript'i etkinleştirin. Sizi aramızda görmekten mutluluk duyarız.</p>
       </div>
     </noscript>
   </main>
@@ -272,20 +324,33 @@
 <script>
   /* ============================================================
      DAVETİYE VERİSİ
-     Yeni bir davetiye eklemek için bu objeye yeni bir anahtar ekleyin
-     ve linke ?d=anahtar koyun. Örn: index.html?d=yemek
+     Yeni davetiye eklemek için bu objeye yeni bir anahtar ekleyin
+     ve linke ?d=anahtar koyun. Örn: index.html?d=eren
      Zorunlu alan yok — verdiğiniz bölümler görünür, verilmeyenler gizlenir.
      ------------------------------------------------------------
-     zaman: { saat, dakika, tarih? }  -> geri sayım hedefi.
-       tarih yoksa "bir sonraki saat:dakika" hedeflenir (her sabah gibi).
-       tarih varsa "YYYY-MM-DD" tek seferlik etkinlik olur.
+     tema      : "safak" (varsayılan) | "yaz"
+     tepeSusu  : "gunes" (varsayılan) | "deniz"    -> en üstteki süsleme
+     sayacSusu : "cup"   (varsayılan) | "bardak"   -> geri sayım süslemesi
+     zaman     : { saat, dakika, tarih?, bittiMetni? }
+                 tarih yoksa "bir sonraki saat:dakika" hedeflenir (her gün).
+                 tarih varsa "YYYY-MM-DD" tek seferlik etkinlik olur.
      detay değeri "{{tarih}}" ise otomatik olarak hedef tarihe dönüşür.
+     Bölümler : detaylar, sartlar, ikramlar, muhurYazi, rsvp — hepsi opsiyonel.
      ============================================================ */
+
+  /* İki yaz davetiyesinde ortak sofra (aynı lezzetler) */
+  const IKRAM_SOFRASI = [
+    { grup: "Serinletici İkramlar", ogeler: ["Muzlu & çilekli milkshake", "Mango smoothie", "Şeftali", "Vişne", "Portakal", "Ejder meyvesi"] },
+    { grup: "Ateşten & Fırından",   ogeler: ["Fırında kuzu kol", "Çiğ köfte"] },
+    { grup: "Akdeniz'den",          ogeler: ["Çupra", "Levrek", "Somon", "Kalkan", "Ahtapot", "Karagöz"] }
+  ];
+
   const DAVETIYELER = {
+    /* ---------------- Kahvaltı (şafak teması) ---------------- */
     kahvalti: {
       belgeBaslik: "Kahvaltı Davetiyesi",
       ustBaslik: "Resmî Kahvaltı Davetiyesi",
-      alici: "Sevgili Eşim",
+      alici: "Sevgili Şifam",
       baslik: "Kahvaltıya Dâvetlisiniz",
       girisMetni: "Yıllardır tekrarlanan “bir dakikaya geliyorum” sözünüzün bu sabah nihayet gerçeğe dönüşmesi, en içten temennimizdir. Çay demlendi, sofra kuruldu; eksik olan yalnızca sizsiniz.",
       zaman: { saat: 10, dakika: 0 },
@@ -303,6 +368,7 @@
         "“Beş dakika daha” beyanı, geçerli bir mazeret sayılmaz.",
         "Alarm sayısının bir sınırı yoktur; mazeret sayısının vardır."
       ],
+      muhurYazi: "GEÇ KALMAK YASAKTIR · ZAMANINDA GEL",
       rsvp: {
         olumlu:  { etiket: "Söz, bu sabah zamanındayım", cevap: "Harika. Sofra seni bekliyor — çayını taze tutuyoruz. ❤️" },
         olumsuz: { etiket: "Beş dakikaya geliyorum…", cevap: "Bu cümleyi bir yere not ettik. Sofra yine de burada. 😏📝" }
@@ -311,27 +377,64 @@
       imzaKurum: "Ev Kahvaltı Komitesi Başkanlığı"
     },
 
-    /* --- Yeniden kullanım örneği: aynı sistem, farklı davet --- */
-    yemek: {
-      belgeBaslik: "Akşam Yemeği Daveti",
-      ustBaslik: "Akşam Yemeği Daveti",
-      alici: "Sevgili Dostlar",
-      baslik: "Soframıza Şeref Verin",
-      girisMetni: "Güzel bir akşam, sıcak bir sofra ve uzayıp giden sohbetler için sizi aramızda görmekten mutluluk duyarız.",
-      zaman: { saat: 20, dakika: 0 },
+    /* ---------------- Eren & Yasemin — 9 Ağustos (yaz teması) ---------------- */
+    eren: {
+      belgeBaslik: "Yaz Tatili Daveti — Eren & Yasemin",
+      tema: "yaz",
+      tepeSusu: "deniz",
+      sayacSusu: "bardak",
+      ustBaslik: "Akdeniz'den Yaz Daveti",
+      alici: "Eren & Yasemin",
+      baslik: "Yazı Bizimle Geçirin",
+      girisMetni: "Deniz ılık, güneş cömert, sofra kurulmayı bekliyor. Bu yazın en güzel günlerini Antalya'da, evimizde; uzun sohbetler, serin akşamlar ve doyasıya dinlenerek geçirmek üzere sizi aramızda görmek istiyoruz.",
+      zaman: { tarih: "2026-08-09", saat: 10, dakika: 0, bittiMetni: "Tatil başladı — hoş geldiniz! 🌊" },
       detaylar: [
         { etiket: "Tarih", deger: "{{tarih}}" },
-        { etiket: "Saat", deger: "20.00" },
-        { etiket: "Yer", deger: "Bahçe Katı, Ev" },
-        { etiket: "Kıyafet", deger: "Şık ve rahat" }
+        { etiket: "Konaklama", deger: "Dilediğiniz kadar" },
+        { etiket: "Yer", deger: "Evimiz · Antalya" },
+        { etiket: "Yanınıza", deger: "Mayo, güneş kremi, iştah" }
       ],
-      geriSayimBaslik: "Yemeğe kalan süre",
+      geriSayimBaslik: "Buluşmaya kalan süre",
+      ikramlarBaslik: "Sizi Bekleyen Sofra",
+      ikramlar: IKRAM_SOFRASI,
+      ikramlarNot: "…ve buraya sığdıramadığımız nice lezzet.",
+      muhurYazi: "ANTALYA · YAZ TATİLİ ·",
       rsvp: {
-        olumlu:  { etiket: "Seve seve geliyorum", cevap: "Ne güzel! Sizi ağırlamak için sabırsızlanıyoruz. 🍷" },
-        olumsuz: { etiket: "Maalesef bu sefer olmaz", cevap: "Çok yazık oldu — bir dahaki sefere mutlaka. 🤍" }
+        olumlu:  { etiket: "Geliyoruz, sabırsızız!", cevap: "Ne güzel! Sofrayı sizin için kuruyoruz — deniz de hazır. 🌊" },
+        olumsuz: { etiket: "Bu yaz olmayacak", cevap: "Çok üzüldük — kapımız her yaz size açık. 🤍" }
       },
       imza: "Sevgiyle,",
-      imzaKurum: "Ev Sahipleri"
+      imzaKurum: "Amber, Şifa, Mahir & Emir"
+    },
+
+    /* ---------------- Yasin & Tuba + çocuklar — 25 Ağustos (yaz teması) ---------------- */
+    yasin: {
+      belgeBaslik: "Yaz Tatili Daveti — Yasin & Tuba",
+      tema: "yaz",
+      tepeSusu: "deniz",
+      sayacSusu: "bardak",
+      ustBaslik: "Akdeniz'den Yaz Daveti",
+      alici: "Yasin & Tuba",
+      baslik: "Yazı Bizimle Geçirin",
+      girisMetni: "Deniz ılık, güneş cömert, sofra çoktan hazır. Bu yaz Antalya'da, evimizde; Hamza Taha, Sena ve Meva'nın denizin ve tatlı kaçamakların tadını çıkaracağı, hepimizin uzun sofralarda buluşacağı günler için tüm ailenizle sizi bekliyoruz.",
+      zaman: { tarih: "2026-08-25", saat: 10, dakika: 0, bittiMetni: "Tatil başladı — hoş geldiniz! 🌊" },
+      detaylar: [
+        { etiket: "Tarih", deger: "{{tarih}}" },
+        { etiket: "Konaklama", deger: "Dilediğiniz kadar" },
+        { etiket: "Yer", deger: "Evimiz · Antalya" },
+        { etiket: "Yanınıza", deger: "Mayo, güneş kremi, çocukların neşesi" }
+      ],
+      geriSayimBaslik: "Buluşmaya kalan süre",
+      ikramlarBaslik: "Sizi Bekleyen Sofra",
+      ikramlar: IKRAM_SOFRASI,
+      ikramlarNot: "…ve buraya sığdıramadığımız nice lezzet.",
+      muhurYazi: "ANTALYA · YAZ TATİLİ ·",
+      rsvp: {
+        olumlu:  { etiket: "Tüm aile geliyoruz!", cevap: "Harika! Çocuklara deniz, hepimize sofra — sizi bekliyoruz. 🌊" },
+        olumsuz: { etiket: "Bu yaz zor görünüyor", cevap: "Çok üzüldük — kapımız her yaz hepinize açık. 🤍" }
+      },
+      imza: "Sevgiyle,",
+      imzaKurum: "Amber, Şifa, Mahir & Emir"
     }
   };
 
@@ -348,6 +451,16 @@
       <line x1="73" y1="34" x2="66" y2="34" opacity=".55"/>
       <line x1="4" y1="44" x2="76" y2="44"/>
     </svg>`,
+    deniz: `<svg viewBox="0 0 84 52" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+      <circle cx="42" cy="19" r="9.5"/>
+      <line x1="42" y1="3" x2="42" y2="7.5" opacity=".85"/>
+      <line x1="24.5" y1="19" x2="29" y2="19" opacity=".7"/>
+      <line x1="59.5" y1="19" x2="55" y2="19" opacity=".7"/>
+      <line x1="29" y1="6.5" x2="32" y2="9.5" opacity=".7"/>
+      <line x1="55" y1="6.5" x2="52" y2="9.5" opacity=".7"/>
+      <path d="M8 39 q7 -6 14 0 t14 0 t14 0 t14 0"/>
+      <path d="M8 46 q7 -6 14 0 t14 0 t14 0 t14 0" opacity=".6"/>
+    </svg>`,
     cup: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path class="buhar b1" d="M17 6 c-2 3 2 5 0 8"/>
       <path class="buhar b2" d="M24 4 c-2 3 2 5 0 8"/>
@@ -356,12 +469,21 @@
       <path d="M34 21 h4 a4 4 0 0 1 0 8 h-3"/>
       <line x1="8" y1="41" x2="35" y2="41"/>
     </svg>`,
-    muhur: `<svg viewBox="0 0 120 120" fill="none" stroke="currentColor" aria-hidden="true">
+    bardak: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M15 14 h18 l-2.5 24 a3 3 0 0 1 -3 2.6 h-7 a3 3 0 0 1 -3 -2.6 z"/>
+      <path d="M15.6 20 q8.4 3 16.8 0"/>
+      <line x1="30" y1="8" x2="27.5" y2="20"/>
+      <circle cx="30.4" cy="7" r="1.6"/>
+    </svg>`
+  };
+
+  function muhurSVG(yazi) {
+    return `<svg viewBox="0 0 120 120" fill="none" stroke="currentColor" aria-hidden="true">
       <circle cx="60" cy="60" r="55" stroke-width="1.2"/>
       <circle cx="60" cy="60" r="47" stroke-width=".7"/>
       <defs><path id="muhurCember" d="M60 60 m -38 0 a 38 38 0 1 1 76 0 a 38 38 0 1 1 -76 0"/></defs>
       <text class="muhur-yazi" fill="currentColor" stroke="none">
-        <textPath href="#muhurCember" startOffset="0">· GEÇ KALMAK YASAKTIR · ZAMANINDA GEL </textPath>
+        <textPath href="#muhurCember" startOffset="0">· ${yazi} </textPath>
       </text>
       <g stroke-width="1.2" stroke-linecap="round">
         <circle cx="60" cy="57" r="7" stroke-width="1.2"/>
@@ -372,8 +494,8 @@
         <line x1="50" y1="47" x2="54" y2="51"/>
         <line x1="51" y1="71" x2="69" y2="71"/>
       </g>
-    </svg>`
-  };
+    </svg>`;
+  }
 
   const azHareket = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -420,10 +542,11 @@
 
   function olustur(cfg) {
     const kok = el("div", "icerik");
-    const hedef = hedefTarih(cfg.zaman);
     const tekSeferlik = !!(cfg.zaman && cfg.zaman.tarih);
+    const tepe = cfg.tepeSusu || "gunes";
+    const say  = cfg.sayacSusu || "cup";
 
-    kok.append(el("div", "orn gunes", ORN.gunes));
+    kok.append(el("div", "orn " + tepe, ORN[tepe] || ORN.gunes));
     if (cfg.ustBaslik) kok.append(el("p", "ust", cfg.ustBaslik));
     if (cfg.alici)     kok.append(el("p", "alici", cfg.alici));
     if (cfg.baslik) {
@@ -438,7 +561,7 @@
     if (cfg.detaylar && cfg.detaylar.length) {
       const grid = el("div", "detaylar");
       cfg.detaylar.forEach(x => {
-        const deger = x.deger === "{{tarih}}" ? tarihMetni(hedef) : x.deger;
+        const deger = x.deger === "{{tarih}}" ? tarihMetni(hedefTarih(cfg.zaman)) : x.deger;
         const satir = el("div", "detay");
         satir.append(el("span", "etiket", x.etiket));
         satir.append(el("span", "deger", deger));
@@ -450,7 +573,7 @@
     if (cfg.zaman) {
       const blok = el("div", "gerisayim-blok");
       if (cfg.geriSayimBaslik) blok.append(el("p", "ust kucuk", cfg.geriSayimBaslik));
-      blok.append(el("div", "orn cup", ORN.cup));
+      blok.append(el("div", "orn " + say, ORN[say] || ORN.cup));
       const sayac = el("div", "gerisayim");
       const birimler = [["gun", "Gün"], ["saat", "Saat"], ["dakika", "Dakika"], ["saniye", "Saniye"]];
       const ref = {};
@@ -474,7 +597,7 @@
         if (fark <= 0) {
           if (tekSeferlik) {
             sayac.style.display = "none";
-            bittiMsj.textContent = "Zamanı geldi — buyurun! ☕";
+            bittiMsj.textContent = (cfg.zaman.bittiMetni) || "Zamanı geldi!";
             bittiMsj.style.display = "";
             return true;
           }
@@ -503,9 +626,27 @@
       const ul = el("ul", "sartlar");
       cfg.sartlar.forEach(s => ul.append(el("li", "sart", s)));
       blok.append(ul);
-      blok.append(el("div", "muhur", ORN.muhur));
       kok.append(blok);
     }
+
+    if (cfg.ikramlar && cfg.ikramlar.length) {
+      const blok = el("div", "ikram-blok");
+      if (cfg.ikramlarBaslik) blok.append(el("p", "ust kucuk", cfg.ikramlarBaslik));
+      const gruplar = el("div", "ikram-gruplar");
+      cfg.ikramlar.forEach(g => {
+        const grup = el("div", "ikram-grup");
+        if (g.grup) grup.append(el("p", "ikram-grup-ad", g.grup));
+        const ul = el("ul", "ikram-ogeler");
+        g.ogeler.forEach(o => ul.append(el("li", "ikram-oge", o)));
+        grup.append(ul);
+        gruplar.append(grup);
+      });
+      blok.append(gruplar);
+      if (cfg.ikramlarNot) blok.append(el("p", "ikram-not", cfg.ikramlarNot));
+      kok.append(blok);
+    }
+
+    if (cfg.muhurYazi) kok.append(el("div", "muhur", muhurSVG(cfg.muhurYazi)));
 
     if (cfg.rsvp) {
       const box = el("div", "rsvp");
@@ -541,6 +682,7 @@
 
   const slug = new URLSearchParams(location.search).get("d") || "kahvalti";
   const cfg = DAVETIYELER[slug] || DAVETIYELER.kahvalti;
+  if (cfg.tema) document.documentElement.dataset.tema = cfg.tema;
   const mount = document.getElementById("davetiye");
   mount.innerHTML = "";
   mount.append(olustur(cfg));

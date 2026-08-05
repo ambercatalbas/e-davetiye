@@ -2,116 +2,94 @@
 
 Sevdiklerinize özel, zarif ve **yeniden kullanılabilir** dijital davetiye sistemi.
 Tek bir `index.html` dosyası — harici bağımlılık yok, internet gerekmez.
+İçerik `DAVETIYELER` objesinden gelir; yeni davetiye eklemek oraya bir giriş
+eklemekten ibarettir.
 
-İlk davetiye: sürekli kahvaltıya geç kalan eşe, bir gala davetiyesi ciddiyetinde
-hazırlanmış şaka bir **"Resmî Kahvaltı Davetiyesi"**. Şakanın espirisi, tasarımın
-ciddiyeti ile konunun sululuğu (kahvaltıya zamanında gelmek) arasındaki tezatta. 😄
+## Canlı davetiyeler
 
----
+Site GitHub Pages'te yayında (giriş gerektirmez, doğrudan paylaşılabilir):
 
-## Nasıl açılır / önizlenir
+| Davetiye | Kim | Tarih | Link |
+|----------|-----|-------|------|
+| Kahvaltı (şaka) | Şifa | Her sabah 10.00 | https://ambercatalbas.github.io/e-davetiye/ |
+| Yaz Tatili | Eren & Yasemin | 9 Ağustos | https://ambercatalbas.github.io/e-davetiye/?d=eren |
+| Yaz Tatili | Yasin & Tuba + çocuklar | 25 Ağustos | https://ambercatalbas.github.io/e-davetiye/?d=yasin |
 
-En kolayı: `index.html` dosyasına çift tıklayın — tarayıcıda açılır.
+## İki tema
 
-Sunucuyla denemek isterseniz (bu klasörde):
+- **`safak`** (varsayılan) — gece indigosundan şafağa; altın folyo. Kahvaltı davetiyesi bunu kullanır.
+- **`yaz`** — Akdeniz turkuazı + gün batımı mercan; deniz köpüğü zemin. Yaz davetiyeleri bunu kullanır.
+
+Her tema hem açık hem koyu modda ayrı ayrı tasarlandı; görüntüleyenin telefonu
+hangi moddaysa ona göre görünür.
+
+## Güncelleme / yeniden yayınlama
+
+Dosyayı düzenleyip şu komutu çalıştırın; site 1–2 dakikada kendini yeniler:
 
 ```bash
-python3 -m http.server 8787
+git -C /Users/ambercatalbas/E-davetiye commit -am "güncelleme" && git -C /Users/ambercatalbas/E-davetiye push
 ```
 
-Sonra tarayıcıdan: `http://127.0.0.1:8787/index.html`
+## Yeni davetiye ekleme
 
----
-
-## Eşinize nasıl gönderirsiniz
-
-**Yol 1 — Paylaşılabilir link (önerilen):**
-Bu davetiye bir Claude Artifact olarak yayınlandı. Link **varsayılan olarak
-özeldir**; göndermek için Artifact sayfasındaki **paylaş** menüsünden linki
-paylaşın, sonra eşinize iletin.
-
-**Yol 2 — Dosya olarak:**
-`index.html` dosyasını doğrudan gönderebilirsiniz (WhatsApp, e-posta, AirDrop).
-Karşı taraf çift tıklayıp açar; internet gerekmez.
-
----
-
-## Kahvaltı davetiyesini kişiselleştirme
-
-Her şey `index.html` içindeki **`DAVETIYELER`** objesinde. Kod bilmeden
-düzenleyebilirsiniz — tırnak içindeki yazıları değiştirmeniz yeterli.
-
-| Alan | Ne işe yarar |
-|------|--------------|
-| `alici` | "Sevgili Eşim" — buraya eşinizin adını yazabilirsiniz (örn. "Sevgili Ayşe") |
-| `baslik` | Büyük başlık |
-| `girisMetni` | Davet metni |
-| `zaman` | `{ saat: 9, dakika: 0 }` — geri sayım hedefi (her sabahki bir sonraki 09.00) |
-| `detaylar` | Tarih / Saat / Yer / Kıyafet kutuları. Değeri `"{{tarih}}"` olan alan otomatik tarihe dönüşür |
-| `sartlar` | "İnce yazı" — şakacı ceza maddeleri |
-| `rsvp` | İki butonun yazısı ve tıklanınca çıkan cevap |
-| `imza` / `imzaKurum` | Alttaki imza |
-
-> İpucu: Belirli bir güne davet için `zaman`'a tarih ekleyin:
-> `zaman: { tarih: "2026-08-14", saat: 9, dakika: 0 }` — o zaman geri sayım
-> tek seferlik o tarihe işler.
-
----
-
-## Yeni davetiye ekleme (aynı yapı, farklı davet)
-
-Sistem config güdümlü. Örnek olarak zaten bir **akşam yemeği daveti** ekli.
-Görmek için: `index.html?d=yemek`
-
-Kendi davetinizi eklemek için `DAVETIYELER` objesine yeni bir anahtar ekleyin:
+`index.html` içindeki `DAVETIYELER` objesine yeni bir anahtar ekleyin, linke
+`?d=anahtar` koyun. **Zorunlu alan yoktur** — verdiğiniz bölümler görünür,
+vermediğiniz (örn. `sartlar` ya da `ikramlar`) otomatik gizlenir.
 
 ```js
-const DAVETIYELER = {
-  kahvalti: { /* ... */ },
-  yemek:    { /* ... */ },
-
-  dogumgunu: {                              // yeni davetiye
-    belgeBaslik: "Doğum Günü Daveti",
-    ustBaslik: "Doğum Günü Daveti",
-    alici: "Sevgili Dostlar",
-    baslik: "Kutlamaya Bekliyoruz",
-    girisMetni: "Birlikte bir yaş daha...",
-    zaman: { tarih: "2026-09-01", saat: 19, dakika: 30 },
-    detaylar: [
-      { etiket: "Tarih", deger: "{{tarih}}" },
-      { etiket: "Saat",  deger: "19.30" },
-      { etiket: "Yer",   deger: "..." },
-      { etiket: "Kıyafet", deger: "..." }
-    ],
-    geriSayimBaslik: "Partiye kalan süre",
-    rsvp: {
-      olumlu:  { etiket: "Geliyorum!",  cevap: "Harika, seni bekliyoruz! 🎉" },
-      olumsuz: { etiket: "Gelemeyeceğim", cevap: "Çok yazık, özleyeceğiz. 🤍" }
-    },
-    imza: "Sevgiyle,",
-    imzaKurum: "..."
-  }
-};
+dugun: {
+  belgeBaslik: "Düğün Daveti",
+  tema: "yaz",                 // "safak" | "yaz"
+  tepeSusu: "deniz",           // "gunes" | "deniz"  (en üstteki süsleme)
+  sayacSusu: "bardak",         // "cup"   | "bardak" (geri sayım süslemesi)
+  ustBaslik: "Düğün Daveti",
+  alici: "Sevgili Misafirler",
+  baslik: "Mutluluğumuza Ortak Olun",
+  girisMetni: "...",
+  zaman: { tarih: "2026-09-12", saat: 18, dakika: 0,
+           bittiMetni: "Başladı — hoş geldiniz!" },   // tarih yoksa her gün o saate sayar
+  detaylar: [
+    { etiket: "Tarih", deger: "{{tarih}}" },           // {{tarih}} otomatik dolar
+    { etiket: "Saat",  deger: "18.00" },
+    { etiket: "Yer",   deger: "..." },
+    { etiket: "Kıyafet", deger: "..." }
+  ],
+  geriSayimBaslik: "Törene kalan süre",
+  // İsteğe bağlı bölümler:
+  ikramlar: [                                           // menü (yaz konseptine uygun)
+    { grup: "İkramlar", ogeler: ["...", "..."] }
+  ],
+  ikramlarBaslik: "Sizi Bekleyen Sofra",
+  ikramlarNot: "...",
+  sartlar: ["...", "..."],                              // "ince yazı" maddeleri
+  sartlarBaslik: "İnce Yazı",
+  muhurYazi: "...",                                      // yuvarlak mühür yazısı
+  rsvp: {
+    olumlu:  { etiket: "Geliyorum", cevap: "Harika! 🎉" },
+    olumsuz: { etiket: "Gelemeyeceğim", cevap: "Çok yazık. 🤍" }
+  },
+  imza: "Sevgiyle,",
+  imzaKurum: "Amber, Şifa, Mahir & Emir"
+}
 ```
 
-Sonra linke `?d=dogumgunu` ekleyin: `index.html?d=dogumgunu`
+## Yerel önizleme
 
-**Kural:** Zorunlu alan yoktur. Verdiğiniz bölümler görünür, vermediğiniz
-(örn. `sartlar`) otomatik gizlenir. `yemek` örneğinde ince yazı ve mühür yoktur —
-çünkü o davetiyede tanımlı değiller.
+`index.html` dosyasına çift tıklayın ya da bu klasörde:
 
----
+```bash
+python3 -m http.server 8788
+```
 
-## Tasarım sistemi ("Şafak")
+Sonra: `http://127.0.0.1:8788/index.html?d=eren`
 
-- **Renk:** Gece indigosundan şafağa; antika altın folyo + mercan vurgu.
-  Açık tema "gün doğumu", koyu tema "şafaktan önce" — ikisi de özenle tasarlandı.
-- **Tipografi:** Başlık için yüksek kontrastlı serif (Hoefler/Baskerville),
-  alıcı & imza için el yazısı (Snell Roundhand), etiketler için aralıklı sans.
-  Apple cihazlarda kusursuz görünür, diğer platformlarda zarifçe alternatiflere düşer.
-- **Detaylar:** Canlı geri sayım, kavisli yazılı "mühür", tıklanınca uçuşan
-  kalpler, şafak ışığı animasyonu. Hepsi `prefers-reduced-motion`'a saygılıdır.
-- **Erişilebilirlik:** Renk kontrastı AA hedefli, klavye odağı görünür,
-  JavaScript kapalıysa bile temel metin görünür (`<noscript>`).
+## Tasarım notları
 
-Her şey tek dosyada, yorumlar Türkçe. İyi eğlenceler! ☕
+- Tipografi: başlık için yüksek kontrastlı serif (Hoefler/Baskerville), alıcı & imza
+  için el yazısı (Snell Roundhand), etiketler için aralıklı sans. Apple cihazlarda
+  kusursuz, diğer platformlarda zarifçe alternatiflere düşer.
+- Canlı geri sayım, kavisli yazılı mühür, tıklanınca uçuşan kalpler, ışık animasyonu.
+  Hepsi `prefers-reduced-motion`'a saygılıdır; JavaScript kapalıysa temel metin görünür.
+
+Tüm kod tek dosyada, yorumlar Türkçe. İyi eğlenceler! ☀️🌊

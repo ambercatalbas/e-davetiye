@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -m http.server 8787 --bind 127.0.0.1)",
+      "Bash(awk '/ICERIK-BASLANGIC/{f=1;next} /ICERIK-SONU/{f=0} f' index.html)",
+      "Bash(pkill -f \"http.server 8787\")",
+      "Bash(vercel whoami *)",
+      "Bash(vercel --version)",
+      "Bash(gh auth *)",
+      "Bash(git -C /Users/ambercatalbas/E-davetiye init -q)",
+      "Bash(git -C /Users/ambercatalbas/E-davetiye config user.email ambercatalbas@gmail.com)",
+      "Bash(git -C /Users/ambercatalbas/E-davetiye config user.name ambercatalbas)",
+      "Bash(git -C /Users/ambercatalbas/E-davetiye add index.html README.md)",
+      "Bash(git -C /Users/ambercatalbas/E-davetiye commit -q -m 'E-davetiye: kahvaltı davetiyesi \\(ilk sürüm\\)' -m 'Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>')",
+      "Bash(gh repo *)",
+      "Bash(gh api *)",
+      "Bash(python3 -m http.server 8788 --bind 127.0.0.1)",
+      "Bash(pkill -f \"http.server 8788\")",
+      "Bash(git -C /Users/ambercatalbas/E-davetiye add -A)",
+      "Bash(git -C /Users/ambercatalbas/E-davetiye commit -q -m 'Yaz tatili davetiyeleri \\(Eren, Yasin\\) + Akdeniz yaz teması' -m '- Çok temalı sisteme geçildi \\(safak/yaz\\), tema başına açık+koyu palet *)",
+      "Bash(git -C /Users/ambercatalbas/E-davetiye push)"
+    ]
+  }
+}
