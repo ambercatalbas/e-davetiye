@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Sevdiklerinize özel, zarif ve yeniden kullanılabilir e-davetiye.">
+<title>Kahvaltı Davetiyesi</title>
+</head>
+<body>
+<!-- ICERIK-BASLANGIC -->
+<style>
+  /* ============================================================
+     E-DAVETİYE — "Şafak" tasarım sistemi
+     Tek dosya, harici bağımlılık yok. İçerik alttaki DAVETIYELER
+     objesinden gelir; yeni davetiye eklemek için oraya giriş ekleyin.
+     ============================================================ */
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
+  /* ---- Açık tema: "gün doğumu" (varsayılan) ---- */
+  :root {
+    --sky-1:#E6E3F0;   --sky-2:#EDE6EC;   --glow:rgba(230,148,96,.30);
+    --card:#FFFFFF;     --card-edge:rgba(35,40,63,.06);
+    --ink:#23283F;      --ink-soft:#565C77;
+    --gold:#8C6A25;     --gold-bright:#B98F38;   --coral:#BE5540;
+    --hairline:rgba(140,106,37,.5);
+    --on-gold:#FFFFFF;
+    --shadow:rgba(60,50,90,.28);
+  }
+  /* ---- Koyu tema: "şafaktan önce" ---- */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --sky-1:#0D111E; --sky-2:#151830; --glow:rgba(228,187,99,.16);
+      --card:#161B30;   --card-edge:rgba(233,203,140,.10);
+      --ink:#ECE6D8;    --ink-soft:#A7ABC6;
+      --gold:#E7BE68;   --gold-bright:#F2D48A;  --coral:#EA8E71;
+      --hairline:rgba(231,190,104,.42);
+      --on-gold:#20160A;
+      --shadow:rgba(0,0,0,.5);
+    }
+  }
+  /* Görüntüleyenin tema düğmesi bunları geçersiz kılar (iki yönde de) */
+  :root[data-theme="light"] {
+    --sky-1:#E6E3F0;   --sky-2:#EDE6EC;   --glow:rgba(230,148,96,.30);
+    --card:#FFFFFF;     --card-edge:rgba(35,40,63,.06);
+    --ink:#23283F;      --ink-soft:#565C77;
+    --gold:#8C6A25;     --gold-bright:#B98F38;   --coral:#BE5540;
+    --hairline:rgba(140,106,37,.5);   --on-gold:#FFFFFF;   --shadow:rgba(60,50,90,.28);
+  }
+  :root[data-theme="dark"] {
+    --sky-1:#0D111E; --sky-2:#151830; --glow:rgba(228,187,99,.16);
+    --card:#161B30;   --card-edge:rgba(233,203,140,.10);
+    --ink:#ECE6D8;    --ink-soft:#A7ABC6;
+    --gold:#E7BE68;   --gold-bright:#F2D48A;  --coral:#EA8E71;
+    --hairline:rgba(231,190,104,.42);   --on-gold:#20160A;   --shadow:rgba(0,0,0,.5);
+  }
+
+  body {
+    background: var(--sky-2);
+    color: var(--ink);
+    font-family: "Hoefler Text","Baskerville","Big Caslon","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Tipografi rolleri (değişkenle) */
+  :root {
+    --f-serif: "Hoefler Text","Baskerville","Big Caslon","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --f-script: "Snell Roundhand","Zapfino","Apple Chancery","Segoe Script","Brush Script MT",cursive;
+    --f-sans: -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","Segoe UI",Roboto,system-ui,sans-serif;
+  }
+
+  /* ---- Sahne + şafak ışığı ---- */
+  .sahne {
+    position: relative;
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    padding: clamp(16px, 4vw, 52px);
+    background:
+      radial-gradient(120% 92% at 50% 116%, var(--glow) 0%, transparent 56%),
+      linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 100%);
+    overflow: hidden;
+  }
+  .isik {
+    position: absolute; left: 50%; bottom: -12%;
+    width: min(118vw, 900px); height: min(78vh, 560px);
+    transform: translateX(-50%);
+    background: radial-gradient(50% 50% at 50% 50%, var(--glow), transparent 70%);
+    filter: blur(8px);
+    animation: dogus 9s ease-in-out infinite alternate;
+    pointer-events: none; z-index: 0;
+  }
+  @keyframes dogus {
+    0%   { transform: translate(-50%, 7%) scale(.95); opacity:.7; }
+    100% { transform: translate(-50%,-2%) scale(1.05); opacity:1; }
+  }
+
+  /* ---- Davetiye kartı (gravür levha hissi) ---- */
+  .kart {
+    position: relative; z-index: 1;
+    width: min(100%, 620px);
+    background: var(--card); color: var(--ink);
+    padding: clamp(30px, 6vw, 60px);
+    border-radius: 4px;
+    box-shadow: 0 0 0 1px var(--card-edge), 0 30px 70px -34px var(--shadow);
+    animation: yukselen .8s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .kart::before {
+    content: ""; position: absolute; inset: 13px;
+    border: 1px solid var(--hairline); border-radius: 2px;
+    pointer-events: none;
+  }
+  @keyframes yukselen {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* ---- İçerik dizilimi ---- */
+  .icerik {
+    display: flex; flex-direction: column; align-items: center;
+    gap: clamp(18px, 4vw, 26px);
+    text-align: center;
+  }
+
+  /* Süslemeler */
+  .orn { color: var(--gold); line-height: 0; }
+  .orn.gunes svg { width: clamp(58px, 16vw, 76px); height: auto; display: block; }
+  .orn.cup svg  { width: 34px; height: 34px; display: block; }
+  .buhar { opacity: 0; transform-box: fill-box; transform-origin: center;
+           animation: buhar 3s ease-in-out infinite; }
+  .b2 { animation-delay: .6s; } .b3 { animation-delay: 1.2s; }
+  @keyframes buhar {
+    0%{opacity:0;transform:translateY(3px)} 30%{opacity:.85} 100%{opacity:0;transform:translateY(-4px)}
+  }
+
+  /* Etiket / eyebrow */
+  .ust { font-family: var(--f-sans); font-size:.72rem; letter-spacing:.28em;
+         text-transform:uppercase; color: var(--gold); margin:0; }
+  .ust.kucuk { font-size:.64rem; letter-spacing:.24em; color: var(--ink-soft); }
+
+  .alici { font-family: var(--f-script); font-size: clamp(2rem, 9vw, 3rem);
+           color: var(--ink); line-height:1; margin:0; }
+
+  .baslik { font-family: var(--f-serif); font-weight:500;
+            font-size: clamp(1.9rem, 6.5vw, 3rem); line-height:1.1;
+            letter-spacing:.005em; text-wrap: balance; color: var(--ink); margin:0; }
+  @supports ((-webkit-background-clip:text) or (background-clip:text)) {
+    .baslik.shine {
+      background: linear-gradient(100deg, var(--ink) 42%, var(--gold-bright) 50%, var(--ink) 58%);
+      background-size: 230% 100%;
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: parilti 2.4s ease-out .45s 1 both;
+    }
+  }
+  @keyframes parilti { 0%{background-position:132% 0} 100%{background-position:-32% 0} }
+
+  .giris { font-family: var(--f-serif); font-size: clamp(1.02rem, 2.6vw, 1.14rem);
+           line-height:1.62; max-width: 52ch; color: var(--ink); margin:0; }
+
+  /* Bölücü */
+  .bolucu { display:flex; align-items:center; gap:14px; width:min(240px,70%); }
+  .bolucu span { flex:1; height:1px; background:linear-gradient(90deg,transparent,var(--hairline)); }
+  .bolucu span:last-child { background:linear-gradient(90deg,var(--hairline),transparent); }
+  .bolucu i { width:7px; height:7px; transform:rotate(45deg); border:1px solid var(--gold); }
+
+  /* Detay tablosu */
+  .detaylar { display:grid; grid-template-columns:1fr 1fr; gap:1px; width:100%;
+              background:var(--hairline); border:1px solid var(--hairline);
+              border-radius:3px; overflow:hidden; }
+  .detay { background:var(--card); display:flex; flex-direction:column; gap:5px;
+           padding:16px 18px; text-align:left; }
+  .detay .etiket { font-family:var(--f-sans); font-size:.64rem; letter-spacing:.2em;
+                   text-transform:uppercase; color:var(--gold); }
+  .detay .deger { font-family:var(--f-serif); font-size:1rem; color:var(--ink); line-height:1.35; }
+  @media (max-width:460px){ .detaylar{ grid-template-columns:1fr; } }
+
+  /* Geri sayım */
+  .gerisayim-blok { display:flex; flex-direction:column; align-items:center; gap:12px; }
+  .gerisayim { display:flex; gap:clamp(10px,3vw,20px); }
+  .birimBlok { display:flex; flex-direction:column; align-items:center; gap:6px; min-width:52px; }
+  .rakam { font-family:var(--f-sans); font-variant-numeric:tabular-nums; font-weight:600;
+           font-size:clamp(1.5rem,6vw,2.1rem); color:var(--ink); line-height:1;
+           padding-bottom:7px; border-bottom:1px solid var(--hairline); width:100%; text-align:center; }
+  .birim { font-family:var(--f-sans); font-size:.6rem; letter-spacing:.18em;
+           text-transform:uppercase; color:var(--ink-soft); }
+  .birimBlok.gizli { display:none; }
+  .gerisayim-bitti { font-family:var(--f-script); font-size:clamp(1.5rem,6vw,2rem); color:var(--coral); }
+
+  /* İnce yazı (şartlar) + mühür */
+  .sartlar-blok { display:flex; flex-direction:column; align-items:center; gap:16px; width:100%; }
+  .sartlar { list-style:none; margin:0; padding:0; display:flex; flex-direction:column;
+             gap:9px; max-width:46ch; text-align:left; }
+  .sart { position:relative; padding-left:22px; font-family:var(--f-serif);
+          font-size:.95rem; line-height:1.5; color:var(--ink-soft); }
+  .sart::before { content:"§"; position:absolute; left:0; top:0; color:var(--gold); }
+  .muhur { color:var(--gold); opacity:.85; margin-top:2px; }
+  .muhur svg { width:clamp(90px,24vw,110px); height:auto; display:block; }
+  .muhur-yazi { font-family:var(--f-sans); font-size:8px; letter-spacing:2px; }
+
+  /* LCV */
+  .rsvp { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; }
+  .btn { font-family:var(--f-sans); font-size:.78rem; font-weight:600; letter-spacing:.14em;
+         text-transform:uppercase; padding:.85em 1.4em; border-radius:3px;
+         border:1px solid var(--hairline); background:transparent; color:var(--ink);
+         cursor:pointer; transition:transform .2s ease, box-shadow .2s ease, background .2s ease, filter .2s ease; }
+  .btn:hover { transform:translateY(-2px); box-shadow:0 12px 24px -16px var(--shadow); }
+  .btn:focus-visible { outline:2px solid var(--coral); outline-offset:3px; }
+  .btn.olumlu { background:var(--gold); color:var(--on-gold); border-color:transparent; }
+  .btn.olumlu:hover { filter:brightness(1.06); }
+  .btn.secili { outline:2px solid var(--coral); outline-offset:3px; }
+  .btn:disabled { cursor:default; }
+  .btn:disabled:hover { transform:none; box-shadow:none; filter:none; }
+  .yanit { max-width:44ch; min-height:1.2em; opacity:0; transform:translateY(4px);
+           transition:opacity .4s ease, transform .4s ease;
+           font-family:var(--f-serif); font-size:1.02rem; color:var(--ink); margin:0; }
+  .yanit.gorunur { opacity:1; transform:none; }
+
+  /* İmza */
+  .imza-blok { display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .imza { font-family:var(--f-script); font-size:clamp(1.5rem,6vw,2.1rem); color:var(--ink); line-height:1.1; margin:0; }
+  .imza-kurum { font-family:var(--f-sans); font-size:.66rem; letter-spacing:.22em;
+                text-transform:uppercase; color:var(--gold); margin:0; }
+
+  /* Uçuşan kalpler */
+  .kalp { position:fixed; pointer-events:none; z-index:5; color:var(--coral);
+          animation:ucus 1.1s ease-out forwards; }
+  @keyframes ucus {
+    0%{opacity:0; transform:translateY(0) scale(.6)}
+    20%{opacity:1}
+    100%{opacity:0; transform:translateY(-92px) scale(1.15)}
+  }
+
+  /* Erişilebilirlik: hareketi azalt */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration:.001ms !important; animation-iteration-count:1 !important;
+      transition-duration:.001ms !important;
+    }
+    .isik { animation:none; }
+    .buhar { opacity:.6; }
+  }
+
+  /* Yazdırma */
+  @media print {
+    body, .sahne { background:#fff; }
+    .sahne { padding:0; }
+    .isik { display:none; }
+    .kart { box-shadow:none; border:1px solid #ccc; }
+    .rsvp { display:none; }
+  }
+</style>
+
+<div class="sahne">
+  <div class="isik" aria-hidden="true"></div>
+  <main class="kart" id="kart">
+    <div id="davetiye"></div>
+    <noscript>
+      <div class="icerik">
+        <p class="ust">Resmî Kahvaltı Davetiyesi</p>
+        <h1 class="baslik">Kahvaltıya Dâvetlisiniz</h1>
+        <p class="giris">Çay demlendi, sofra kuruldu; eksik olan yalnızca sizsiniz. Yarın sabah 10.00’da salon yemek masasında — zamanında — bekliyoruz.</p>
+        <p class="imza-kurum">Sevgiyle, Ev Kahvaltı Komitesi</p>
+      </div>
+    </noscript>
+  </main>
+</div>
+
+<script>
+  /* ============================================================
+     DAVETİYE VERİSİ
+     Yeni bir davetiye eklemek için bu objeye yeni bir anahtar ekleyin
+     ve linke ?d=anahtar koyun. Örn: index.html?d=yemek
+     Zorunlu alan yok — verdiğiniz bölümler görünür, verilmeyenler gizlenir.
+     ------------------------------------------------------------
+     zaman: { saat, dakika, tarih? }  -> geri sayım hedefi.
+       tarih yoksa "bir sonraki saat:dakika" hedeflenir (her sabah gibi).
+       tarih varsa "YYYY-MM-DD" tek seferlik etkinlik olur.
+     detay değeri "{{tarih}}" ise otomatik olarak hedef tarihe dönüşür.
+     ============================================================ */
+  const DAVETIYELER = {
+    kahvalti: {
+      belgeBaslik: "Kahvaltı Davetiyesi",
+      ustBaslik: "Resmî Kahvaltı Davetiyesi",
+      alici: "Sevgili Eşim",
+      baslik: "Kahvaltıya Dâvetlisiniz",
+      girisMetni: "Yıllardır tekrarlanan “bir dakikaya geliyorum” sözünüzün bu sabah nihayet gerçeğe dönüşmesi, en içten temennimizdir. Çay demlendi, sofra kuruldu; eksik olan yalnızca sizsiniz.",
+      zaman: { saat: 10, dakika: 0 },
+      detaylar: [
+        { etiket: "Tarih", deger: "{{tarih}}" },
+        { etiket: "Saat", deger: "10.00 — kesin ve nihaî" },
+        { etiket: "Yer", deger: "Salon Yemek Masası, Ev" },
+        { etiket: "Kıyafet", deger: "Pijama serbest · yüz yıkamak şart" }
+      ],
+      geriSayimBaslik: "Sofranın kurulmasına kalan süre",
+      sartlarBaslik: "İnce Yazı",
+      sartlar: [
+        "On dakikadan fazla gecikme hâlinde bulaşıklar davetliye devredilir.",
+        "Soğuyan çaydan ev sahibi mesul tutulamaz.",
+        "“Beş dakika daha” beyanı, geçerli bir mazeret sayılmaz.",
+        "Alarm sayısının bir sınırı yoktur; mazeret sayısının vardır."
+      ],
+      rsvp: {
+        olumlu:  { etiket: "Söz, bu sabah zamanındayım", cevap: "Harika. Sofra seni bekliyor — çayını taze tutuyoruz. ❤️" },
+        olumsuz: { etiket: "Beş dakikaya geliyorum…", cevap: "Bu cümleyi bir yere not ettik. Sofra yine de burada. 😏📝" }
+      },
+      imza: "Sevgiyle,",
+      imzaKurum: "Ev Kahvaltı Komitesi Başkanlığı"
+    },
+
+    /* --- Yeniden kullanım örneği: aynı sistem, farklı davet --- */
+    yemek: {
+      belgeBaslik: "Akşam Yemeği Daveti",
+      ustBaslik: "Akşam Yemeği Daveti",
+      alici: "Sevgili Dostlar",
+      baslik: "Soframıza Şeref Verin",
+      girisMetni: "Güzel bir akşam, sıcak bir sofra ve uzayıp giden sohbetler için sizi aramızda görmekten mutluluk duyarız.",
+      zaman: { saat: 20, dakika: 0 },
+      detaylar: [
+        { etiket: "Tarih", deger: "{{tarih}}" },
+        { etiket: "Saat", deger: "20.00" },
+        { etiket: "Yer", deger: "Bahçe Katı, Ev" },
+        { etiket: "Kıyafet", deger: "Şık ve rahat" }
+      ],
+      geriSayimBaslik: "Yemeğe kalan süre",
+      rsvp: {
+        olumlu:  { etiket: "Seve seve geliyorum", cevap: "Ne güzel! Sizi ağırlamak için sabırsızlanıyoruz. 🍷" },
+        olumsuz: { etiket: "Maalesef bu sefer olmaz", cevap: "Çok yazık oldu — bir dahaki sefere mutlaka. 🤍" }
+      },
+      imza: "Sevgiyle,",
+      imzaKurum: "Ev Sahipleri"
+    }
+  };
+
+  /* ---- Süsleme SVG'leri ---- */
+  const ORN = {
+    gunes: `<svg viewBox="0 0 80 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+      <path d="M22 40 a18 18 0 0 1 36 0"/>
+      <line x1="40" y1="6" x2="40" y2="13"/>
+      <line x1="17" y1="15" x2="21" y2="19"/>
+      <line x1="63" y1="15" x2="59" y2="19"/>
+      <line x1="26" y1="9" x2="29" y2="15" opacity=".65"/>
+      <line x1="54" y1="9" x2="51" y2="15" opacity=".65"/>
+      <line x1="7" y1="34" x2="14" y2="34" opacity=".55"/>
+      <line x1="73" y1="34" x2="66" y2="34" opacity=".55"/>
+      <line x1="4" y1="44" x2="76" y2="44"/>
+    </svg>`,
+    cup: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path class="buhar b1" d="M17 6 c-2 3 2 5 0 8"/>
+      <path class="buhar b2" d="M24 4 c-2 3 2 5 0 8"/>
+      <path class="buhar b3" d="M31 6 c-2 3 2 5 0 8"/>
+      <path d="M9 20 h25 v6 a12 12 0 0 1 -24 0 z"/>
+      <path d="M34 21 h4 a4 4 0 0 1 0 8 h-3"/>
+      <line x1="8" y1="41" x2="35" y2="41"/>
+    </svg>`,
+    muhur: `<svg viewBox="0 0 120 120" fill="none" stroke="currentColor" aria-hidden="true">
+      <circle cx="60" cy="60" r="55" stroke-width="1.2"/>
+      <circle cx="60" cy="60" r="47" stroke-width=".7"/>
+      <defs><path id="muhurCember" d="M60 60 m -38 0 a 38 38 0 1 1 76 0 a 38 38 0 1 1 -76 0"/></defs>
+      <text class="muhur-yazi" fill="currentColor" stroke="none">
+        <textPath href="#muhurCember" startOffset="0">· GEÇ KALMAK YASAKTIR · ZAMANINDA GEL </textPath>
+      </text>
+      <g stroke-width="1.2" stroke-linecap="round">
+        <circle cx="60" cy="57" r="7" stroke-width="1.2"/>
+        <line x1="60" y1="43" x2="60" y2="47"/>
+        <line x1="73" y1="57" x2="69" y2="57"/>
+        <line x1="47" y1="57" x2="51" y2="57"/>
+        <line x1="70" y1="47" x2="66" y2="51"/>
+        <line x1="50" y1="47" x2="54" y2="51"/>
+        <line x1="51" y1="71" x2="69" y2="71"/>
+      </g>
+    </svg>`
+  };
+
+  const azHareket = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function hedefTarih(z) {
+    z = z || {};
+    const simdi = new Date();
+    const s = z.saat || 0, d = z.dakika || 0;
+    if (z.tarih) {
+      const [Y, M, D] = z.tarih.split("-").map(Number);
+      return new Date(Y, M - 1, D, s, d, 0, 0);
+    }
+    const t = new Date(simdi.getFullYear(), simdi.getMonth(), simdi.getDate(), s, d, 0, 0);
+    if (t.getTime() <= simdi.getTime()) t.setDate(t.getDate() + 1);
+    return t;
+  }
+
+  function tarihMetni(d) {
+    const gun = d.toLocaleDateString("tr-TR", { day: "numeric" });
+    const ay  = d.toLocaleDateString("tr-TR", { month: "long" });
+    const hg  = d.toLocaleDateString("tr-TR", { weekday: "long" });
+    return `${gun} ${ay} · ${hg}`;
+  }
+
+  function el(tag, cls, html) {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (html != null) n.innerHTML = html;
+    return n;
+  }
+
+  function kalpYagmuru(btn) {
+    const r = btn.getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    for (let i = 0; i < 7; i++) {
+      const k = el("span", "kalp", "❤");
+      k.style.left = (cx + (Math.random() * 60 - 30)) + "px";
+      k.style.top  = (cy + (Math.random() * 12 - 6)) + "px";
+      k.style.fontSize = (12 + Math.random() * 12) + "px";
+      k.style.animationDelay = (Math.random() * 0.18) + "s";
+      document.body.appendChild(k);
+      setTimeout(() => k.remove(), 1400);
+    }
+  }
+
+  function olustur(cfg) {
+    const kok = el("div", "icerik");
+    const hedef = hedefTarih(cfg.zaman);
+    const tekSeferlik = !!(cfg.zaman && cfg.zaman.tarih);
+
+    kok.append(el("div", "orn gunes", ORN.gunes));
+    if (cfg.ustBaslik) kok.append(el("p", "ust", cfg.ustBaslik));
+    if (cfg.alici)     kok.append(el("p", "alici", cfg.alici));
+    if (cfg.baslik) {
+      const h = el("h1", "baslik", cfg.baslik);
+      requestAnimationFrame(() => h.classList.add("shine"));
+      kok.append(h);
+    }
+    if (cfg.girisMetni) kok.append(el("p", "giris", cfg.girisMetni));
+
+    kok.append(el("div", "bolucu", "<span></span><i></i><span></span>"));
+
+    if (cfg.detaylar && cfg.detaylar.length) {
+      const grid = el("div", "detaylar");
+      cfg.detaylar.forEach(x => {
+        const deger = x.deger === "{{tarih}}" ? tarihMetni(hedef) : x.deger;
+        const satir = el("div", "detay");
+        satir.append(el("span", "etiket", x.etiket));
+        satir.append(el("span", "deger", deger));
+        grid.append(satir);
+      });
+      kok.append(grid);
+    }
+
+    if (cfg.zaman) {
+      const blok = el("div", "gerisayim-blok");
+      if (cfg.geriSayimBaslik) blok.append(el("p", "ust kucuk", cfg.geriSayimBaslik));
+      blok.append(el("div", "orn cup", ORN.cup));
+      const sayac = el("div", "gerisayim");
+      const birimler = [["gun", "Gün"], ["saat", "Saat"], ["dakika", "Dakika"], ["saniye", "Saniye"]];
+      const ref = {};
+      birimler.forEach(([k, etiket]) => {
+        const b = el("div", "birimBlok");
+        const r = el("span", "rakam", "00");
+        b.append(r); b.append(el("span", "birim", etiket));
+        ref[k] = { blok: b, rakam: r };
+        sayac.append(b);
+      });
+      blok.append(sayac);
+      const bittiMsj = el("p", "gerisayim-bitti");
+      bittiMsj.style.display = "none";
+      blok.append(bittiMsj);
+      kok.append(blok);
+
+      const iki = n => String(n).padStart(2, "0");
+      function tik() {
+        const h = hedefTarih(cfg.zaman);
+        let fark = h.getTime() - Date.now();
+        if (fark <= 0) {
+          if (tekSeferlik) {
+            sayac.style.display = "none";
+            bittiMsj.textContent = "Zamanı geldi — buyurun! ☕";
+            bittiMsj.style.display = "";
+            return true;
+          }
+          fark = 0;
+        }
+        const sn = Math.floor(fark / 1000);
+        const g = Math.floor(sn / 86400);
+        const s = Math.floor((sn % 86400) / 3600);
+        const d = Math.floor((sn % 3600) / 60);
+        const sa = sn % 60;
+        ref.gun.rakam.textContent = iki(g);
+        ref.saat.rakam.textContent = iki(s);
+        ref.dakika.rakam.textContent = iki(d);
+        ref.saniye.rakam.textContent = iki(sa);
+        ref.gun.blok.classList.toggle("gizli", g === 0);
+        return false;
+      }
+      if (!tik()) {
+        const id = setInterval(() => { if (tik()) clearInterval(id); }, 1000);
+      }
+    }
+
+    if (cfg.sartlar && cfg.sartlar.length) {
+      const blok = el("div", "sartlar-blok");
+      if (cfg.sartlarBaslik) blok.append(el("p", "ust kucuk", cfg.sartlarBaslik));
+      const ul = el("ul", "sartlar");
+      cfg.sartlar.forEach(s => ul.append(el("li", "sart", s)));
+      blok.append(ul);
+      blok.append(el("div", "muhur", ORN.muhur));
+      kok.append(blok);
+    }
+
+    if (cfg.rsvp) {
+      const box = el("div", "rsvp");
+      const bE = el("button", "btn olumlu", cfg.rsvp.olumlu.etiket);
+      const bH = el("button", "btn olumsuz", cfg.rsvp.olumsuz.etiket);
+      bE.type = bH.type = "button";
+      box.append(bE, bH);
+      const yanit = el("p", "yanit");
+      yanit.setAttribute("aria-live", "polite");
+      function sec(btn, mesaj, olumlu) {
+        bE.disabled = bH.disabled = true;
+        bE.classList.remove("secili"); bH.classList.remove("secili");
+        btn.classList.add("secili");
+        yanit.textContent = mesaj;
+        yanit.classList.add("gorunur");
+        if (olumlu && !azHareket()) kalpYagmuru(btn);
+      }
+      bE.addEventListener("click", () => sec(bE, cfg.rsvp.olumlu.cevap, true));
+      bH.addEventListener("click", () => sec(bH, cfg.rsvp.olumsuz.cevap, false));
+      kok.append(box);
+      kok.append(yanit);
+    }
+
+    if (cfg.imza || cfg.imzaKurum) {
+      const blok = el("div", "imza-blok");
+      if (cfg.imza)      blok.append(el("p", "imza", cfg.imza));
+      if (cfg.imzaKurum) blok.append(el("p", "imza-kurum", cfg.imzaKurum));
+      kok.append(blok);
+    }
+
+    return kok;
+  }
+
+  const slug = new URLSearchParams(location.search).get("d") || "kahvalti";
+  const cfg = DAVETIYELER[slug] || DAVETIYELER.kahvalti;
+  const mount = document.getElementById("davetiye");
+  mount.innerHTML = "";
+  mount.append(olustur(cfg));
+  if (cfg.belgeBaslik) document.title = cfg.belgeBaslik;
+</script>
+<!-- ICERIK-SONU -->
+</body>
+</html>
