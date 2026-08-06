@@ -392,6 +392,36 @@
     100%{opacity:0; transform:translateY(-92px) scale(1.15)}
   }
 
+  /* Kapak / zarf açılışı — dokununca perde gibi yukarı açılır */
+  .kapak { position:fixed; inset:0; z-index:50; display:grid; place-items:center;
+           padding:clamp(20px,6vw,60px); text-align:center; cursor:pointer;
+           background:
+             radial-gradient(120% 92% at 50% 116%, var(--glow) 0%, transparent 56%),
+             linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 100%);
+           transition:opacity .9s ease, transform .9s cubic-bezier(.6,0,.2,1);
+           will-change:opacity, transform; }
+  .kapak.acildi { opacity:0; transform:translateY(-102%); pointer-events:none; }
+  .kapak-ic { display:flex; flex-direction:column; align-items:center; gap:clamp(14px,3.4vw,22px);
+              animation:kapakGir 1s cubic-bezier(.2,.7,.2,1) both; }
+  .kapak .orn { color:var(--gold); line-height:0; }
+  .kapak .orn svg { width:clamp(64px,18vw,92px); height:auto; display:block; }
+  .kapak-ust { font-family:var(--f-sans); font-size:.72rem; letter-spacing:.3em;
+               text-transform:uppercase; color:var(--gold); margin:0; }
+  .kapak-isim { font-family:var(--f-script); font-size:clamp(2.2rem,9vw,3.4rem);
+                color:var(--ink); line-height:1.05; margin:0; }
+  .kapak-cizgi { width:min(200px,60%); height:1px;
+                 background:linear-gradient(90deg,transparent,var(--hairline),transparent); }
+  .kapak-buton { font-family:var(--f-sans); font-size:.76rem; font-weight:600; letter-spacing:.16em;
+                 text-transform:uppercase; color:var(--on-gold); background:var(--gold); border:0;
+                 border-radius:3px; padding:.95em 1.9em; cursor:pointer;
+                 box-shadow:0 14px 32px -16px var(--shadow); transition:filter .2s ease, transform .2s ease; }
+  .kapak-buton:hover { filter:brightness(1.06); transform:translateY(-2px); }
+  .kapak-buton:focus-visible { outline:2px solid var(--coral); outline-offset:3px; }
+  .kapak-ipucu { font-family:var(--f-sans); font-size:.64rem; letter-spacing:.2em; text-transform:uppercase;
+                 color:var(--ink-soft); margin:0; animation:kapakNabiz 2.4s ease-in-out infinite; }
+  @keyframes kapakGir { from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:none} }
+  @keyframes kapakNabiz { 0%,100%{opacity:.45} 50%{opacity:1} }
+
   /* Erişilebilirlik: hareketi azalt */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -865,6 +895,45 @@
     return kok;
   }
 
+  // Kapak / zarf açılışı — dokununca perde gibi açılır. cfg.kapak (obje/true) varsa gösterilir.
+  function kapakGoster(cfg) {
+    const k = (cfg.kapak && typeof cfg.kapak === "object") ? cfg.kapak : {};
+    const kapak = el("div", "kapak");
+    kapak.setAttribute("role", "button");
+    kapak.setAttribute("tabindex", "0");
+    kapak.setAttribute("aria-label", "Davetiyeyi aç");
+    const ic = el("div", "kapak-ic");
+    const tepe = cfg.tepeSusu || "gunes";
+    ic.append(el("div", "orn " + tepe, ORN[tepe] || ORN.gunes));
+    const ust = k.ustBaslik || cfg.ustBaslik;
+    if (ust) ic.append(el("p", "kapak-ust", ust));
+    const isim = k.isim || cfg.imzaKurum || cfg.alici;
+    if (isim) ic.append(el("p", "kapak-isim", isim));
+    ic.append(el("div", "kapak-cizgi"));
+    const btn = el("button", "kapak-buton", k.buton || "Davetiyeyi Aç");
+    btn.type = "button";
+    ic.append(btn);
+    ic.append(el("p", "kapak-ipucu", "dokunun"));
+    kapak.append(ic);
+
+    // Studio önizlemesi: ?ac=1 ise kapağı hiç gösterme (kartı göster)
+    if (new URLSearchParams(location.search).get("ac") === "1") return;
+
+    document.body.append(kapak);
+    document.body.style.overflow = "hidden";
+    let acildi = false;
+    function ac() {
+      if (acildi) return; acildi = true;
+      document.body.style.overflow = "";
+      kapak.classList.add("acildi");
+      setTimeout(() => kapak.remove(), azHareket() ? 0 : 1000);
+    }
+    kapak.addEventListener("click", ac);
+    kapak.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); ac(); }
+    });
+  }
+
   // Mobil uygulamadan gelen özel davetiye: #i=<base64url(JSON)>
   function cozHash() {
     const h = location.hash ? location.hash.slice(1) : "";
@@ -886,6 +955,7 @@
   const mount = document.getElementById("davetiye");
   mount.innerHTML = "";
   mount.append(olustur(cfg));
+  if (cfg.kapak) kapakGoster(cfg);
   document.title = cfg.belgeBaslik || cfg.baslik || "Davetiye";
   window.addEventListener("hashchange", () => location.reload());
 </script>

@@ -293,7 +293,16 @@
     <section class="card">
       <h2><span class="no">4</span> Ek bölümler <span style="margin-left:auto;font-size:.6rem;color:var(--faint);letter-spacing:.1em">İSTEĞE BAĞLI</span></h2>
 
-      <label class="toggle"><input type="checkbox" id="chkRsvp"><span class="sw"></span><span class="tlabel">Katılım (LCV) butonları</span></label>
+      <label class="toggle"><input type="checkbox" id="chkKapak"><span class="sw"></span><span class="tlabel">Kapak / zarf açılışı</span></label>
+      <div class="togglebody" id="bodyKapak">
+        <div class="row2">
+          <div class="field"><label for="inKapakIsim">Kapaktaki isim <span class="hint">(boşsa imzadan alınır)</span></label><input type="text" id="inKapakIsim" maxlength="60" placeholder="Ayşe & Mehmet"></div>
+          <div class="field"><label for="inKapakButon">Buton yazısı</label><input type="text" id="inKapakButon" maxlength="30" placeholder="Davetiyeyi Aç"></div>
+        </div>
+        <p class="note">Davetli linki açınca zarif bir kapak belirir; dokununca davetiye açılır. (Önizlemede kapak atlanır.)</p>
+      </div>
+
+      <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkRsvp"><span class="sw"></span><span class="tlabel">Katılım (LCV) butonları</span></label>
       <div class="togglebody" id="bodyRsvp">
         <div class="row2">
           <div class="field"><label>“Geliyorum” yazısı</label><input type="text" id="inRsvpOlEt" maxlength="40"></div>
@@ -485,9 +494,9 @@ function isoSonra(n){
 }
 
 // Bölüm aç/kapa gövdesini eşitle
-const BODIES = { tarih:"bodyTarih", rsvp:"bodyRsvp", muhur:"bodyMuhur", ikram:"bodyIkram", sart:"bodySart",
+const BODIES = { kapak:"bodyKapak", tarih:"bodyTarih", rsvp:"bodyRsvp", muhur:"bodyMuhur", ikram:"bodyIkram", sart:"bodySart",
                  program:"bodyProgram", harita:"bodyHarita", hediye:"bodyHediye" };
-const CHKS   = { tarih:"chkTarih", rsvp:"chkRsvp", muhur:"chkMuhur", ikram:"chkIkram", sart:"chkSart",
+const CHKS   = { kapak:"chkKapak", tarih:"chkTarih", rsvp:"chkRsvp", muhur:"chkMuhur", ikram:"chkIkram", sart:"chkSart",
                  program:"chkProgram", harita:"chkHarita", hediye:"chkHediye" };
 function syncBodies(){
   for(const k in BODIES){ $(BODIES[k]).classList.toggle("open", chk(CHKS[k])); }
@@ -512,7 +521,10 @@ function preseti_uygula(tur){
   setVal("inHaritaBaslik", p.haritaBaslik || "Konum & Yol Tarifi"); setVal("inHaritaAdres", p.haritaAdres || ""); setVal("inHaritaUrl", p.haritaUrl || "");
   setVal("inHediyeBaslik", p.hediyeBaslik || "Hediye"); setVal("inHediyeMesaj", p.hediyeMesaj || "");
   setVal("inHediyeIban", p.hediyeIban || ""); setVal("inHediyeAd", p.hediyeAd || ""); setVal("inHediyeNot", p.hediyeNot || "");
-  const ac = p.ac || [];
+  setVal("inKapakIsim", p.kapakIsim || ""); setVal("inKapakButon", p.kapakButon || "Davetiyeyi Aç");
+  const ac = (p.ac || []).slice();
+  // Kapak (zarf açılışı) tüm gerçek türlerde varsayılan açık; "boş" şablonda kapalı.
+  if(tur !== "bos" && !ac.includes("kapak")) ac.push("kapak");
   for(const k in CHKS){ setChk(CHKS[k], ac.includes(k)); }
   syncBodies();
 }
@@ -708,6 +720,14 @@ function cfgKur(){
     };
   }
 
+  // Kapak / zarf açılışı
+  if(chk("chkKapak")){
+    const k = {};
+    if(s("inKapakIsim")) k.isim = s("inKapakIsim");
+    if(s("inKapakButon")) k.buton = s("inKapakButon");
+    cfg.kapak = k; // boş obje bile olsa kapak açık (motor isim/başlığı diğer alanlardan türetir)
+  }
+
   if(s("inImza")) cfg.imza = s("inImza");
   if(s("inKurum")) cfg.imzaKurum = s("inKurum");
   return cfg;
@@ -729,8 +749,9 @@ function onizle(){
   $("outLink").value = l;
   const ifr = $("onizleme");
   const yeni = l.split("#")[1] || "";
-  // Sadece hash değiştiyse tazele (index.html hashchange'de reload eder)
-  if(yeni !== sonHash){ sonHash = yeni; ifr.src = l; }
+  // Sadece hash değiştiyse tazele (index.html hashchange'de reload eder).
+  // ?ac=1 → önizlemede kapak (zarf açılışı) atlanır, kart doğrudan görünür.
+  if(yeni !== sonHash){ sonHash = yeni; ifr.src = RENDER + "?ac=1#i=" + yeni; }
 }
 let zaman=null;
 function planla(){ clearTimeout(zaman); zaman=setTimeout(()=>{ onizle(); kaydet(); }, 320); }
@@ -740,7 +761,8 @@ const ALANLAR = ["selTur","selTema","inUst","inAlici","inBaslik","taGiris","inIm
   "inTarih","inSaat","inGeriBaslik","inBitti","taDetaylar","inMuhur","inIkramBaslik","inIkramGrup",
   "taIkram","inIkramNot","inSartBaslik","taSart","inRsvpOlEt","inRsvpHaEt","inRsvpOlCv","inRsvpHaCv",
   "inProgramBaslik","taProgram","inHaritaBaslik","inHaritaAdres","inHaritaUrl",
-  "inHediyeBaslik","inHediyeMesaj","inHediyeIban","inHediyeAd","inHediyeNot"];
+  "inHediyeBaslik","inHediyeMesaj","inHediyeIban","inHediyeAd","inHediyeNot",
+  "inKapakIsim","inKapakButon"];
 const ANAHTAR = "studio.taslak.v1";
 function kaydet(){
   const d = {}; ALANLAR.forEach(a=> d[a]=val(a));
