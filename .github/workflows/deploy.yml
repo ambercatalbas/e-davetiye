@@ -32,7 +32,3 @@ jobs:
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
-        with:
-          # Pages API zaman zaman 10 dakikadan uzun süre
-          # deployment_in_progress durumunda kalabiliyor.
-          timeout: 1200000
