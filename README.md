@@ -28,7 +28,7 @@ hangi moddaysa ona göre görünür.
 Dosyayı düzenleyip şu komutu çalıştırın; site 1–2 dakikada kendini yeniler:
 
 ```bash
-git -C /Users/ambercatalbas/E-davetiye commit -am "güncelleme" && git -C /Users/ambercatalbas/E-davetiye push
+git -C /Users/ambercatalbas/Projects/E-davetiye commit -am "güncelleme" && git -C /Users/ambercatalbas/Projects/E-davetiye push
 ```
 
 ## Yeni davetiye ekleme
