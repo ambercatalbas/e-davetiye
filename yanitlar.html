@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex">
+<title>E-Davetiye · Yanıtlar</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  :root{
+    --bg:#EDE6EC; --bg-2:#E9E3EE; --panel:#FFFFFF; --panel-2:#FBF9FB;
+    --edge:rgba(35,40,63,.12); --ink:#23283F; --soft:#565C77; --faint:#8A8FA8;
+    --gold:#8C6A25; --teal:#0E6E78; --coral:#BE5540; --green:#2E7D53;
+    --hair:rgba(140,106,37,.30);
+    --f-serif:"Hoefler Text","Baskerville","Palatino Linotype",Palatino,Georgia,serif;
+    --f-sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0D111E; --bg-2:#141833; --panel:#161B30; --panel-2:#1B2138;
+      --edge:rgba(233,203,140,.12); --ink:#ECE6D8; --soft:#A7ABC6; --faint:#7C819B;
+      --gold:#E7BE68; --teal:#3FC9D2; --coral:#EA8E71; --green:#5FD39B;
+      --hair:rgba(231,190,104,.28);
+    }
+  }
+  body{background:linear-gradient(180deg,var(--bg-2),var(--bg));color:var(--ink);
+    font-family:var(--f-sans);-webkit-font-smoothing:antialiased;min-height:100dvh;}
+  .bar{display:flex;align-items:center;gap:12px;padding:14px clamp(14px,3vw,26px);
+    border-bottom:1px solid var(--edge);background:var(--panel);}
+  .brand{display:flex;flex-direction:column;line-height:1;margin-right:auto;}
+  .brand b{font-family:var(--f-serif);font-weight:500;font-size:1.12rem;}
+  .brand small{font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-top:3px;}
+  .lnk{font-size:.78rem;font-weight:600;color:var(--gold);text-decoration:none;border:1px solid var(--hair);
+    border-radius:7px;padding:9px 12px;}
+  .wrap{max-width:860px;margin:0 auto;padding:clamp(16px,3vw,30px);}
+  h1{font-family:var(--f-serif);font-weight:500;font-size:clamp(1.5rem,4vw,2rem);margin:0 0 4px;}
+  .alt{color:var(--soft);font-size:.9rem;margin:0 0 22px;}
+
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(10px,1.6vw,14px);margin-bottom:22px;}
+  .tile{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:16px;
+    box-shadow:0 18px 40px -36px var(--coral);}
+  .tile b{display:block;font-size:1.9rem;font-weight:600;font-variant-numeric:tabular-nums;line-height:1;}
+  .tile small{display:block;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin-top:7px;}
+  .tile.gel b{color:var(--green);} .tile.yok b{color:var(--coral);} .tile.kisi b{color:var(--gold);} .tile.top b{color:var(--ink);}
+
+  .toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
+  .toolbar h2{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--soft);margin:0;}
+  .btn{font-size:.78rem;font-weight:700;letter-spacing:.03em;cursor:pointer;border:1px solid var(--hair);
+    background:transparent;color:var(--ink);border-radius:8px;padding:9px 13px;}
+  .btn:hover{background:var(--panel-2);}
+
+  .liste{display:flex;flex-direction:column;gap:8px;}
+  .satir{display:grid;grid-template-columns:1fr auto;gap:6px 12px;background:var(--panel);
+    border:1px solid var(--edge);border-radius:10px;padding:13px 15px;}
+  .satir .ad{font-family:var(--f-serif);font-size:1.06rem;color:var(--ink);}
+  .satir .not{grid-column:1/-1;font-size:.84rem;color:var(--soft);line-height:1.4;}
+  .satir .zaman{grid-column:1/-1;font-size:.66rem;color:var(--faint);}
+  .rozet{align-self:start;font-size:.66rem;font-weight:700;letter-spacing:.04em;padding:5px 9px;border-radius:20px;white-space:nowrap;}
+  .rozet.gel{color:var(--green);border:1px solid var(--green);}
+  .rozet.yok{color:var(--coral);border:1px solid var(--coral);}
+  .durum{text-align:center;padding:40px 16px;color:var(--soft);font-size:.95rem;line-height:1.6;}
+  .durum b{color:var(--ink);}
+  @media (max-width:560px){ .tiles{grid-template-columns:1fr 1fr;} }
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="brand"><b>E-Davetiye</b><small>Yanıtlar</small></div>
+  <a class="lnk" href="studio.html">← Studio</a>
+</header>
+<div class="wrap">
+  <h1 id="baslik">Yanıtlar</h1>
+  <p class="alt" id="altBaslik">Yükleniyor…</p>
+
+  <div class="tiles" id="tiles" style="display:none">
+    <div class="tile gel"><b id="tGel">0</b><small>Geliyorum</small></div>
+    <div class="tile yok"><b id="tYok">0</b><small>Gelemiyorum</small></div>
+    <div class="tile kisi"><b id="tKisi">0</b><small>Toplam Kişi</small></div>
+    <div class="tile top"><b id="tTop">0</b><small>Yanıt</small></div>
+  </div>
+
+  <div class="toolbar" id="toolbar" style="display:none">
+    <h2>Gelen Yanıtlar</h2>
+    <button class="btn" id="btnCsv" type="button">CSV indir</button>
+  </div>
+  <div class="liste" id="liste"></div>
+  <div class="durum" id="durum"></div>
+</div>
+
+<script type="module">
+import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+import { firebaseConfig } from "./firebase/config.js";
+
+const $ = id => document.getElementById(id);
+const id = new URLSearchParams(location.search).get("id");
+const durum = $("durum");
+let yanitlar = [];
+
+function tarih(ts){
+  try{ const d = ts && ts.toDate ? ts.toDate() : null; if(!d) return "";
+    return d.toLocaleString("tr-TR",{day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"}); }
+  catch(e){ return ""; }
+}
+function esc(s){ return String(s==null?"":s).replace(/[<>&]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c])); }
+
+if(!id){
+  $("altBaslik").textContent = "";
+  durum.innerHTML = "Geçersiz bağlantı — davetiye kimliği (<b>?id=</b>) eksik. Studio'dan <b>Yanıtları Gör</b> ile açın.";
+} else {
+  baslat().catch(e=>{
+    console.error(e);
+    durum.innerHTML = "Bir sorun oluştu. Bağlantınızı kontrol edip sayfayı yenileyin.";
+  });
+}
+
+async function baslat(){
+  const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  if(!auth.currentUser) await signInAnonymously(auth);
+
+  // Başlık için davetiyeyi oku (herkese açık)
+  try{
+    const snap = await getDoc(doc(db,"invitations",id));
+    if(snap.exists()){
+      const cfg = (snap.data().cfg) || snap.data();
+      $("baslik").textContent = (cfg.baslik || "Davetiye") + " — Yanıtlar";
+      $("altBaslik").textContent = cfg.alici ? cfg.alici : "Katılım yanıtları";
+    }
+  }catch(e){ /* başlık kritik değil */ }
+
+  // Yanıtları canlı dinle (yalnız sahip okuyabilir — kurallar)
+  const q = query(collection(db,"invitations",id,"rsvps"), orderBy("createdAt","desc"));
+  durum.textContent = "Yanıtlar yükleniyor…";
+  onSnapshot(q, snap=>{
+    yanitlar = snap.docs.map(d=>d.data());
+    ciz();
+  }, err=>{
+    console.error(err);
+    if(err.code === "permission-denied"){
+      $("altBaslik").textContent = "";
+      durum.innerHTML = "Yanıtları yalnızca davetiyeyi <b>yayınlayan cihaz</b> görebilir. Bu tarayıcıdan yayınlamadıysanız erişemezsiniz.<br><br>Cihazlar arası erişim için <b>Google ile giriş</b> yakında.";
+    } else {
+      durum.textContent = "Yanıtlar yüklenemedi: " + (err.code||err.message);
+    }
+  });
+}
+
+function ciz(){
+  const gel = yanitlar.filter(y=>y.durum==="geliyorum");
+  const yok = yanitlar.filter(y=>y.durum==="gelemiyorum");
+  const kisi = gel.reduce((t,y)=> t + (Number(y.kisiSayisi)||0), 0);
+  $("tGel").textContent = gel.length;
+  $("tYok").textContent = yok.length;
+  $("tKisi").textContent = kisi;
+  $("tTop").textContent = yanitlar.length;
+  $("tiles").style.display = "";
+
+  const liste = $("liste");
+  liste.innerHTML = "";
+  if(!yanitlar.length){
+    $("toolbar").style.display = "none";
+    durum.innerHTML = "Henüz yanıt yok. Davetiye linkini paylaştıkça yanıtlar <b>anında</b> burada belirir.";
+    return;
+  }
+  durum.textContent = "";
+  $("toolbar").style.display = "flex";
+  yanitlar.forEach(y=>{
+    const sat = document.createElement("div"); sat.className="satir";
+    const geliyor = y.durum==="geliyorum";
+    sat.innerHTML =
+      '<span class="ad">'+esc(y.ad)+(geliyor && y.kisiSayisi>1 ? ' <span style="color:var(--soft);font-size:.85rem">· '+y.kisiSayisi+' kişi</span>' : '')+'</span>'+
+      '<span class="rozet '+(geliyor?'gel':'yok')+'">'+(geliyor?'Geliyor':'Gelemiyor')+'</span>'+
+      (y.not ? '<span class="not">“'+esc(y.not)+'”</span>' : '')+
+      '<span class="zaman">'+tarih(y.createdAt)+'</span>';
+    liste.append(sat);
+  });
+}
+
+$("btnCsv").addEventListener("click", ()=>{
+  const bas = ["Ad","Durum","Kisi","Not","Tarih"];
+  const sat = yanitlar.map(y=>[
+    y.ad, y.durum, y.kisiSayisi, (y.not||"").replace(/\n/g," "), tarih(y.createdAt)
+  ].map(x=>'"'+String(x==null?"":x).replace(/"/g,'""')+'"').join(","));
+  const csv = "﻿" + [bas.join(","), ...sat].join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+  a.download = "lcv-yanitlar.csv"; a.click();
+  setTimeout(()=> URL.revokeObjectURL(a.href), 2000);
+});
+</script>
+</body>
+</html>

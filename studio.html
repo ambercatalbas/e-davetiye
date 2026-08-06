@@ -162,6 +162,10 @@
   .share .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
   .note{font-size:.7rem;color:var(--faint);line-height:1.5;margin:12px 2px 0;}
   .note b{color:var(--soft);font-weight:600;}
+  .share-quick{margin-top:14px;border-top:1px solid var(--edge);padding-top:12px;}
+  .share-quick summary{font-size:.76rem;color:var(--soft);cursor:pointer;font-weight:600;list-style:revert;}
+  .share-quick summary:hover{color:var(--ink);}
+  a.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;}
 
   .foot{max-width:1180px;margin:0 auto;padding:8px clamp(16px,3vw,30px) 40px;
     font-size:.72rem;color:var(--faint);text-align:center;}
@@ -372,16 +376,34 @@
     <div class="phone"><iframe id="onizleme" title="Davetiye önizleme" loading="lazy"></iframe></div>
 
     <div class="card share">
-      <h2><span class="no">✓</span> Paylaş</h2>
-      <div class="linkbox">
-        <input type="text" id="outLink" readonly aria-label="Paylaşım linki">
-        <button class="btn pri" type="button" id="btnKopya">Kopyala</button>
+      <h2><span class="no">✓</span> Yayınla &amp; Paylaş</h2>
+
+      <button class="btn pri block" type="button" id="btnYayinla">Yayınla &amp; LCV Topla</button>
+      <p class="note" id="yayinNot">Yayınlayınca kısa bir <b>?id=</b> linki oluşur; davetliler <b>gerçek LCV</b> gönderir, yanıtları panelden görürsün.</p>
+
+      <div id="yayinSonuc" style="display:none;margin-top:12px">
+        <div class="linkbox">
+          <input type="text" id="outIdLink" readonly aria-label="Yayın linki">
+          <button class="btn pri" type="button" id="btnKopyaId">Kopyala</button>
+        </div>
+        <div class="grid">
+          <button class="btn wa" type="button" id="btnWaId">WhatsApp</button>
+          <a class="btn" id="btnYanit" target="_blank" rel="noopener">Yanıtları Gör →</a>
+        </div>
       </div>
-      <div class="grid">
-        <button class="btn wa" type="button" id="btnWa">WhatsApp</button>
-        <button class="btn" type="button" id="btnPaylas">Paylaş…</button>
-      </div>
-      <p class="note" id="paylasNot"><b>Alıcı uygulama indirmeden</b> davetiyeyi tarayıcıda görür — geri sayım dâhil. Link davetiyenin tüm içeriğini taşır.</p>
+
+      <details class="share-quick">
+        <summary>Hızlı bağlantı (kayıtsız · LCV yok)</summary>
+        <div class="linkbox" style="margin-top:10px">
+          <input type="text" id="outLink" readonly aria-label="Hızlı bağlantı">
+          <button class="btn" type="button" id="btnKopya">Kopyala</button>
+        </div>
+        <div class="grid">
+          <button class="btn wa" type="button" id="btnWa">WhatsApp</button>
+          <button class="btn" type="button" id="btnPaylas">Paylaş…</button>
+        </div>
+        <p class="note"><b>Uygulama/kayıt gerekmez</b> — tüm içerik linkin içinde. LCV toplamaz, düzenlenemez.</p>
+      </details>
     </div>
   </aside>
 </div>
@@ -816,6 +838,69 @@ if(navigator.share){
   });
 } else { $("btnPaylas").textContent = "Linki Aç"; $("btnPaylas").addEventListener("click", ()=> window.open(link(),"_blank","noopener")); }
 
+/* ---- Firestore yayını (gerçek LCV) ---- */
+const YAYIN_ANAHTAR = "studio.yayinId.v1";
+let _auth = null, _db = null;
+async function firebaseHazir(){
+  if(_db) return;
+  const [{initializeApp,getApps,getApp},{getAuth,signInAnonymously},{getFirestore},{firebaseConfig}] = await Promise.all([
+    import("https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js"),
+    import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js"),
+    import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js"),
+    import("./firebase/config.js")
+  ]);
+  const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  _auth = getAuth(app); _db = getFirestore(app);
+  if(!_auth.currentUser) await signInAnonymously(_auth);
+}
+const idLinki = id => RENDER + "?id=" + id;
+function yanitLinki(id){ return new URL("yanitlar.html?id=" + id, location.href).href; }
+
+async function yayinla(){
+  const b = $("btnYayinla"); const t0 = b.textContent;
+  b.disabled = true; b.textContent = "Yayınlanıyor…";
+  try{
+    await firebaseHazir();
+    const { doc, setDoc, addDoc, collection, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
+    const veri = { ownerUid: _auth.currentUser.uid, cfg: cfgKur(), createdAt: serverTimestamp() };
+    let id = localStorage.getItem(YAYIN_ANAHTAR);
+    if(id){ await setDoc(doc(_db,"invitations",id), veri); }
+    else { const ref = await addDoc(collection(_db,"invitations"), veri); id = ref.id; localStorage.setItem(YAYIN_ANAHTAR, id); }
+    $("outIdLink").value = idLinki(id);
+    $("btnYanit").href = yanitLinki(id);
+    $("yayinSonuc").style.display = "";
+    $("yayinNot").innerHTML = "Yayında ✓ — bu linki paylaş; her düzenlemeden sonra <b>Güncelle</b>'ye bas.";
+    b.textContent = "Güncellendi ✓";
+    setTimeout(()=> b.textContent = "Güncelle & Yeniden Yayınla", 1600);
+  }catch(e){
+    console.error(e);
+    const kod = (e && e.code) ? e.code : "bilinmiyor";
+    $("yayinNot").innerHTML = "Yayınlanamadı (" + kod + "). Firebase kurulumunu kontrol edin: Firestore veritabanı + Authentication→Anonim açık + güvenlik kuralları publish edilmiş olmalı.";
+    b.textContent = "Hata — tekrar dene";
+    setTimeout(()=> b.textContent = t0, 2600);
+  }finally{ b.disabled = false; }
+}
+$("btnYayinla").addEventListener("click", yayinla);
+$("btnKopyaId").addEventListener("click", async ()=>{
+  try{ await navigator.clipboard.writeText($("outIdLink").value); $("btnKopyaId").textContent="Kopyalandı ✓"; setTimeout(()=> $("btnKopyaId").textContent="Kopyala",1600); }
+  catch(e){ $("outIdLink").select(); }
+});
+$("btnWaId").addEventListener("click", ()=>{
+  const alici=val("inAlici").trim(), baslik=val("inBaslik").trim();
+  const msg=(alici?alici+", ":"")+(baslik||"Davetiyeniz hazır")+" — davetiyeniz:\n"+$("outIdLink").value;
+  window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank","noopener");
+});
+// Bu tarayıcıda daha önce yayınlanmışsa göster
+(function(){
+  const id = localStorage.getItem(YAYIN_ANAHTAR);
+  if(id){
+    $("btnYayinla").textContent = "Güncelle & Yeniden Yayınla";
+    $("outIdLink").value = idLinki(id);
+    $("btnYanit").href = yanitLinki(id);
+    $("yayinSonuc").style.display = "";
+  }
+})();
+
 /* ---- Tema düğmesi ---- */
 $("btnTema").addEventListener("click", ()=>{
   const kok = document.documentElement;
@@ -829,8 +914,10 @@ $("selTur").addEventListener("change", ()=>{ AKTIF_SABLON=null; metinVaryantlari
 for(const k in CHKS){ $(CHKS[k]).addEventListener("change", ()=>{ syncBodies(); planla(); }); }
 $("form").addEventListener("input", planla);
 $("btnSifirla").addEventListener("click", ()=>{
-  if(!confirm("Form temizlensin mi? Kaydedilmemiş içerik silinir.")) return;
-  try{ localStorage.removeItem(ANAHTAR); }catch(e){}
+  if(!confirm("Yeni bir davetiye başlatılsın mı? Taslak temizlenir. (Yayınladıysan eski linkin çalışmaya devam eder.)")) return;
+  try{ localStorage.removeItem(ANAHTAR); localStorage.removeItem(YAYIN_ANAHTAR); }catch(e){}
+  $("yayinSonuc").style.display="none"; $("btnYayinla").textContent="Yayınla & LCV Topla";
+  $("yayinNot").innerHTML="Yayınlayınca kısa bir <b>?id=</b> linki oluşur; davetliler <b>gerçek LCV</b> gönderir, yanıtları panelden görürsün.";
   AKTIF_SABLON=null; metinVaryantlariniKur(null); setVal("selTur","dugun"); preseti_uygula("dugun"); onizle();
 });
 

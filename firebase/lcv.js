@@ -15,7 +15,7 @@
 //    </script>
 // ============================================================
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 import {
   getFirestore, collection, addDoc, serverTimestamp
@@ -35,7 +35,7 @@ export async function lcvBaslat({ inviteId, firebaseConfig, mount }) {
     return;
   }
 
-  const app = initializeApp(firebaseConfig);
+  const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
   // Davetli anonim giriş yapar (kurallar auth ister). Kapalıysa form yine görünür.
