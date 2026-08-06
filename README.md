@@ -14,6 +14,9 @@ geliştirilmektedir. Detaylar:
   mimari evrim, gelir modeli, fazlar ve KPI'lar.
 - **Marka kılavuzu:** [`docs/MARKA.md`](docs/MARKA.md) — konumlandırma, persona mesajları,
   ses tonu, görsel kimlik, rekabet matrisi ve ölçüm çerçevesi.
+- **Veri modeli v2:** [`docs/VERI-MODELI-V2.md`](docs/VERI-MODELI-V2.md) ve
+  [`schemas/invitation-v2.schema.json`](schemas/invitation-v2.schema.json) — bloklar,
+  etkinlikler, davetliler, RSVP, yetkilendirme ve v1 migration sözleşmesi.
 - **İş kalemleri:** [Issues](https://github.com/ambercatalbas/e-davetiye/issues) —
   `epic:*`, `type:*`, `priority:*`, `platform:*` etiketleri ve Faz milestone'ları ile.
 - **Pano:** [E-Davetiye Yol Haritası](https://github.com/users/ambercatalbas/projects/1).
