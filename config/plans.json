@@ -1,0 +1,31 @@
+{
+  "$schema": "../schemas/plans.schema.json",
+  "version": "2026-08-06-v1",
+  "currency": "TRY",
+  "plans": [
+    {
+      "id": "free",
+      "name": "Ücretsiz",
+      "billing": "free",
+      "price": 0,
+      "limits": { "activeInvitations": 1, "rsvpsPerInvitation": 30, "photos": 0, "teamMembers": 1, "publishDays": 30 },
+      "features": ["basic_templates", "countdown", "whatsapp_share", "qr", "watermark"]
+    },
+    {
+      "id": "premium_event",
+      "name": "Premium Etkinlik",
+      "billing": "one_time",
+      "price": 499,
+      "limits": { "activeInvitations": 1, "rsvpsPerInvitation": 500, "photos": 20, "teamMembers": 2, "publishDays": 365 },
+      "features": ["all_templates", "countdown", "whatsapp_share", "qr", "custom_slug", "remove_watermark", "gallery", "music", "schedule", "map", "gift_block", "analytics", "csv_export", "reminders"]
+    },
+    {
+      "id": "pro_monthly",
+      "name": "Pro",
+      "billing": "monthly",
+      "price": 1490,
+      "limits": { "activeInvitations": 20, "rsvpsPerInvitation": 5000, "photos": 100, "teamMembers": 5, "publishDays": 365 },
+      "features": ["all_templates", "countdown", "whatsapp_share", "qr", "custom_slug", "remove_watermark", "gallery", "music", "schedule", "map", "gift_block", "analytics", "csv_export", "reminders", "brand_kit", "multi_event", "team", "priority_support"]
+    }
+  ]
+}

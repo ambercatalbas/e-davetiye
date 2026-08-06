@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://e-davetiye.example/schemas/plans.schema.json",
+  "title": "E-Davetiye plan catalog",
+  "type": "object",
+  "required": ["version", "currency", "plans"],
+  "properties": {
+    "version": { "type": "string", "minLength": 1 },
+    "currency": { "const": "TRY" },
+    "plans": {
+      "type": "array", "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "billing", "price", "limits", "features"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          "name": { "type": "string" },
+          "billing": { "enum": ["free", "one_time", "monthly", "yearly"] },
+          "price": { "type": "number", "minimum": 0 },
+          "limits": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } },
+          "features": { "type": "array", "uniqueItems": true, "items": { "type": "string" } }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -19,6 +19,8 @@ geliştirilmektedir. Detaylar:
   etkinlikler, davetliler, RSVP, yetkilendirme ve v1 migration sözleşmesi.
 - **Tasarım tokenları:** [`tokens/design-tokens.json`](tokens/design-tokens.json) ve
   [`docs/TEMALAR.md`](docs/TEMALAR.md) — renk, tipografi, spacing, motion ve tema sözleşmesi.
+- **Gelir modeli:** [`docs/GELIR-MODELI.md`](docs/GELIR-MODELI.md) ve
+  [`config/plans.json`](config/plans.json) — paket hakları, fiyat hipotezleri ve paywall sözleşmesi.
 - **İş kalemleri:** [Issues](https://github.com/ambercatalbas/e-davetiye/issues) —
   `epic:*`, `type:*`, `priority:*`, `platform:*` etiketleri ve Faz milestone'ları ile.
 - **Pano:** [E-Davetiye Yol Haritası](https://github.com/users/ambercatalbas/projects/1).
