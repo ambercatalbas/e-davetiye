@@ -1,0 +1,50 @@
+rules_version = '2';
+
+// Davetiye uygulaması — Firestore güvenlik kuralları (taslak)
+// Dağıtım: firebase deploy --only firestore:rules
+//
+// Model:
+//   invitations/{id}                -> davetiye (sahibi düzenler, herkes id ile okuyabilir)
+//   invitations/{id}/rsvps/{rid}    -> LCV yanıtları (davetli yazar, yalnız sahip okur)
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /invitations/{inviteId} {
+      // Paylaşılan davetiye: id'yi bilen herkes tek belgeyi okuyabilir.
+      allow get: if true;
+      // Toplu listeleme kapalı (kimse tüm davetiyeleri çekemez).
+      allow list: if false;
+
+      // Yalnızca giriş yapmış sahibi oluşturur/günceller/siler.
+      allow create: if request.auth != null
+                    && request.resource.data.ownerUid == request.auth.uid;
+      allow update, delete: if request.auth != null
+                    && resource.data.ownerUid == request.auth.uid;
+
+      match /rsvps/{rsvpId} {
+        // Davetli (anonim giriş dahil) yalnızca LCV EKLEYEBİLİR.
+        // Alanlar ve değerler doğrulanır; başkasının yanıtını okuyamaz/değiştiremez.
+        allow create: if request.auth != null
+          && request.resource.data.keys().hasOnly(['ad', 'durum', 'kisiSayisi', 'not', 'createdAt'])
+          && request.resource.data.ad is string
+          && request.resource.data.ad.size() > 0
+          && request.resource.data.ad.size() <= 80
+          && request.resource.data.durum in ['geliyorum', 'gelemiyorum']
+          && request.resource.data.kisiSayisi is int
+          && request.resource.data.kisiSayisi >= 0
+          && request.resource.data.kisiSayisi <= 20
+          && request.resource.data.not is string
+          && request.resource.data.not.size() <= 300
+          && request.resource.data.createdAt == request.time;
+
+        // Tüm yanıtları yalnızca davetiye sahibi okur.
+        allow read: if request.auth != null
+          && get(/databases/$(database)/documents/invitations/$(inviteId)).data.ownerUid == request.auth.uid;
+
+        // Yanıtlar değiştirilemez/silinemez (denetim izi).
+        allow update, delete: if false;
+      }
+    }
+  }
+}
