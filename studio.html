@@ -319,6 +319,30 @@
         <div class="field"><label>Alt not</label><input type="text" id="inIkramNot" maxlength="100" placeholder="…ve nice lezzet."></div>
       </div>
 
+      <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkProgram"><span class="sw"></span><span class="tlabel">Program / etkinlik akışı</span></label>
+      <div class="togglebody" id="bodyProgram">
+        <div class="field"><label for="inProgramBaslik">Bölüm başlığı</label><input type="text" id="inProgramBaslik" maxlength="60" placeholder="Program"></div>
+        <div class="field"><label for="taProgram">Adımlar <span class="hint">— her satır “Saat | Başlık | Yer”</span></label><textarea id="taProgram" placeholder="17.30 | Nikah Töreni | Tören Bahçesi&#10;19.00 | Düğün | Balo Salonu"></textarea></div>
+      </div>
+
+      <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkHarita"><span class="sw"></span><span class="tlabel">Harita &amp; yol tarifi</span></label>
+      <div class="togglebody" id="bodyHarita">
+        <div class="field"><label for="inHaritaBaslik">Bölüm başlığı</label><input type="text" id="inHaritaBaslik" maxlength="60" placeholder="Konum & Yol Tarifi"></div>
+        <div class="field"><label for="inHaritaAdres">Adres</label><input type="text" id="inHaritaAdres" maxlength="200" placeholder="Kristal Balo Salonu, Muratpaşa / Antalya"></div>
+        <div class="field"><label for="inHaritaUrl">Harita linki <span class="hint">(isteğe bağlı — boşsa adresten oluşur)</span></label><input type="text" id="inHaritaUrl" maxlength="500" placeholder="https://maps.app.goo.gl/…"></div>
+      </div>
+
+      <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkHediye"><span class="sw"></span><span class="tlabel">Hediye / IBAN</span></label>
+      <div class="togglebody" id="bodyHediye">
+        <div class="field"><label for="inHediyeBaslik">Bölüm başlığı</label><input type="text" id="inHediyeBaslik" maxlength="60" placeholder="Hediye"></div>
+        <div class="field"><label for="inHediyeMesaj">Mesaj</label><input type="text" id="inHediyeMesaj" maxlength="160" placeholder="Çeyizimize katkıda bulunmak isterseniz:"></div>
+        <div class="row2">
+          <div class="field"><label for="inHediyeIban">IBAN</label><input type="text" id="inHediyeIban" maxlength="40" placeholder="TR00 0000 0000 0000 0000 0000 00"></div>
+          <div class="field"><label for="inHediyeAd">IBAN sahibi</label><input type="text" id="inHediyeAd" maxlength="60" placeholder="Ad Soyad"></div>
+        </div>
+        <div class="field"><label for="inHediyeNot">Alt not</label><input type="text" id="inHediyeNot" maxlength="120" placeholder="Varlığınız en büyük hediye. 🤍"></div>
+      </div>
+
       <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkSart"><span class="sw"></span><span class="tlabel">İnce yazı / notlar</span></label>
       <div class="togglebody" id="bodySart">
         <div class="field"><label>Başlık</label><input type="text" id="inSartBaslik" maxlength="60" placeholder="İnce Yazı"></div>
@@ -366,7 +390,11 @@ const PRESETS = {
     imza:"Sevgiyle,", kurum:"Ayşe & Mehmet",
     muhur:"MUTLULUĞA İLK ADIM ·", rsvpOlEt:"Katılıyorum", rsvpHaEt:"Katılamıyorum",
     rsvpOlCv:"Ne mutlu bize! Sizi aramızda görmek için sabırsızız. 🎉", rsvpHaCv:"Çok üzüldük — teşekkür ederiz, kalbimizdesiniz. 🤍",
-    ac:["tarih","rsvp","muhur"] },
+    programBaslik:"Program", program:"17.30 | Nikah Töreni | Tören Bahçesi\n19.00 | Düğün | Balo Salonu",
+    haritaBaslik:"Konum & Yol Tarifi", haritaAdres:"Kristal Balo Salonu, Muratpaşa / Antalya",
+    hediyeBaslik:"Hediye", hediyeMesaj:"Bizi mutlu etmek isterseniz, çeyizimize katkınız için:",
+    hediyeIban:"TR00 0000 0000 0000 0000 0000 00", hediyeAd:"Ayşe Yılmaz", hediyeNot:"Varlığınız en büyük hediye. 🤍",
+    ac:["tarih","program","harita","rsvp","hediye","muhur"] },
 
   nisan: { tema:"safak", ust:"Nişan Davetiyesi", alici:"Sevgili Dostlarımız",
     baslik:"Sözümüzü Nişanlıyoruz",
@@ -385,7 +413,9 @@ const PRESETS = {
     bitti:"Kınamız kutlu olsun 🌙", saat:"20:00", gunSonra:44,
     imza:"Sevgiyle,", kurum:"… Ailesi",
     muhur:"KINAMIZ KUTLU OLSUN ·",
-    ac:["tarih","muhur"] },
+    programBaslik:"Gecemizin Akışı", program:"20.00 | Karşılama | Baba Ocağı Bahçesi\n21.00 | Kına Merasimi | Bahçe",
+    haritaBaslik:"Konum & Yol Tarifi", haritaAdres:"Baba Ocağı, Antalya",
+    ac:["tarih","program","harita","muhur"] },
 
   sunnet: { tema:"safak", ust:"Sünnet Merasimi & Mevlüt", alici:"Sevgili Misafirlerimiz",
     baslik:"Yiğidimiz Erkekliğe Adım Atıyor",
@@ -395,7 +425,9 @@ const PRESETS = {
     imza:"Sevgiyle,", kurum:"Anne & Baba",
     muhur:"MAŞALLAH · SÜNNET MÜBAREK OLSUN ·", rsvpOlEt:"Katılıyorum", rsvpHaEt:"Katılamıyorum",
     rsvpOlCv:"Ne güzel! Yiğidimizin gününde sizi de bekleriz. 🌟", rsvpHaCv:"Teşekkür ederiz, dualarınız yeter. 🤍",
-    ac:["tarih","rsvp","muhur"] },
+    programBaslik:"Program", program:"14.00 | Mevlid-i Şerif | Ziyafet Salonu\n16.00 | Sünnet Töreni | Ziyafet Salonu",
+    haritaBaslik:"Konum & Yol Tarifi", haritaAdres:"Ziyafet Salonu, Kepez / Antalya",
+    ac:["tarih","program","harita","rsvp","muhur"] },
 
   bebek: { tema:"safak", ust:"Hoş Geldin Bebek & Mevlüt", alici:"Sevgili Sevdiklerimiz",
     baslik:"Aramıza Hoş Geldin",
@@ -453,8 +485,10 @@ function isoSonra(n){
 }
 
 // Bölüm aç/kapa gövdesini eşitle
-const BODIES = { tarih:"bodyTarih", rsvp:"bodyRsvp", muhur:"bodyMuhur", ikram:"bodyIkram", sart:"bodySart" };
-const CHKS   = { tarih:"chkTarih", rsvp:"chkRsvp", muhur:"chkMuhur", ikram:"chkIkram", sart:"chkSart" };
+const BODIES = { tarih:"bodyTarih", rsvp:"bodyRsvp", muhur:"bodyMuhur", ikram:"bodyIkram", sart:"bodySart",
+                 program:"bodyProgram", harita:"bodyHarita", hediye:"bodyHediye" };
+const CHKS   = { tarih:"chkTarih", rsvp:"chkRsvp", muhur:"chkMuhur", ikram:"chkIkram", sart:"chkSart",
+                 program:"chkProgram", harita:"chkHarita", hediye:"chkHediye" };
 function syncBodies(){
   for(const k in BODIES){ $(BODIES[k]).classList.toggle("open", chk(CHKS[k])); }
 }
@@ -474,6 +508,10 @@ function preseti_uygula(tur){
   setVal("inSartBaslik", p.sartBaslik || "İnce Yazı"); setVal("taSart", p.sart || "");
   setVal("inRsvpOlEt", p.rsvpOlEt || "Geliyorum"); setVal("inRsvpHaEt", p.rsvpHaEt || "Gelemiyorum");
   setVal("inRsvpOlCv", p.rsvpOlCv || "Harika, sizi bekliyoruz! 🎉"); setVal("inRsvpHaCv", p.rsvpHaCv || "Çok üzüldük. 🤍");
+  setVal("inProgramBaslik", p.programBaslik || "Program"); setVal("taProgram", p.program || "");
+  setVal("inHaritaBaslik", p.haritaBaslik || "Konum & Yol Tarifi"); setVal("inHaritaAdres", p.haritaAdres || ""); setVal("inHaritaUrl", p.haritaUrl || "");
+  setVal("inHediyeBaslik", p.hediyeBaslik || "Hediye"); setVal("inHediyeMesaj", p.hediyeMesaj || "");
+  setVal("inHediyeIban", p.hediyeIban || ""); setVal("inHediyeAd", p.hediyeAd || ""); setVal("inHediyeNot", p.hediyeNot || "");
   const ac = p.ac || [];
   for(const k in CHKS){ setChk(CHKS[k], ac.includes(k)); }
   syncBodies();
@@ -625,6 +663,40 @@ function cfgKur(){
     if(maddeler.length){ cfg.sartlar = maddeler; if(s("inSartBaslik")) cfg.sartlarBaslik = s("inSartBaslik"); }
   }
 
+  // Program — her satır "Saat | Başlık | Yer | Açıklama"
+  if(chk("chkProgram")){
+    const adimlar = (val("taProgram")||"").split("\n").map(x=>x.trim()).filter(Boolean).map(satir=>{
+      const par = satir.split("|").map(x=>x.trim());
+      const a = {};
+      if(par[0]) a.saat = par[0];
+      if(par[1]) a.baslik = par[1];
+      if(par[2]) a.yer = par[2];
+      if(par[3]) a.aciklama = par[3];
+      return a;
+    }).filter(a=>a.baslik||a.saat);
+    if(adimlar.length){ cfg.program = adimlar; if(s("inProgramBaslik")) cfg.programBaslik = s("inProgramBaslik"); }
+  }
+
+  // Harita / yol tarifi
+  if(chk("chkHarita")){
+    const h = {};
+    if(s("inHaritaBaslik")) h.baslik = s("inHaritaBaslik");
+    if(s("inHaritaAdres")) h.adres = s("inHaritaAdres");
+    if(s("inHaritaUrl")) h.mapsUrl = s("inHaritaUrl");
+    if(h.adres || h.mapsUrl) cfg.harita = h;
+  }
+
+  // Hediye / IBAN
+  if(chk("chkHediye")){
+    const g = {};
+    if(s("inHediyeBaslik")) g.baslik = s("inHediyeBaslik");
+    if(s("inHediyeMesaj")) g.mesaj = s("inHediyeMesaj");
+    if(s("inHediyeIban")) g.iban = s("inHediyeIban");
+    if(s("inHediyeAd")) g.adSoyad = s("inHediyeAd");
+    if(s("inHediyeNot")) g.not = s("inHediyeNot");
+    if(g.mesaj || g.iban || g.not) cfg.hediye = g;
+  }
+
   // Mühür
   if(chk("chkMuhur") && s("inMuhur")) cfg.muhurYazi = s("inMuhur");
 
@@ -666,7 +738,9 @@ function planla(){ clearTimeout(zaman); zaman=setTimeout(()=>{ onizle(); kaydet(
 /* ---- Taslak (localStorage) ---- */
 const ALANLAR = ["selTur","selTema","inUst","inAlici","inBaslik","taGiris","inImza","inKurum",
   "inTarih","inSaat","inGeriBaslik","inBitti","taDetaylar","inMuhur","inIkramBaslik","inIkramGrup",
-  "taIkram","inIkramNot","inSartBaslik","taSart","inRsvpOlEt","inRsvpHaEt","inRsvpOlCv","inRsvpHaCv"];
+  "taIkram","inIkramNot","inSartBaslik","taSart","inRsvpOlEt","inRsvpHaEt","inRsvpOlCv","inRsvpHaCv",
+  "inProgramBaslik","taProgram","inHaritaBaslik","inHaritaAdres","inHaritaUrl",
+  "inHediyeBaslik","inHediyeMesaj","inHediyeIban","inHediyeAd","inHediyeNot"];
 const ANAHTAR = "studio.taslak.v1";
 function kaydet(){
   const d = {}; ALANLAR.forEach(a=> d[a]=val(a));

@@ -316,6 +316,44 @@
   .ikram-not { font-family:var(--f-serif); font-style:italic; color:var(--ink-soft);
                font-size:1rem; text-align:center; max-width:46ch; }
 
+  /* Program (çoklu etkinlik akışı: kına → nikah → düğün) */
+  .program-blok { width:100%; display:flex; flex-direction:column; align-items:center; gap:16px; }
+  .program { display:flex; flex-direction:column; width:100%; max-width:46ch; }
+  .program-adim { display:flex; gap:16px; padding:13px 0; border-bottom:1px solid var(--hairline); }
+  .program-adim:last-child { border-bottom:0; }
+  .program-saat { font-family:var(--f-sans); font-variant-numeric:tabular-nums; font-weight:600;
+                  font-size:.95rem; letter-spacing:.03em; color:var(--gold);
+                  min-width:5.4ch; text-align:right; padding-top:3px; }
+  .program-org { display:flex; flex-direction:column; gap:3px; text-align:left; }
+  .program-baslik { font-family:var(--f-serif); font-size:1.08rem; color:var(--ink); line-height:1.2; }
+  .program-yer { font-family:var(--f-sans); font-size:.82rem; color:var(--ink-soft); line-height:1.35; }
+
+  /* Harita / yol tarifi */
+  .harita-blok { width:100%; display:flex; flex-direction:column; align-items:center; gap:12px; }
+  .harita-adres { font-family:var(--f-serif); font-size:1rem; color:var(--ink);
+                  text-align:center; max-width:44ch; margin:0; line-height:1.5; }
+  .harita-butonlar { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+  .harita-butonlar .btn { text-decoration:none; }
+
+  /* Hediye / dilek listesi (IBAN, liste, not) */
+  .hediye-blok { width:100%; display:flex; flex-direction:column; align-items:center; gap:14px; }
+  .hediye-mesaj { font-family:var(--f-serif); font-size:1rem; color:var(--ink);
+                  text-align:center; max-width:46ch; margin:0; line-height:1.6; }
+  .hediye-iban { display:flex; flex-wrap:wrap; align-items:center; justify-content:center;
+                 gap:8px 14px; padding:14px 18px; border:1px solid var(--hairline);
+                 border-radius:6px; max-width:100%; }
+  .hediye-iban-no { font-family:var(--f-sans); font-variant-numeric:tabular-nums; letter-spacing:.06em;
+                    font-size:1rem; color:var(--ink); word-break:break-all; }
+  .hediye-iban-ad { font-family:var(--f-sans); font-size:.68rem; letter-spacing:.14em;
+                    text-transform:uppercase; color:var(--ink-soft); }
+  .hediye-kopya { font-size:.7rem; padding:.6em 1em; }
+  .hediye-liste { list-style:none; margin:0; padding:0; display:flex; flex-direction:column;
+                  gap:8px; max-width:44ch; text-align:center; }
+  .hediye-oge { font-family:var(--f-serif); font-size:1rem; color:var(--ink); }
+  .hediye-oge a { color:var(--gold); }
+  .hediye-not { font-family:var(--f-serif); font-style:italic; color:var(--ink-soft);
+                font-size:.95rem; text-align:center; max-width:44ch; margin:0; }
+
   /* Mühür */
   .muhur { color:var(--gold); opacity:.85; }
   .muhur svg { width:clamp(90px,24vw,110px); height:auto; display:block; }
@@ -687,6 +725,42 @@
       }
     }
 
+    // Program — çoklu etkinlik akışı (kına → nikah → düğün, mevlüt → tören…)
+    if (cfg.program && cfg.program.length) {
+      const blok = el("div", "program-blok");
+      if (cfg.programBaslik) blok.append(el("p", "ust kucuk", cfg.programBaslik));
+      const liste = el("div", "program");
+      cfg.program.forEach(a => {
+        const adim = el("div", "program-adim");
+        if (a.saat) adim.append(el("span", "program-saat", a.saat));
+        const org = el("div", "program-org");
+        if (a.baslik) org.append(el("span", "program-baslik", a.baslik));
+        const alt = [a.yer, a.aciklama].filter(Boolean).join(" · ");
+        if (alt) org.append(el("span", "program-yer", alt));
+        adim.append(org);
+        liste.append(adim);
+      });
+      blok.append(liste);
+      kok.append(blok);
+    }
+
+    // Harita / yol tarifi — Google & Apple Maps derin bağlantısı
+    if (cfg.harita && (cfg.harita.adres || cfg.harita.mapsUrl || (cfg.harita.enlem && cfg.harita.boylam))) {
+      const hrt = cfg.harita;
+      const blok = el("div", "harita-blok");
+      if (hrt.baslik) blok.append(el("p", "ust kucuk", hrt.baslik));
+      if (hrt.adres) blok.append(el("p", "harita-adres", hrt.adres));
+      const hedef = (hrt.enlem && hrt.boylam) ? (hrt.enlem + "," + hrt.boylam) : (hrt.adres || "");
+      const gUrl = hrt.mapsUrl || ("https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(hedef));
+      const aUrl = "https://maps.apple.com/?daddr=" + encodeURIComponent(hedef);
+      const box = el("div", "harita-butonlar");
+      const bg = el("a", "btn", "Google Maps"); bg.href = gUrl; bg.target = "_blank"; bg.rel = "noopener";
+      const ba = el("a", "btn", "Apple Maps"); ba.href = aUrl; ba.target = "_blank"; ba.rel = "noopener";
+      box.append(bg, ba);
+      blok.append(box);
+      kok.append(blok);
+    }
+
     if (cfg.sartlar && cfg.sartlar.length) {
       const blok = el("div", "sartlar-blok");
       if (cfg.sartlarBaslik) blok.append(el("p", "ust kucuk", cfg.sartlarBaslik));
@@ -710,6 +784,50 @@
       });
       blok.append(gruplar);
       if (cfg.ikramlarNot) blok.append(el("p", "ikram-not", cfg.ikramlarNot));
+      kok.append(blok);
+    }
+
+    // Hediye / dilek listesi — IBAN (kopyalanır), liste, not
+    if (cfg.hediye && (cfg.hediye.mesaj || cfg.hediye.iban || (cfg.hediye.liste && cfg.hediye.liste.length) || cfg.hediye.not)) {
+      const hd = cfg.hediye;
+      const blok = el("div", "hediye-blok");
+      if (hd.baslik) blok.append(el("p", "ust kucuk", hd.baslik));
+      if (hd.mesaj) blok.append(el("p", "hediye-mesaj", hd.mesaj));
+      if (hd.iban) {
+        const satir = el("div", "hediye-iban");
+        satir.append(el("span", "hediye-iban-no", hd.iban));
+        if (hd.adSoyad) satir.append(el("span", "hediye-iban-ad", hd.adSoyad));
+        const kopya = el("button", "btn hediye-kopya", "IBAN'ı kopyala");
+        kopya.type = "button";
+        kopya.addEventListener("click", () => {
+          const metin = String(hd.iban).replace(/\s+/g, "");
+          const bitir = () => { kopya.textContent = "Kopyalandı ✓"; setTimeout(() => kopya.textContent = "IBAN'ı kopyala", 1600); };
+          const yedek = () => {
+            try {
+              const ta = document.createElement("textarea");
+              ta.value = metin; ta.style.position = "fixed"; ta.style.opacity = "0";
+              document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove();
+            } catch (e) {}
+            bitir();
+          };
+          if (navigator.clipboard && navigator.clipboard.writeText)
+            navigator.clipboard.writeText(metin).then(bitir).catch(yedek);
+          else yedek();
+        });
+        satir.append(kopya);
+        blok.append(satir);
+      }
+      if (hd.liste && hd.liste.length) {
+        const ul = el("ul", "hediye-liste");
+        hd.liste.forEach(x => {
+          const li = el("li", "hediye-oge");
+          if (x.link) { const a = el("a", null, x.ad || x.link); a.href = x.link; a.target = "_blank"; a.rel = "noopener"; li.append(a); }
+          else li.textContent = x.ad || "";
+          ul.append(li);
+        });
+        blok.append(ul);
+      }
+      if (hd.not) blok.append(el("p", "hediye-not", hd.not));
       kok.append(blok);
     }
 

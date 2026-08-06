@@ -12,11 +12,27 @@
       "premium": false,
       "theme": "safak",
       "description": "Zarif serif, altın folyo ve zamansız bir düğün dili.",
-      "blocks": ["geri-sayim", "program", "harita", "lcv", "hediye", "muhur"],
+      "blocks": [
+        "geri-sayim",
+        "program",
+        "harita",
+        "lcv",
+        "hediye",
+        "muhur"
+      ],
       "copyOptions": [
-        {"label":"Klasik","text":"İki ailenin bir olduğu bu özel günde, sevincimizi sizinle paylaşmaktan mutluluk duyarız. Bizi kırmayıp aramızda olmanız en büyük hediyemiz olacaktır."},
-        {"label":"Resmî","text":"Evlilik törenimizde sizleri de aramızda görmekten onur ve mutluluk duyacağız."},
-        {"label":"Şiirsel","text":"Bir ömrü aynı cümlede tamamlamak üzere verdiğimiz söze, sevginizle şahit olmanızı diliyoruz."}
+        {
+          "label": "Klasik",
+          "text": "İki ailenin bir olduğu bu özel günde, sevincimizi sizinle paylaşmaktan mutluluk duyarız. Bizi kırmayıp aramızda olmanız en büyük hediyemiz olacaktır."
+        },
+        {
+          "label": "Resmî",
+          "text": "Evlilik törenimizde sizleri de aramızda görmekten onur ve mutluluk duyacağız."
+        },
+        {
+          "label": "Şiirsel",
+          "text": "Bir ömrü aynı cümlede tamamlamak üzere verdiğimiz söze, sevginizle şahit olmanızı diliyoruz."
+        }
       ],
       "preset": {
         "tur": "dugun",
@@ -37,7 +53,23 @@
         "rsvpHaEt": "Katılamıyorum",
         "rsvpOlCv": "Ne mutlu bize! Sizi aramızda görmek için sabırsızız. 🎉",
         "rsvpHaCv": "Çok üzüldük — teşekkür ederiz, kalbimizdesiniz. 🤍",
-        "ac": ["tarih", "rsvp", "muhur"]
+        "ac": [
+          "tarih",
+          "rsvp",
+          "muhur",
+          "program",
+          "harita",
+          "hediye"
+        ],
+        "program": "17.30 | Nikah Töreni | Tören Bahçesi\n19.00 | Düğün | Balo Salonu",
+        "programBaslik": "Program",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Kristal Balo Salonu",
+        "hediyeBaslik": "Hediye",
+        "hediyeMesaj": "Bizi mutlu etmek isterseniz, çeyizimize katkınız için:",
+        "hediyeIban": "TR00 0000 0000 0000 0000 0000 00",
+        "hediyeAd": "Ayşe & Mehmet",
+        "hediyeNot": "Varlığınız en büyük hediye. 🤍"
       }
     },
     {
@@ -51,11 +83,28 @@
       "premium": true,
       "theme": "yaz",
       "description": "Sahil nikâhları için turkuaz, mercan ve ferah bir kompozisyon.",
-      "blocks": ["geri-sayim", "program", "harita", "lcv", "hediye", "muhur", "ikram"],
+      "blocks": [
+        "geri-sayim",
+        "program",
+        "harita",
+        "lcv",
+        "hediye",
+        "muhur",
+        "ikram"
+      ],
       "copyOptions": [
-        {"label":"Sahil","text":"Denizin kıyısında, gün batımının en güzel saatinde hayatlarımızı birleştirirken sevincimize ortak olmanızı diliyoruz."},
-        {"label":"Samimi","text":"Güneş batarken evet diyoruz; deniz, müzik ve sevdiklerimizle bu anı birlikte yaşayalım."},
-        {"label":"Şiirsel","text":"Ufuk denize, biz birbirimize kavuşurken gün batımının en güzel rengine siz de ortak olun."}
+        {
+          "label": "Sahil",
+          "text": "Denizin kıyısında, gün batımının en güzel saatinde hayatlarımızı birleştirirken sevincimize ortak olmanızı diliyoruz."
+        },
+        {
+          "label": "Samimi",
+          "text": "Güneş batarken evet diyoruz; deniz, müzik ve sevdiklerimizle bu anı birlikte yaşayalım."
+        },
+        {
+          "label": "Şiirsel",
+          "text": "Ufuk denize, biz birbirimize kavuşurken gün batımının en güzel rengine siz de ortak olun."
+        }
       ],
       "preset": {
         "tur": "dugun",
@@ -80,7 +129,24 @@
         "rsvpHaEt": "Katılamıyoruz",
         "rsvpOlCv": "Harika! Gün batımında buluşuyoruz. 🌊",
         "rsvpHaCv": "Sevginizi yanımızda hissedeceğiz. 🤍",
-        "ac": ["tarih", "rsvp", "muhur", "ikram"]
+        "ac": [
+          "tarih",
+          "rsvp",
+          "muhur",
+          "ikram",
+          "program",
+          "harita",
+          "hediye"
+        ],
+        "program": "17.30 | Nikah Töreni | Tören Bahçesi\n19.00 | Düğün | Balo Salonu",
+        "programBaslik": "Program",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Sahil Bahçesi · Antalya",
+        "hediyeBaslik": "Hediye",
+        "hediyeMesaj": "Bizi mutlu etmek isterseniz, çeyizimize katkınız için:",
+        "hediyeIban": "TR00 0000 0000 0000 0000 0000 00",
+        "hediyeAd": "Derya & Deniz",
+        "hediyeNot": "Varlığınız en büyük hediye. 🤍"
       }
     },
     {
@@ -94,19 +160,64 @@
       "premium": false,
       "theme": "minimal",
       "description": "Fildişi, kömür ve adaçayıyla sakin; tipografi odaklı bir nikâh tasarımı.",
-      "blocks": ["geri-sayim", "program", "harita", "lcv", "hediye"],
+      "blocks": [
+        "geri-sayim",
+        "program",
+        "harita",
+        "lcv",
+        "hediye"
+      ],
       "copyOptions": [
-        {"label":"Sade","text":"Hayatlarımızı birleştirdiğimiz bu özel günde yanımızda olmanızdan mutluluk duyacağız."},
-        {"label":"Samimi","text":"Birlikte çıktığımız yolun en güzel durağında, sevincimizi sizinle paylaşmak istiyoruz."},
-        {"label":"Şiirsel","text":"Aynı gökyüzüne bakıp aynı hayali kurduk; şimdi o hayale birlikte adım atarken sizi de yanımızda bekliyoruz."}
+        {
+          "label": "Sade",
+          "text": "Hayatlarımızı birleştirdiğimiz bu özel günde yanımızda olmanızdan mutluluk duyacağız."
+        },
+        {
+          "label": "Samimi",
+          "text": "Birlikte çıktığımız yolun en güzel durağında, sevincimizi sizinle paylaşmak istiyoruz."
+        },
+        {
+          "label": "Şiirsel",
+          "text": "Aynı gökyüzüne bakıp aynı hayali kurduk; şimdi o hayale birlikte adım atarken sizi de yanımızda bekliyoruz."
+        }
       ],
       "preset": {
-        "tur":"dugun","tema":"minimal","ust":"Nikâh Daveti","alici":"Sevgili Dostlarımız","baslik":"Birlikte, Daima",
-        "giris":"Hayatlarımızı birleştirdiğimiz bu özel günde yanımızda olmanızdan mutluluk duyacağız.",
-        "detaylar":"Nikâh: 18.00\nKokteyl: 19.00\nYer: Şehir Bahçesi\nYol Tarifi: Davet linkindeki konum",
-        "geriBaslik":"Birlikte daima demeye kalan süre","bitti":"Birlikte, daima. 🤍","saat":"18:00","gunSonra":50,
-        "imza":"Sevgiyle,","kurum":"Selin & Can","sartBaslik":"Küçük Bir Not","sart":"En güzel hediyemiz bu günü sizinle paylaşmak.",
-        "rsvpOlEt":"Katılıyorum","rsvpHaEt":"Katılamıyorum","rsvpOlCv":"Sizi aramızda görmek çok güzel olacak.","rsvpHaCv":"Sevginiz bizimle, teşekkür ederiz.","ac":["tarih","rsvp","sart"]
+        "tur": "dugun",
+        "tema": "minimal",
+        "ust": "Nikâh Daveti",
+        "alici": "Sevgili Dostlarımız",
+        "baslik": "Birlikte, Daima",
+        "giris": "Hayatlarımızı birleştirdiğimiz bu özel günde yanımızda olmanızdan mutluluk duyacağız.",
+        "detaylar": "Nikâh: 18.00\nKokteyl: 19.00\nYer: Şehir Bahçesi\nYol Tarifi: Davet linkindeki konum",
+        "geriBaslik": "Birlikte daima demeye kalan süre",
+        "bitti": "Birlikte, daima. 🤍",
+        "saat": "18:00",
+        "gunSonra": 50,
+        "imza": "Sevgiyle,",
+        "kurum": "Selin & Can",
+        "sartBaslik": "Küçük Bir Not",
+        "sart": "En güzel hediyemiz bu günü sizinle paylaşmak.",
+        "rsvpOlEt": "Katılıyorum",
+        "rsvpHaEt": "Katılamıyorum",
+        "rsvpOlCv": "Sizi aramızda görmek çok güzel olacak.",
+        "rsvpHaCv": "Sevginiz bizimle, teşekkür ederiz.",
+        "ac": [
+          "tarih",
+          "rsvp",
+          "sart",
+          "program",
+          "harita",
+          "hediye"
+        ],
+        "program": "17.30 | Nikah Töreni | Tören Bahçesi\n19.00 | Düğün | Balo Salonu",
+        "programBaslik": "Program",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Şehir Bahçesi",
+        "hediyeBaslik": "Hediye",
+        "hediyeMesaj": "Bizi mutlu etmek isterseniz, çeyizimize katkınız için:",
+        "hediyeIban": "TR00 0000 0000 0000 0000 0000 00",
+        "hediyeAd": "Selin & Can",
+        "hediyeNot": "Varlığınız en büyük hediye. 🤍"
       }
     },
     {
@@ -120,19 +231,67 @@
       "premium": true,
       "theme": "botanik",
       "description": "Orman yeşili, gül tonları ve kır düğünlerine yakışan doğal bir atmosfer.",
-      "blocks": ["geri-sayim", "program", "harita", "lcv", "hediye", "muhur"],
+      "blocks": [
+        "geri-sayim",
+        "program",
+        "harita",
+        "lcv",
+        "hediye",
+        "muhur"
+      ],
       "copyOptions": [
-        {"label":"Doğal","text":"Ağaçların gölgesinde, sevdiklerimizin huzurunda birbirimize söz verirken sizi de yanımızda görmek isteriz."},
-        {"label":"Romantik","text":"Aşkımız kök salıp büyürken, hayat boyu sürecek yolculuğumuzun ilk gününe davetlisiniz."},
-        {"label":"Şiirsel","text":"Bir dalın iki yaprağı gibi aynı rüzgârda savrulmaya söz verdiğimiz gün, mutluluğumuza ortak olun."}
+        {
+          "label": "Doğal",
+          "text": "Ağaçların gölgesinde, sevdiklerimizin huzurunda birbirimize söz verirken sizi de yanımızda görmek isteriz."
+        },
+        {
+          "label": "Romantik",
+          "text": "Aşkımız kök salıp büyürken, hayat boyu sürecek yolculuğumuzun ilk gününe davetlisiniz."
+        },
+        {
+          "label": "Şiirsel",
+          "text": "Bir dalın iki yaprağı gibi aynı rüzgârda savrulmaya söz verdiğimiz gün, mutluluğumuza ortak olun."
+        }
       ],
       "preset": {
-        "tur":"dugun","tema":"botanik","ust":"Kır Düğünü","alici":"Sevgili Misafirlerimiz","baslik":"Aşkımız Kök Salıyor",
-        "giris":"Ağaçların gölgesinde, sevdiklerimizin huzurunda birbirimize söz verirken sizi de yanımızda görmek isteriz.",
-        "detaylar":"Karşılama: 17.30\nTören: 18.30\nYer: Zeytinlik Bahçe\nKıyafet: Kır şıklığı",
-        "geriBaslik":"Kır düğününe kalan süre","bitti":"Aşkımız kök saldı 🌿","saat":"17:30","gunSonra":70,
-        "imza":"Sevgiyle,","kurum":"İdil & Ege","muhur":"AŞKIMIZ KÖK SALIYOR ·","sartBaslik":"Dileğimiz","sart":"Çiçek yerine bir fidan bağışı bizi mutlu eder.",
-        "rsvpOlEt":"Bahçedeyiz","rsvpHaEt":"Katılamıyoruz","rsvpOlCv":"Doğanın kalbinde buluşuyoruz. 🌿","rsvpHaCv":"Sevginizi yanımızda hissedeceğiz.","ac":["tarih","rsvp","muhur","sart"]
+        "tur": "dugun",
+        "tema": "botanik",
+        "ust": "Kır Düğünü",
+        "alici": "Sevgili Misafirlerimiz",
+        "baslik": "Aşkımız Kök Salıyor",
+        "giris": "Ağaçların gölgesinde, sevdiklerimizin huzurunda birbirimize söz verirken sizi de yanımızda görmek isteriz.",
+        "detaylar": "Karşılama: 17.30\nTören: 18.30\nYer: Zeytinlik Bahçe\nKıyafet: Kır şıklığı",
+        "geriBaslik": "Kır düğününe kalan süre",
+        "bitti": "Aşkımız kök saldı 🌿",
+        "saat": "17:30",
+        "gunSonra": 70,
+        "imza": "Sevgiyle,",
+        "kurum": "İdil & Ege",
+        "muhur": "AŞKIMIZ KÖK SALIYOR ·",
+        "sartBaslik": "Dileğimiz",
+        "sart": "Çiçek yerine bir fidan bağışı bizi mutlu eder.",
+        "rsvpOlEt": "Bahçedeyiz",
+        "rsvpHaEt": "Katılamıyoruz",
+        "rsvpOlCv": "Doğanın kalbinde buluşuyoruz. 🌿",
+        "rsvpHaCv": "Sevginizi yanımızda hissedeceğiz.",
+        "ac": [
+          "tarih",
+          "rsvp",
+          "muhur",
+          "sart",
+          "program",
+          "harita",
+          "hediye"
+        ],
+        "program": "17.30 | Nikah Töreni | Tören Bahçesi\n19.00 | Düğün | Balo Salonu",
+        "programBaslik": "Program",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Zeytinlik Bahçe",
+        "hediyeBaslik": "Hediye",
+        "hediyeMesaj": "Bizi mutlu etmek isterseniz, çeyizimize katkınız için:",
+        "hediyeIban": "TR00 0000 0000 0000 0000 0000 00",
+        "hediyeAd": "İdil & Ege",
+        "hediyeNot": "Varlığınız en büyük hediye. 🤍"
       }
     },
     {
@@ -146,18 +305,54 @@
       "premium": false,
       "theme": "modern",
       "description": "İnci zemin, güçlü lacivert ve şehir düğünleri için keskin bir modernizm.",
-      "blocks": ["geri-sayim", "program", "harita", "lcv"],
+      "blocks": [
+        "geri-sayim",
+        "program",
+        "harita",
+        "lcv"
+      ],
       "copyOptions": [
-        {"label":"Modern","text":"Yeni hayatımızın ilk gecesinde, şehrin ışıkları altında birlikte kutlamak için sizi bekliyoruz."},
-        {"label":"Kısa","text":"Evet diyoruz. Bu unutulmaz geceye davetlisiniz."},
-        {"label":"Resmî","text":"Evlilik törenimizde sizleri de aramızda görmekten onur ve mutluluk duyacağız."}
+        {
+          "label": "Modern",
+          "text": "Yeni hayatımızın ilk gecesinde, şehrin ışıkları altında birlikte kutlamak için sizi bekliyoruz."
+        },
+        {
+          "label": "Kısa",
+          "text": "Evet diyoruz. Bu unutulmaz geceye davetlisiniz."
+        },
+        {
+          "label": "Resmî",
+          "text": "Evlilik törenimizde sizleri de aramızda görmekten onur ve mutluluk duyacağız."
+        }
       ],
       "preset": {
-        "tur":"dugun","tema":"modern","ust":"Düğün · Şehir · Gece","alici":"Değerli Misafirimiz","baslik":"Yeni Bir Başlangıç",
-        "giris":"Yeni hayatımızın ilk gecesinde, şehrin ışıkları altında birlikte kutlamak için sizi bekliyoruz.",
-        "detaylar":"Kokteyl: 19.00\nTören: 20.00\nYer: Sky Hall İstanbul\nOtopark: Vale hizmeti mevcut",
-        "geriBaslik":"Yeni başlangıca kalan süre","bitti":"Yeni hayatımız başladı.","saat":"19:00","gunSonra":55,
-        "imza":"Saygı ve sevgiyle,","kurum":"Naz & Arda","rsvpOlEt":"Katılacağım","rsvpHaEt":"Katılamayacağım","rsvpOlCv":"Bu geceyi birlikte kutlayacağız.","rsvpHaCv":"Nazik yanıtınız için teşekkür ederiz.","ac":["tarih","rsvp"]
+        "tur": "dugun",
+        "tema": "modern",
+        "ust": "Düğün · Şehir · Gece",
+        "alici": "Değerli Misafirimiz",
+        "baslik": "Yeni Bir Başlangıç",
+        "giris": "Yeni hayatımızın ilk gecesinde, şehrin ışıkları altında birlikte kutlamak için sizi bekliyoruz.",
+        "detaylar": "Kokteyl: 19.00\nTören: 20.00\nYer: Sky Hall İstanbul\nOtopark: Vale hizmeti mevcut",
+        "geriBaslik": "Yeni başlangıca kalan süre",
+        "bitti": "Yeni hayatımız başladı.",
+        "saat": "19:00",
+        "gunSonra": 55,
+        "imza": "Saygı ve sevgiyle,",
+        "kurum": "Naz & Arda",
+        "rsvpOlEt": "Katılacağım",
+        "rsvpHaEt": "Katılamayacağım",
+        "rsvpOlCv": "Bu geceyi birlikte kutlayacağız.",
+        "rsvpHaCv": "Nazik yanıtınız için teşekkür ederiz.",
+        "ac": [
+          "tarih",
+          "rsvp",
+          "program",
+          "harita"
+        ],
+        "program": "17.30 | Nikah Töreni | Tören Bahçesi\n19.00 | Düğün | Balo Salonu",
+        "programBaslik": "Program",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Sky Hall İstanbul"
       }
     },
     {
@@ -171,19 +366,70 @@
       "premium": true,
       "theme": "bohem",
       "description": "Kum, terakota ve özgür ruhlu sahil veya kır kutlamaları için sıcak tonlar.",
-      "blocks": ["geri-sayim", "program", "harita", "lcv", "hediye", "ikram"],
+      "blocks": [
+        "geri-sayim",
+        "program",
+        "harita",
+        "lcv",
+        "hediye",
+        "ikram"
+      ],
       "copyOptions": [
-        {"label":"Bohem","text":"Ayaklarımız kumda, kalbimiz gökyüzünde; özgürce evet diyeceğimiz bu günü sizinle kutlamak istiyoruz."},
-        {"label":"Samimi","text":"Biraz gün batımı, bolca müzik ve en sevdiğimiz insanlar… Düğünümüzde sizi de bekliyoruz."},
-        {"label":"Şiirsel","text":"Rüzgârın denize anlattığı her hikâyede biz vardık; şimdi kendi hikâyemizin yeni sayfasını birlikte açıyoruz."}
+        {
+          "label": "Bohem",
+          "text": "Ayaklarımız kumda, kalbimiz gökyüzünde; özgürce evet diyeceğimiz bu günü sizinle kutlamak istiyoruz."
+        },
+        {
+          "label": "Samimi",
+          "text": "Biraz gün batımı, bolca müzik ve en sevdiğimiz insanlar… Düğünümüzde sizi de bekliyoruz."
+        },
+        {
+          "label": "Şiirsel",
+          "text": "Rüzgârın denize anlattığı her hikâyede biz vardık; şimdi kendi hikâyemizin yeni sayfasını birlikte açıyoruz."
+        }
       ],
       "preset": {
-        "tur":"dugun","tema":"bohem","ust":"Bohem Düğün","alici":"Sevgili İnsanlarımız","baslik":"Toprak, Rüzgâr ve Biz",
-        "giris":"Ayaklarımız kumda, kalbimiz gökyüzünde; özgürce evet diyeceğimiz bu günü sizinle kutlamak istiyoruz.",
-        "detaylar":"Gün Batımı: 18.45\nTören: 19.15\nYer: Kumsal 42 · Kaş\nKıyafet: Rahat ve doğal",
-        "geriBaslik":"Kumsalda buluşmaya kalan süre","bitti":"Rüzgâr şahidimiz oldu. 🧡","saat":"18:45","gunSonra":65,
-        "imza":"Aşkla,","kurum":"Maya & Atlas","ikramBaslik":"Uzun Sofra","ikramGrup":"Mevsimden","ikram":"Ege mezeleri\nTaş fırın lezzetleri\nMevsim meyveleri","ikramNot":"Paylaştıkça çoğalan bir sofra.",
-        "sartBaslik":"Küçük Bir Rica","sart":"Hediye yerine sokak hayvanları için mama bağışı yapabilirsiniz.","rsvpOlEt":"Dans pistindeyiz","rsvpHaEt":"Bu kez yokuz","rsvpOlCv":"Gün batımında görüşürüz!","rsvpHaCv":"Sevginizi uzaktan hissedeceğiz.","ac":["tarih","rsvp","ikram","sart"]
+        "tur": "dugun",
+        "tema": "bohem",
+        "ust": "Bohem Düğün",
+        "alici": "Sevgili İnsanlarımız",
+        "baslik": "Toprak, Rüzgâr ve Biz",
+        "giris": "Ayaklarımız kumda, kalbimiz gökyüzünde; özgürce evet diyeceğimiz bu günü sizinle kutlamak istiyoruz.",
+        "detaylar": "Gün Batımı: 18.45\nTören: 19.15\nYer: Kumsal 42 · Kaş\nKıyafet: Rahat ve doğal",
+        "geriBaslik": "Kumsalda buluşmaya kalan süre",
+        "bitti": "Rüzgâr şahidimiz oldu. 🧡",
+        "saat": "18:45",
+        "gunSonra": 65,
+        "imza": "Aşkla,",
+        "kurum": "Maya & Atlas",
+        "ikramBaslik": "Uzun Sofra",
+        "ikramGrup": "Mevsimden",
+        "ikram": "Ege mezeleri\nTaş fırın lezzetleri\nMevsim meyveleri",
+        "ikramNot": "Paylaştıkça çoğalan bir sofra.",
+        "sartBaslik": "Küçük Bir Rica",
+        "sart": "Hediye yerine sokak hayvanları için mama bağışı yapabilirsiniz.",
+        "rsvpOlEt": "Dans pistindeyiz",
+        "rsvpHaEt": "Bu kez yokuz",
+        "rsvpOlCv": "Gün batımında görüşürüz!",
+        "rsvpHaCv": "Sevginizi uzaktan hissedeceğiz.",
+        "ac": [
+          "tarih",
+          "rsvp",
+          "ikram",
+          "sart",
+          "program",
+          "harita",
+          "hediye"
+        ],
+        "program": "17.30 | Nikah Töreni | Tören Bahçesi\n19.00 | Düğün | Balo Salonu",
+        "programBaslik": "Program",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Kumsal 42 · Kaş",
+        "hediyeBaslik": "Hediye",
+        "hediyeMesaj": "Bizi mutlu etmek isterseniz, çeyizimize katkınız için:",
+        "hediyeIban": "TR00 0000 0000 0000 0000 0000 00",
+        "hediyeAd": "Maya & Atlas",
+        "hediyeNot": "Varlığınız en büyük hediye. 🤍"
       }
     },
     {
@@ -197,18 +443,57 @@
       "premium": true,
       "theme": "gece",
       "description": "Safir gece, ay ışığı ve yıldızların altında dramatik bir kutlama.",
-      "blocks": ["geri-sayim", "program", "harita", "lcv", "muhur"],
+      "blocks": [
+        "geri-sayim",
+        "program",
+        "harita",
+        "lcv",
+        "muhur"
+      ],
       "copyOptions": [
-        {"label":"Dramatik","text":"Yıldızların altında birbirimize sonsuzluk sözü verirken, gecemizi ışığınızla tamamlamanızı diliyoruz."},
-        {"label":"Şiirsel","text":"Gece göğe, ay denize kavuşurken biz de birbirimize kavuşacağız. Bu masalın şahidi olun."},
-        {"label":"Klasik","text":"Bu özel gecede evlilik törenimize katılarak mutluluğumuzu paylaşmanızı dileriz."}
+        {
+          "label": "Dramatik",
+          "text": "Yıldızların altında birbirimize sonsuzluk sözü verirken, gecemizi ışığınızla tamamlamanızı diliyoruz."
+        },
+        {
+          "label": "Şiirsel",
+          "text": "Gece göğe, ay denize kavuşurken biz de birbirimize kavuşacağız. Bu masalın şahidi olun."
+        },
+        {
+          "label": "Klasik",
+          "text": "Bu özel gecede evlilik törenimize katılarak mutluluğumuzu paylaşmanızı dileriz."
+        }
       ],
       "preset": {
-        "tur":"dugun","tema":"gece","ust":"Gece Düğünü","alici":"Sevgili Misafirlerimiz","baslik":"Yıldızların Altında",
-        "giris":"Yıldızların altında birbirimize sonsuzluk sözü verirken, gecemizi ışığınızla tamamlamanızı diliyoruz.",
-        "detaylar":"Kapı Açılışı: 20.00\nTören: 21.00\nYer: Ay Işığı Terası\nKıyafet: Siyah kravat",
-        "geriBaslik":"Yıldızlar doğana kadar","bitti":"Gece bizimle ışıldıyor ✦","saat":"20:00","gunSonra":80,
-        "imza":"Sonsuzlukla,","kurum":"Lara & Baran","muhur":"YILDIZLARIN ALTINDA ·","rsvpOlEt":"Bu gece oradayız","rsvpHaEt":"Katılamıyoruz","rsvpOlCv":"Gecemiz sizinle ışıldayacak.","rsvpHaCv":"Kalbiniz bizimle, teşekkür ederiz.","ac":["tarih","rsvp","muhur"]
+        "tur": "dugun",
+        "tema": "gece",
+        "ust": "Gece Düğünü",
+        "alici": "Sevgili Misafirlerimiz",
+        "baslik": "Yıldızların Altında",
+        "giris": "Yıldızların altında birbirimize sonsuzluk sözü verirken, gecemizi ışığınızla tamamlamanızı diliyoruz.",
+        "detaylar": "Kapı Açılışı: 20.00\nTören: 21.00\nYer: Ay Işığı Terası\nKıyafet: Siyah kravat",
+        "geriBaslik": "Yıldızlar doğana kadar",
+        "bitti": "Gece bizimle ışıldıyor ✦",
+        "saat": "20:00",
+        "gunSonra": 80,
+        "imza": "Sonsuzlukla,",
+        "kurum": "Lara & Baran",
+        "muhur": "YILDIZLARIN ALTINDA ·",
+        "rsvpOlEt": "Bu gece oradayız",
+        "rsvpHaEt": "Katılamıyoruz",
+        "rsvpOlCv": "Gecemiz sizinle ışıldayacak.",
+        "rsvpHaCv": "Kalbiniz bizimle, teşekkür ederiz.",
+        "ac": [
+          "tarih",
+          "rsvp",
+          "muhur",
+          "program",
+          "harita"
+        ],
+        "program": "17.30 | Nikah Töreni | Tören Bahçesi\n19.00 | Düğün | Balo Salonu",
+        "programBaslik": "Program",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Ay Işığı Terası"
       }
     },
     {
@@ -222,19 +507,73 @@
       "premium": true,
       "theme": "luks",
       "description": "Oniks, şampanya ve bordo detaylarla gala estetiğinde seçkin bir davetiye.",
-      "blocks": ["geri-sayim", "program", "harita", "lcv", "hediye", "muhur", "ikram"],
+      "blocks": [
+        "geri-sayim",
+        "program",
+        "harita",
+        "lcv",
+        "hediye",
+        "muhur",
+        "ikram"
+      ],
       "copyOptions": [
-        {"label":"Seçkin","text":"Hayatımızın en özel gecesinde, mutluluğumuzu teşriflerinizle onurlandırmanızı dileriz."},
-        {"label":"Resmî","text":"Evlilik töreni ve ardından düzenlenecek gala yemeğinde sizleri aramızda görmekten onur duyacağız."},
-        {"label":"Zamansız","text":"İki hayat, tek bir gelecek… Sonsuzluğa adım attığımız bu seçkin geceye davetlisiniz."}
+        {
+          "label": "Seçkin",
+          "text": "Hayatımızın en özel gecesinde, mutluluğumuzu teşriflerinizle onurlandırmanızı dileriz."
+        },
+        {
+          "label": "Resmî",
+          "text": "Evlilik töreni ve ardından düzenlenecek gala yemeğinde sizleri aramızda görmekten onur duyacağız."
+        },
+        {
+          "label": "Zamansız",
+          "text": "İki hayat, tek bir gelecek… Sonsuzluğa adım attığımız bu seçkin geceye davetlisiniz."
+        }
       ],
       "preset": {
-        "tur":"dugun","tema":"luks","ust":"Wedding Gala","alici":"Sayın Misafirimiz","baslik":"Maison d'Or",
-        "giris":"Hayatımızın en özel gecesinde, mutluluğumuzu teşriflerinizle onurlandırmanızı dileriz.",
-        "detaylar":"Karşılama: 19.30\nTören: 20.30\nGala: 21.00\nYer: The Grand Ballroom\nKıyafet: Black tie",
-        "geriBaslik":"Gala gecesine kalan süre","bitti":"Sonsuzluğa hoş geldiniz.","saat":"19:30","gunSonra":90,
-        "imza":"Saygı ve sevgiyle,","kurum":"Alara & Kerem","muhur":"MAISON D'OR · FOREVER ·","ikramBaslik":"Gala Menüsü","ikramGrup":"Şefin Seçkisi","ikram":"Karşılama kokteyli\nÜç servis gala menüsü\nGece yarısı ikramı","ikramNot":"Özel beslenme tercihinizi LCV notuna yazabilirsiniz.",
-        "sartBaslik":"Hediye Notu","sart":"Arzu eden misafirlerimiz eğitim fonumuza katkıda bulunabilir.","rsvpOlEt":"Teşrif edeceğim","rsvpHaEt":"Katılamayacağım","rsvpOlCv":"Teşrifiniz bizi onurlandıracak.","rsvpHaCv":"Nazik yanıtınız için teşekkür ederiz.","ac":["tarih","rsvp","muhur","ikram","sart"]
+        "tur": "dugun",
+        "tema": "luks",
+        "ust": "Wedding Gala",
+        "alici": "Sayın Misafirimiz",
+        "baslik": "Maison d'Or",
+        "giris": "Hayatımızın en özel gecesinde, mutluluğumuzu teşriflerinizle onurlandırmanızı dileriz.",
+        "detaylar": "Karşılama: 19.30\nTören: 20.30\nGala: 21.00\nYer: The Grand Ballroom\nKıyafet: Black tie",
+        "geriBaslik": "Gala gecesine kalan süre",
+        "bitti": "Sonsuzluğa hoş geldiniz.",
+        "saat": "19:30",
+        "gunSonra": 90,
+        "imza": "Saygı ve sevgiyle,",
+        "kurum": "Alara & Kerem",
+        "muhur": "MAISON D'OR · FOREVER ·",
+        "ikramBaslik": "Gala Menüsü",
+        "ikramGrup": "Şefin Seçkisi",
+        "ikram": "Karşılama kokteyli\nÜç servis gala menüsü\nGece yarısı ikramı",
+        "ikramNot": "Özel beslenme tercihinizi LCV notuna yazabilirsiniz.",
+        "sartBaslik": "Hediye Notu",
+        "sart": "Arzu eden misafirlerimiz eğitim fonumuza katkıda bulunabilir.",
+        "rsvpOlEt": "Teşrif edeceğim",
+        "rsvpHaEt": "Katılamayacağım",
+        "rsvpOlCv": "Teşrifiniz bizi onurlandıracak.",
+        "rsvpHaCv": "Nazik yanıtınız için teşekkür ederiz.",
+        "ac": [
+          "tarih",
+          "rsvp",
+          "muhur",
+          "ikram",
+          "sart",
+          "program",
+          "harita",
+          "hediye"
+        ],
+        "program": "17.30 | Nikah Töreni | Tören Bahçesi\n19.00 | Düğün | Balo Salonu",
+        "programBaslik": "Program",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "The Grand Ballroom",
+        "hediyeBaslik": "Hediye",
+        "hediyeMesaj": "Bizi mutlu etmek isterseniz, çeyizimize katkınız için:",
+        "hediyeIban": "TR00 0000 0000 0000 0000 0000 00",
+        "hediyeAd": "Alara & Kerem",
+        "hediyeNot": "Varlığınız en büyük hediye. 🤍"
       }
     },
     {
@@ -248,13 +587,33 @@
       "premium": false,
       "theme": "safak",
       "description": "Söz ve nişan törenleri için sıcak, romantik ve sade.",
-      "blocks": ["geri-sayim", "detaylar", "lcv"],
+      "blocks": [
+        "geri-sayim",
+        "detaylar",
+        "lcv"
+      ],
       "preset": {
-        "tur": "nisan", "tema": "safak", "ust": "Nişan Davetiyesi", "alici": "Sevgili Dostlarımız", "baslik": "Sözümüzü Nişanlıyoruz",
+        "tur": "nisan",
+        "tema": "safak",
+        "ust": "Nişan Davetiyesi",
+        "alici": "Sevgili Dostlarımız",
+        "baslik": "Sözümüzü Nişanlıyoruz",
         "giris": "Hayatımızı birleştirme yolundaki bu ilk adımı atarken, sevincimize ortak olmanızı dileriz. Teşrifleriniz bizi onurlandıracaktır.",
-        "detaylar": "Yer: Bahçe Restoran\nKıyafet: Şık", "geriBaslik": "Nişana kalan süre", "bitti": "Söz verildi 💍", "saat": "19:30", "gunSonra": 30,
-        "imza": "Sevgiyle,", "kurum": "Elif & Kaan", "rsvpOlEt": "Geliyorum", "rsvpHaEt": "Gelemiyorum",
-        "rsvpOlCv": "Harika! Bu güzel günde sizi de görmek isteriz. 🎉", "rsvpHaCv": "Çok yazık — yine de teşekkürler. 🤍", "ac": ["tarih", "rsvp"]
+        "detaylar": "Yer: Bahçe Restoran\nKıyafet: Şık",
+        "geriBaslik": "Nişana kalan süre",
+        "bitti": "Söz verildi 💍",
+        "saat": "19:30",
+        "gunSonra": 30,
+        "imza": "Sevgiyle,",
+        "kurum": "Elif & Kaan",
+        "rsvpOlEt": "Geliyorum",
+        "rsvpHaEt": "Gelemiyorum",
+        "rsvpOlCv": "Harika! Bu güzel günde sizi de görmek isteriz. 🎉",
+        "rsvpHaCv": "Çok yazık — yine de teşekkürler. 🤍",
+        "ac": [
+          "tarih",
+          "rsvp"
+        ]
       }
     },
     {
@@ -268,12 +627,30 @@
       "premium": true,
       "theme": "safak",
       "description": "Kına geleneğini modern altın dokunuşlarla buluşturan gece teması.",
-      "blocks": ["geri-sayim", "detaylar", "muhur"],
+      "blocks": [
+        "geri-sayim",
+        "detaylar",
+        "muhur"
+      ],
       "preset": {
-        "tur": "kina", "tema": "safak", "ust": "Kına Gecesi", "alici": "Sevgili Misafirler", "baslik": "Kınamızı Yakıyoruz",
+        "tur": "kina",
+        "tema": "safak",
+        "ust": "Kına Gecesi",
+        "alici": "Sevgili Misafirler",
+        "baslik": "Kınamızı Yakıyoruz",
         "giris": "Telli duvaklı, kınalı ellerle geleneğimizi yaşatacağımız bu özel gecede, kızımızın kınasında sizleri de aramızda görmek en büyük dileğimiz.",
-        "detaylar": "Yer: Baba Ocağı\nKıyafet: Geleneksel / bindallı", "geriBaslik": "Kına gecesine kalan süre", "bitti": "Kınamız kutlu olsun 🌙", "saat": "20:00", "gunSonra": 44,
-        "imza": "Sevgiyle,", "kurum": "… Ailesi", "muhur": "KINAMIZ KUTLU OLSUN ·", "ac": ["tarih", "muhur"]
+        "detaylar": "Yer: Baba Ocağı\nKıyafet: Geleneksel / bindallı",
+        "geriBaslik": "Kına gecesine kalan süre",
+        "bitti": "Kınamız kutlu olsun 🌙",
+        "saat": "20:00",
+        "gunSonra": 44,
+        "imza": "Sevgiyle,",
+        "kurum": "… Ailesi",
+        "muhur": "KINAMIZ KUTLU OLSUN ·",
+        "ac": [
+          "tarih",
+          "muhur"
+        ]
       }
     },
     {
@@ -287,91 +664,396 @@
       "premium": false,
       "theme": "safak",
       "description": "Mevlüt ve sünnet programını tek akışta anlatan zarif tasarım.",
-      "blocks": ["geri-sayim", "mevlut", "toren", "program", "harita", "lcv", "muhur"],
+      "blocks": [
+        "geri-sayim",
+        "mevlut",
+        "toren",
+        "program",
+        "harita",
+        "lcv",
+        "muhur"
+      ],
       "copyOptions": [
-        {"label":"Klasik","text":"Oğlumuzun sünnet sevincini ve okunacak mevlid-i şerifi sizlerle paylaşmak isteriz. Teşrifleriniz bizleri onurlandıracaktır."},
-        {"label":"Dualı","text":"Allah'ın emrini yerine getirmenin huzurunu yaşadığımız bu mübarek günde, dualarınızla yanımızda olmanızı dileriz."},
-        {"label":"Samimi","text":"Küçük yiğidimizin büyük gününde neşemizi paylaşmak, birlikte gülmek ve güzel anılar biriktirmek için sizi bekliyoruz."}
+        {
+          "label": "Klasik",
+          "text": "Oğlumuzun sünnet sevincini ve okunacak mevlid-i şerifi sizlerle paylaşmak isteriz. Teşrifleriniz bizleri onurlandıracaktır."
+        },
+        {
+          "label": "Dualı",
+          "text": "Allah'ın emrini yerine getirmenin huzurunu yaşadığımız bu mübarek günde, dualarınızla yanımızda olmanızı dileriz."
+        },
+        {
+          "label": "Samimi",
+          "text": "Küçük yiğidimizin büyük gününde neşemizi paylaşmak, birlikte gülmek ve güzel anılar biriktirmek için sizi bekliyoruz."
+        }
       ],
       "preset": {
-        "tur": "sunnet", "tema": "safak", "ust": "Sünnet Merasimi & Mevlüt", "alici": "Sevgili Misafirlerimiz", "baslik": "Yiğidimiz Erkekliğe Adım Atıyor",
+        "tur": "sunnet",
+        "tema": "safak",
+        "ust": "Sünnet Merasimi & Mevlüt",
+        "alici": "Sevgili Misafirlerimiz",
+        "baslik": "Yiğidimiz Erkekliğe Adım Atıyor",
         "giris": "Oğlumuzun sünnet sevincini ve okunacak mevlid-i şerifi sizlerle paylaşmak isteriz. Teşrifleriniz bizleri onurlandıracak, bu günü daha da anlamlı kılacaktır.",
-        "detaylar": "Mevlüt: 14.00\nTören: 16.00\nYer: Ziyafet Salonu", "geriBaslik": "Merasime kalan süre", "bitti": "Maşallah — hoş geldiniz! 🌟", "saat": "14:00", "gunSonra": 21,
-        "imza": "Sevgiyle,", "kurum": "Anne & Baba", "muhur": "MAŞALLAH · SÜNNET MÜBAREK OLSUN ·", "rsvpOlEt": "Katılıyorum", "rsvpHaEt": "Katılamıyorum",
-        "rsvpOlCv": "Ne güzel! Yiğidimizin gününde sizi de bekleriz. 🌟", "rsvpHaCv": "Teşekkür ederiz, dualarınız yeter. 🤍", "ac": ["tarih", "rsvp", "muhur"]
+        "detaylar": "Mevlüt: 14.00\nTören: 16.00\nYer: Ziyafet Salonu",
+        "geriBaslik": "Merasime kalan süre",
+        "bitti": "Maşallah — hoş geldiniz! 🌟",
+        "saat": "14:00",
+        "gunSonra": 21,
+        "imza": "Sevgiyle,",
+        "kurum": "Anne & Baba",
+        "muhur": "MAŞALLAH · SÜNNET MÜBAREK OLSUN ·",
+        "rsvpOlEt": "Katılıyorum",
+        "rsvpHaEt": "Katılamıyorum",
+        "rsvpOlCv": "Ne güzel! Yiğidimizin gününde sizi de bekleriz. 🌟",
+        "rsvpHaCv": "Teşekkür ederiz, dualarınız yeter. 🤍",
+        "ac": [
+          "tarih",
+          "rsvp",
+          "muhur",
+          "program",
+          "harita"
+        ],
+        "program": "14.00 | Mevlid-i Şerif | Ziyafet Salonu\n16.00 | Sünnet Töreni | Ziyafet Salonu",
+        "programBaslik": "Program",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Ziyafet Salonu"
       }
     },
     {
-      "id":"sunnet-bulut","name":"Bulutlarda Şenlik","type":"sunnet","typeLabel":"Sünnet & Mevlüt","style":"Çocuk","color":"mavi","colorLabel":"Mavi","premium":false,"theme":"cocuk",
-      "description":"Bulutlar, güneş ve neşeli detaylarla küçük çocuklara özel sevimli tasarım.",
-      "blocks":["geri-sayim","mevlut","toren","program","harita","lcv","ikram"],
-      "copyOptions":[
-        {"label":"Neşeli","text":"Küçük kahramanımızın büyük macerası başlıyor! Oyun, müzik ve sürprizlerle dolu sünnet şenliğimize bekliyoruz."},
-        {"label":"Çocukça","text":"Bulutlar hazır, balonlar şişti, pastamız da yolda! Yiğidimizin sünnet partisinde sen de bizimle ol."},
-        {"label":"Aile sıcaklığı","text":"Oğlumuzun bu güzel gününü ailemiz ve sevdiklerimizle kutlamak, sevincimizi birlikte büyütmek istiyoruz."}
+      "id": "sunnet-bulut",
+      "name": "Bulutlarda Şenlik",
+      "type": "sunnet",
+      "typeLabel": "Sünnet & Mevlüt",
+      "style": "Çocuk",
+      "color": "mavi",
+      "colorLabel": "Mavi",
+      "premium": false,
+      "theme": "cocuk",
+      "description": "Bulutlar, güneş ve neşeli detaylarla küçük çocuklara özel sevimli tasarım.",
+      "blocks": [
+        "geri-sayim",
+        "mevlut",
+        "toren",
+        "program",
+        "harita",
+        "lcv",
+        "ikram"
       ],
-      "preset":{"tur":"sunnet","tema":"cocuk","ust":"Sünnet Şenliği","alici":"Sevgili Ailemiz ve Dostlarımız","baslik":"Küçük Kahramanımızın Büyük Günü",
-        "giris":"Küçük kahramanımızın büyük macerası başlıyor! Oyun, müzik ve sürprizlerle dolu sünnet şenliğimize bekliyoruz.",
-        "detaylar":"Mevlüt: 13.00\nÇocuk Eğlencesi: 15.00\nTören: 16.30\nYer: Mavi Bahçe Davet Alanı\nYol Tarifi: Davet linkindeki konum","geriBaslik":"Şenliğe kalan süre","bitti":"Şenlik başladı! ☀️","saat":"13:00","gunSonra":24,
-        "imza":"Sevgiyle,","kurum":"Anne & Baba","ikramBaslik":"Çocuk Sofrası","ikramGrup":"Minik Misafirlere","ikram":"Mini pizzalar\nRenkli kurabiyeler\nLimonata ve pasta","ikramNot":"Alerji bilgisini LCV notuna yazabilirsiniz.",
-        "rsvpOlEt":"Şenlikteyiz","rsvpHaEt":"Katılamıyoruz","rsvpOlCv":"Balonları sizin için de şişiriyoruz! 🎈","rsvpHaCv":"Sevginiz bize yeter, teşekkürler.","ac":["tarih","rsvp","ikram"]}
+      "copyOptions": [
+        {
+          "label": "Neşeli",
+          "text": "Küçük kahramanımızın büyük macerası başlıyor! Oyun, müzik ve sürprizlerle dolu sünnet şenliğimize bekliyoruz."
+        },
+        {
+          "label": "Çocukça",
+          "text": "Bulutlar hazır, balonlar şişti, pastamız da yolda! Yiğidimizin sünnet partisinde sen de bizimle ol."
+        },
+        {
+          "label": "Aile sıcaklığı",
+          "text": "Oğlumuzun bu güzel gününü ailemiz ve sevdiklerimizle kutlamak, sevincimizi birlikte büyütmek istiyoruz."
+        }
+      ],
+      "preset": {
+        "tur": "sunnet",
+        "tema": "cocuk",
+        "ust": "Sünnet Şenliği",
+        "alici": "Sevgili Ailemiz ve Dostlarımız",
+        "baslik": "Küçük Kahramanımızın Büyük Günü",
+        "giris": "Küçük kahramanımızın büyük macerası başlıyor! Oyun, müzik ve sürprizlerle dolu sünnet şenliğimize bekliyoruz.",
+        "detaylar": "Mevlüt: 13.00\nÇocuk Eğlencesi: 15.00\nTören: 16.30\nYer: Mavi Bahçe Davet Alanı\nYol Tarifi: Davet linkindeki konum",
+        "geriBaslik": "Şenliğe kalan süre",
+        "bitti": "Şenlik başladı! ☀️",
+        "saat": "13:00",
+        "gunSonra": 24,
+        "imza": "Sevgiyle,",
+        "kurum": "Anne & Baba",
+        "ikramBaslik": "Çocuk Sofrası",
+        "ikramGrup": "Minik Misafirlere",
+        "ikram": "Mini pizzalar\nRenkli kurabiyeler\nLimonata ve pasta",
+        "ikramNot": "Alerji bilgisini LCV notuna yazabilirsiniz.",
+        "rsvpOlEt": "Şenlikteyiz",
+        "rsvpHaEt": "Katılamıyoruz",
+        "rsvpOlCv": "Balonları sizin için de şişiriyoruz! 🎈",
+        "rsvpHaCv": "Sevginiz bize yeter, teşekkürler.",
+        "ac": [
+          "tarih",
+          "rsvp",
+          "ikram",
+          "program",
+          "harita"
+        ],
+        "program": "14.00 | Mevlid-i Şerif | Ziyafet Salonu\n16.00 | Sünnet Töreni | Ziyafet Salonu",
+        "programBaslik": "Program",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Mavi Bahçe Davet Alanı"
+      }
     },
     {
-      "id":"sunnet-prens","name":"Küçük Prens","type":"sunnet","typeLabel":"Sünnet & Mevlüt","style":"Prens","color":"siyah","colorLabel":"Şampanya","premium":true,"theme":"luks",
-      "description":"Taç, at ve şampanya tonlarıyla masalsı bir prens merasimi.",
-      "blocks":["geri-sayim","mevlut","toren","program","harita","lcv","muhur","ikram"],
-      "copyOptions":[
-        {"label":"Masalsı","text":"Küçük prensimiz erkekliğe ilk adımını atarken, bu masalsı günü teşriflerinizle taçlandırmanızı diliyoruz."},
-        {"label":"Klasik","text":"Oğlumuzun sünnet merasiminde sizleri de aramızda görmekten onur ve mutluluk duyacağız."},
-        {"label":"Görkemli","text":"Atlar hazır, sancaklar çekildi; küçük prensimizin görkemli sünnet merasimine davetlisiniz."}
+      "id": "sunnet-prens",
+      "name": "Küçük Prens",
+      "type": "sunnet",
+      "typeLabel": "Sünnet & Mevlüt",
+      "style": "Prens",
+      "color": "siyah",
+      "colorLabel": "Şampanya",
+      "premium": true,
+      "theme": "luks",
+      "description": "Taç, at ve şampanya tonlarıyla masalsı bir prens merasimi.",
+      "blocks": [
+        "geri-sayim",
+        "mevlut",
+        "toren",
+        "program",
+        "harita",
+        "lcv",
+        "muhur",
+        "ikram"
       ],
-      "preset":{"tur":"sunnet","tema":"luks","ust":"Sünnet Merasimi","alici":"Sayın Misafirimiz","baslik":"Küçük Prensimiz Tahtında",
-        "giris":"Küçük prensimiz erkekliğe ilk adımını atarken, bu masalsı günü teşriflerinizle taçlandırmanızı diliyoruz.",
-        "detaylar":"Mevlüt: 14.00\nAtlı Karşılama: 16.00\nMerasim: 17.00\nYer: Saray Balo Salonu\nKıyafet: Şık","geriBaslik":"Prensimizin gününe kalan süre","bitti":"Prensimiz tahtında 👑","saat":"14:00","gunSonra":40,
-        "imza":"Saygı ve sevgiyle,","kurum":"… Ailesi","muhur":"KÜÇÜK PRENS · MAŞALLAH ·","ikramBaslik":"Saray Sofrası","ikramGrup":"Ziyafet","ikram":"Karşılama ikramları\nAna yemek\nSünnet pastası","ikramNot":"Çocuk menüsü mevcuttur.",
-        "rsvpOlEt":"Teşrif edeceğim","rsvpHaEt":"Katılamayacağım","rsvpOlCv":"Teşrifiniz bizi onurlandıracak.","rsvpHaCv":"Nazik yanıtınız için teşekkür ederiz.","ac":["tarih","rsvp","muhur","ikram"]}
+      "copyOptions": [
+        {
+          "label": "Masalsı",
+          "text": "Küçük prensimiz erkekliğe ilk adımını atarken, bu masalsı günü teşriflerinizle taçlandırmanızı diliyoruz."
+        },
+        {
+          "label": "Klasik",
+          "text": "Oğlumuzun sünnet merasiminde sizleri de aramızda görmekten onur ve mutluluk duyacağız."
+        },
+        {
+          "label": "Görkemli",
+          "text": "Atlar hazır, sancaklar çekildi; küçük prensimizin görkemli sünnet merasimine davetlisiniz."
+        }
+      ],
+      "preset": {
+        "tur": "sunnet",
+        "tema": "luks",
+        "ust": "Sünnet Merasimi",
+        "alici": "Sayın Misafirimiz",
+        "baslik": "Küçük Prensimiz Tahtında",
+        "giris": "Küçük prensimiz erkekliğe ilk adımını atarken, bu masalsı günü teşriflerinizle taçlandırmanızı diliyoruz.",
+        "detaylar": "Mevlüt: 14.00\nAtlı Karşılama: 16.00\nMerasim: 17.00\nYer: Saray Balo Salonu\nKıyafet: Şık",
+        "geriBaslik": "Prensimizin gününe kalan süre",
+        "bitti": "Prensimiz tahtında 👑",
+        "saat": "14:00",
+        "gunSonra": 40,
+        "imza": "Saygı ve sevgiyle,",
+        "kurum": "… Ailesi",
+        "muhur": "KÜÇÜK PRENS · MAŞALLAH ·",
+        "ikramBaslik": "Saray Sofrası",
+        "ikramGrup": "Ziyafet",
+        "ikram": "Karşılama ikramları\nAna yemek\nSünnet pastası",
+        "ikramNot": "Çocuk menüsü mevcuttur.",
+        "rsvpOlEt": "Teşrif edeceğim",
+        "rsvpHaEt": "Katılamayacağım",
+        "rsvpOlCv": "Teşrifiniz bizi onurlandıracak.",
+        "rsvpHaCv": "Nazik yanıtınız için teşekkür ederiz.",
+        "ac": [
+          "tarih",
+          "rsvp",
+          "muhur",
+          "ikram",
+          "program",
+          "harita"
+        ],
+        "program": "14.00 | Mevlid-i Şerif | Ziyafet Salonu\n16.00 | Sünnet Töreni | Ziyafet Salonu",
+        "programBaslik": "Program",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Saray Balo Salonu"
+      }
     },
     {
-      "id":"sunnet-osmanli","name":"Şehzade Alayı","type":"sunnet","typeLabel":"Sünnet & Mevlüt","style":"Osmanlı","color":"toprak","colorLabel":"Bordo & Altın","premium":true,"theme":"bohem",
-      "description":"Sancak, kılıç ve geleneksel alay ruhunu sıcak Osmanlı tonlarında yorumlar.",
-      "blocks":["geri-sayim","mevlut","toren","program","harita","lcv","muhur"],
-      "copyOptions":[
-        {"label":"Geleneksel","text":"Şehzademizin sünnet düğününde kurulacak soframıza ve yapılacak duaya teşriflerinizi bekleriz."},
-        {"label":"Alaylı","text":"Sancaklar açılsın, davullar vurulsun! Yiğidimizin sünnet alayında sevincimize ortak olun."},
-        {"label":"Dualı","text":"Rabbimizin emrini yerine getirdiğimiz bu kutlu günde, oğlumuzu dualarınızla yalnız bırakmamanızı dileriz."}
+      "id": "sunnet-osmanli",
+      "name": "Şehzade Alayı",
+      "type": "sunnet",
+      "typeLabel": "Sünnet & Mevlüt",
+      "style": "Osmanlı",
+      "color": "toprak",
+      "colorLabel": "Bordo & Altın",
+      "premium": true,
+      "theme": "bohem",
+      "description": "Sancak, kılıç ve geleneksel alay ruhunu sıcak Osmanlı tonlarında yorumlar.",
+      "blocks": [
+        "geri-sayim",
+        "mevlut",
+        "toren",
+        "program",
+        "harita",
+        "lcv",
+        "muhur"
       ],
-      "preset":{"tur":"sunnet","tema":"bohem","ust":"Sünnet Düğünü","alici":"Aziz Misafirlerimiz","baslik":"Şehzademizin Sünnet Alayı",
-        "giris":"Şehzademizin sünnet düğününde kurulacak soframıza ve yapılacak duaya teşriflerinizi bekleriz.",
-        "detaylar":"Mevlid-i Şerif: 13.30\nSünnet Alayı: 15.30\nZiyafet: 17.00\nYer: Tarihi Konak","geriBaslik":"Alaya kalan süre","bitti":"Alayımız başladı! ⚔️","saat":"13:30","gunSonra":35,
-        "imza":"Hürmetlerimizle,","kurum":"… Hanesi","muhur":"ŞEHZADEMİZE MAŞALLAH ·","rsvpOlEt":"Alaydayız","rsvpHaEt":"Katılamıyoruz","rsvpOlCv":"Soframızda yeriniz hazır.","rsvpHaCv":"Dualarınız bizimle olsun.","ac":["tarih","rsvp","muhur"]}
+      "copyOptions": [
+        {
+          "label": "Geleneksel",
+          "text": "Şehzademizin sünnet düğününde kurulacak soframıza ve yapılacak duaya teşriflerinizi bekleriz."
+        },
+        {
+          "label": "Alaylı",
+          "text": "Sancaklar açılsın, davullar vurulsun! Yiğidimizin sünnet alayında sevincimize ortak olun."
+        },
+        {
+          "label": "Dualı",
+          "text": "Rabbimizin emrini yerine getirdiğimiz bu kutlu günde, oğlumuzu dualarınızla yalnız bırakmamanızı dileriz."
+        }
+      ],
+      "preset": {
+        "tur": "sunnet",
+        "tema": "bohem",
+        "ust": "Sünnet Düğünü",
+        "alici": "Aziz Misafirlerimiz",
+        "baslik": "Şehzademizin Sünnet Alayı",
+        "giris": "Şehzademizin sünnet düğününde kurulacak soframıza ve yapılacak duaya teşriflerinizi bekleriz.",
+        "detaylar": "Mevlid-i Şerif: 13.30\nSünnet Alayı: 15.30\nZiyafet: 17.00\nYer: Tarihi Konak",
+        "geriBaslik": "Alaya kalan süre",
+        "bitti": "Alayımız başladı! ⚔️",
+        "saat": "13:30",
+        "gunSonra": 35,
+        "imza": "Hürmetlerimizle,",
+        "kurum": "… Hanesi",
+        "muhur": "ŞEHZADEMİZE MAŞALLAH ·",
+        "rsvpOlEt": "Alaydayız",
+        "rsvpHaEt": "Katılamıyoruz",
+        "rsvpOlCv": "Soframızda yeriniz hazır.",
+        "rsvpHaCv": "Dualarınız bizimle olsun.",
+        "ac": [
+          "tarih",
+          "rsvp",
+          "muhur",
+          "program",
+          "harita"
+        ],
+        "program": "14.00 | Mevlid-i Şerif | Ziyafet Salonu\n16.00 | Sünnet Töreni | Ziyafet Salonu",
+        "programBaslik": "Program",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Tarihi Konak"
+      }
     },
     {
-      "id":"sunnet-modern","name":"İlk Cesaret","type":"sunnet","typeLabel":"Sünnet & Mevlüt","style":"Modern","color":"lacivert","colorLabel":"Lacivert","premium":false,"theme":"modern",
-      "description":"Şehirli aileler için sade tipografi, net program ve modern lacivert palet.",
-      "blocks":["geri-sayim","mevlut","toren","program","harita","lcv"],
-      "copyOptions":[
-        {"label":"Modern","text":"Oğlumuzun hayatındaki bu önemli dönüm noktasını sevdiklerimizle birlikte kutlamak için sizi bekliyoruz."},
-        {"label":"Kısa","text":"Küçük bir adım, büyük bir cesaret. Sünnet kutlamamıza davetlisiniz."},
-        {"label":"Resmî","text":"Oğlumuzun sünnet merasimine katılımınızdan onur ve mutluluk duyacağız."}
+      "id": "sunnet-modern",
+      "name": "İlk Cesaret",
+      "type": "sunnet",
+      "typeLabel": "Sünnet & Mevlüt",
+      "style": "Modern",
+      "color": "lacivert",
+      "colorLabel": "Lacivert",
+      "premium": false,
+      "theme": "modern",
+      "description": "Şehirli aileler için sade tipografi, net program ve modern lacivert palet.",
+      "blocks": [
+        "geri-sayim",
+        "mevlut",
+        "toren",
+        "program",
+        "harita",
+        "lcv"
       ],
-      "preset":{"tur":"sunnet","tema":"modern","ust":"Sünnet Kutlaması","alici":"Değerli Misafirimiz","baslik":"İlk Cesaret",
-        "giris":"Oğlumuzun hayatındaki bu önemli dönüm noktasını sevdiklerimizle birlikte kutlamak için sizi bekliyoruz.",
-        "detaylar":"Mevlüt: 14.00\nKarşılama: 15.30\nKutlama: 16.00\nYer: Urban Hall\nOtopark: Mevcut","geriBaslik":"Kutlamaya kalan süre","bitti":"Cesur gün başladı.","saat":"14:00","gunSonra":28,
-        "imza":"Sevgiyle,","kurum":"Anne & Baba","rsvpOlEt":"Katılacağım","rsvpHaEt":"Katılamayacağım","rsvpOlCv":"Sizi aramızda görmek çok güzel olacak.","rsvpHaCv":"Yanıtınız için teşekkür ederiz.","ac":["tarih","rsvp"]}
+      "copyOptions": [
+        {
+          "label": "Modern",
+          "text": "Oğlumuzun hayatındaki bu önemli dönüm noktasını sevdiklerimizle birlikte kutlamak için sizi bekliyoruz."
+        },
+        {
+          "label": "Kısa",
+          "text": "Küçük bir adım, büyük bir cesaret. Sünnet kutlamamıza davetlisiniz."
+        },
+        {
+          "label": "Resmî",
+          "text": "Oğlumuzun sünnet merasimine katılımınızdan onur ve mutluluk duyacağız."
+        }
+      ],
+      "preset": {
+        "tur": "sunnet",
+        "tema": "modern",
+        "ust": "Sünnet Kutlaması",
+        "alici": "Değerli Misafirimiz",
+        "baslik": "İlk Cesaret",
+        "giris": "Oğlumuzun hayatındaki bu önemli dönüm noktasını sevdiklerimizle birlikte kutlamak için sizi bekliyoruz.",
+        "detaylar": "Mevlüt: 14.00\nKarşılama: 15.30\nKutlama: 16.00\nYer: Urban Hall\nOtopark: Mevcut",
+        "geriBaslik": "Kutlamaya kalan süre",
+        "bitti": "Cesur gün başladı.",
+        "saat": "14:00",
+        "gunSonra": 28,
+        "imza": "Sevgiyle,",
+        "kurum": "Anne & Baba",
+        "rsvpOlEt": "Katılacağım",
+        "rsvpHaEt": "Katılamayacağım",
+        "rsvpOlCv": "Sizi aramızda görmek çok güzel olacak.",
+        "rsvpHaCv": "Yanıtınız için teşekkür ederiz.",
+        "ac": [
+          "tarih",
+          "rsvp",
+          "program",
+          "harita"
+        ],
+        "program": "14.00 | Mevlid-i Şerif | Ziyafet Salonu\n16.00 | Sünnet Töreni | Ziyafet Salonu",
+        "programBaslik": "Program",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Urban Hall"
+      }
     },
     {
-      "id":"sunnet-yildiz","name":"Ay & Yıldız","type":"sunnet","typeLabel":"Sünnet & Mevlüt","style":"Gece","color":"lacivert","colorLabel":"Safir","premium":true,"theme":"gece",
-      "description":"Ay, yıldız ve safir tonlarıyla akşam mevlütleri için huzurlu gece tasarımı.",
-      "blocks":["geri-sayim","mevlut","toren","program","harita","lcv","muhur"],
-      "copyOptions":[
-        {"label":"Manevî","text":"Ayın ve yıldızların şahitliğinde okunacak mevlid-i şerifimize ve oğlumuzun sünnet sevincine davetlisiniz."},
-        {"label":"Dualı","text":"Bu mübarek gecede yükselecek dualara ses, sevincimize ortak olmanızı gönülden dileriz."},
-        {"label":"Şiirsel","text":"Gökte ay, kalbimizde dua; yiğidimizin en özel gecesinde ışığınız bizimle olsun."}
+      "id": "sunnet-yildiz",
+      "name": "Ay & Yıldız",
+      "type": "sunnet",
+      "typeLabel": "Sünnet & Mevlüt",
+      "style": "Gece",
+      "color": "lacivert",
+      "colorLabel": "Safir",
+      "premium": true,
+      "theme": "gece",
+      "description": "Ay, yıldız ve safir tonlarıyla akşam mevlütleri için huzurlu gece tasarımı.",
+      "blocks": [
+        "geri-sayim",
+        "mevlut",
+        "toren",
+        "program",
+        "harita",
+        "lcv",
+        "muhur"
       ],
-      "preset":{"tur":"sunnet","tema":"gece","ust":"Mevlüt & Sünnet Gecesi","alici":"Sevgili Misafirlerimiz","baslik":"Ay ve Yıldız Şahidimiz",
-        "giris":"Ayın ve yıldızların şahitliğinde okunacak mevlid-i şerifimize ve oğlumuzun sünnet sevincine davetlisiniz.",
-        "detaylar":"Akşam Namazı: 19.45\nMevlid-i Şerif: 20.15\nİkram: 21.15\nYer: Hilal Davet Evi","geriBaslik":"Mübarek geceye kalan süre","bitti":"Dualarımız kabul olsun 🌙","saat":"19:45","gunSonra":32,
-        "imza":"Dualarınızla,","kurum":"… Ailesi","muhur":"AY & YILDIZ · MAŞALLAH ·","rsvpOlEt":"Katılıyorum","rsvpHaEt":"Katılamıyorum","rsvpOlCv":"Bu mübarek gecede görüşmek üzere.","rsvpHaCv":"Dualarınız bize yeter.","ac":["tarih","rsvp","muhur"]}
+      "copyOptions": [
+        {
+          "label": "Manevî",
+          "text": "Ayın ve yıldızların şahitliğinde okunacak mevlid-i şerifimize ve oğlumuzun sünnet sevincine davetlisiniz."
+        },
+        {
+          "label": "Dualı",
+          "text": "Bu mübarek gecede yükselecek dualara ses, sevincimize ortak olmanızı gönülden dileriz."
+        },
+        {
+          "label": "Şiirsel",
+          "text": "Gökte ay, kalbimizde dua; yiğidimizin en özel gecesinde ışığınız bizimle olsun."
+        }
+      ],
+      "preset": {
+        "tur": "sunnet",
+        "tema": "gece",
+        "ust": "Mevlüt & Sünnet Gecesi",
+        "alici": "Sevgili Misafirlerimiz",
+        "baslik": "Ay ve Yıldız Şahidimiz",
+        "giris": "Ayın ve yıldızların şahitliğinde okunacak mevlid-i şerifimize ve oğlumuzun sünnet sevincine davetlisiniz.",
+        "detaylar": "Akşam Namazı: 19.45\nMevlid-i Şerif: 20.15\nİkram: 21.15\nYer: Hilal Davet Evi",
+        "geriBaslik": "Mübarek geceye kalan süre",
+        "bitti": "Dualarımız kabul olsun 🌙",
+        "saat": "19:45",
+        "gunSonra": 32,
+        "imza": "Dualarınızla,",
+        "kurum": "… Ailesi",
+        "muhur": "AY & YILDIZ · MAŞALLAH ·",
+        "rsvpOlEt": "Katılıyorum",
+        "rsvpHaEt": "Katılamıyorum",
+        "rsvpOlCv": "Bu mübarek gecede görüşmek üzere.",
+        "rsvpHaCv": "Dualarınız bize yeter.",
+        "ac": [
+          "tarih",
+          "rsvp",
+          "muhur",
+          "program",
+          "harita"
+        ],
+        "program": "14.00 | Mevlid-i Şerif | Ziyafet Salonu\n16.00 | Sünnet Töreni | Ziyafet Salonu",
+        "programBaslik": "Program",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Hilal Davet Evi"
+      }
     },
     {
       "id": "bebek-narin",
@@ -384,13 +1066,33 @@
       "premium": false,
       "theme": "safak",
       "description": "Bebek mevlüdü ve hoş geldin buluşmaları için yumuşak bir anlatım.",
-      "blocks": ["geri-sayim", "detaylar", "lcv"],
+      "blocks": [
+        "geri-sayim",
+        "detaylar",
+        "lcv"
+      ],
       "preset": {
-        "tur": "bebek", "tema": "safak", "ust": "Hoş Geldin Bebek & Mevlüt", "alici": "Sevgili Sevdiklerimiz", "baslik": "Aramıza Hoş Geldin",
+        "tur": "bebek",
+        "tema": "safak",
+        "ust": "Hoş Geldin Bebek & Mevlüt",
+        "alici": "Sevgili Sevdiklerimiz",
+        "baslik": "Aramıza Hoş Geldin",
         "giris": "Uzun zamandır beklediğimiz mutluluk nihayet kucağımızda. Minik yavrumuzun dünyaya gelişini ve mevlid-i şerifimizi sizlerle kutlamak isteriz.",
-        "detaylar": "Yer: Evimiz\nNot: Bebeğimiz için dua ile", "geriBaslik": "Mevlüde kalan süre", "bitti": "Hoş geldin minik 🍼", "saat": "14:00", "gunSonra": 20,
-        "imza": "Sevgiyle,", "kurum": "… Ailesi", "rsvpOlEt": "Geliyorum", "rsvpHaEt": "Gelemiyorum",
-        "rsvpOlCv": "Sevindik! Minik yavrumuzla tanışmaya bekleriz. 🍼", "rsvpHaCv": "Teşekkürler, sevginiz yeter. 🤍", "ac": ["tarih", "rsvp"]
+        "detaylar": "Yer: Evimiz\nNot: Bebeğimiz için dua ile",
+        "geriBaslik": "Mevlüde kalan süre",
+        "bitti": "Hoş geldin minik 🍼",
+        "saat": "14:00",
+        "gunSonra": 20,
+        "imza": "Sevgiyle,",
+        "kurum": "… Ailesi",
+        "rsvpOlEt": "Geliyorum",
+        "rsvpHaEt": "Gelemiyorum",
+        "rsvpOlCv": "Sevindik! Minik yavrumuzla tanışmaya bekleriz. 🍼",
+        "rsvpHaCv": "Teşekkürler, sevginiz yeter. 🤍",
+        "ac": [
+          "tarih",
+          "rsvp"
+        ]
       }
     },
     {
@@ -404,13 +1106,36 @@
       "premium": false,
       "theme": "yaz",
       "description": "Çocuk ve yetişkin partileri için canlı, enerjik ve paylaşmalık.",
-      "blocks": ["geri-sayim", "detaylar", "lcv", "muhur"],
+      "blocks": [
+        "geri-sayim",
+        "detaylar",
+        "lcv",
+        "muhur"
+      ],
       "preset": {
-        "tur": "dogumgunu", "tema": "yaz", "ust": "Doğum Günü Partisi", "alici": "Sevgili Arkadaşlar", "baslik": "Yaşımıza Bir Yenisini Ekliyoruz",
+        "tur": "dogumgunu",
+        "tema": "yaz",
+        "ust": "Doğum Günü Partisi",
+        "alici": "Sevgili Arkadaşlar",
+        "baslik": "Yaşımıza Bir Yenisini Ekliyoruz",
         "giris": "Mumları üflerken, pastayı keserken ve doyasıya eğlenirken sen de yanımızda ol! Neşeli bir kutlama için seni bekliyoruz.",
-        "detaylar": "Yer: Sahil Cafe\nGetir: Sadece neşeni 🎈", "geriBaslik": "Partiye kalan süre", "bitti": "Parti başladı! 🎉", "saat": "15:00", "gunSonra": 14,
-        "imza": "Sevgiyle,", "kurum": "Doğum Günü Çocuğu", "muhur": "İYİ Kİ DOĞDUN ·", "rsvpOlEt": "Geliyorum!", "rsvpHaEt": "Gelemem 🙁",
-        "rsvpOlCv": "Süper! Seni görmek çok güzel olacak. 🎈", "rsvpHaCv": "Özleyeceğiz — bir dahakine mutlaka! 🤍", "ac": ["tarih", "rsvp", "muhur"]
+        "detaylar": "Yer: Sahil Cafe\nGetir: Sadece neşeni 🎈",
+        "geriBaslik": "Partiye kalan süre",
+        "bitti": "Parti başladı! 🎉",
+        "saat": "15:00",
+        "gunSonra": 14,
+        "imza": "Sevgiyle,",
+        "kurum": "Doğum Günü Çocuğu",
+        "muhur": "İYİ Kİ DOĞDUN ·",
+        "rsvpOlEt": "Geliyorum!",
+        "rsvpHaEt": "Gelemem 🙁",
+        "rsvpOlCv": "Süper! Seni görmek çok güzel olacak. 🎈",
+        "rsvpHaCv": "Özleyeceğiz — bir dahakine mutlaka! 🤍",
+        "ac": [
+          "tarih",
+          "rsvp",
+          "muhur"
+        ]
       }
     },
     {
@@ -424,14 +1149,42 @@
       "premium": true,
       "theme": "yaz",
       "description": "Uzun yaz akşamları, deniz ve kalabalık sofralar için hazırlandı.",
-      "blocks": ["geri-sayim", "detaylar", "lcv", "muhur", "ikram"],
+      "blocks": [
+        "geri-sayim",
+        "detaylar",
+        "lcv",
+        "muhur",
+        "ikram"
+      ],
       "preset": {
-        "tur": "yaz", "tema": "yaz", "ust": "Akdeniz'den Yaz Daveti", "alici": "Sevgili Dostlar", "baslik": "Yazı Bizimle Geçirin",
+        "tur": "yaz",
+        "tema": "yaz",
+        "ust": "Akdeniz'den Yaz Daveti",
+        "alici": "Sevgili Dostlar",
+        "baslik": "Yazı Bizimle Geçirin",
         "giris": "Deniz ılık, güneş cömert, sofra kurulmayı bekliyor. Bu yazın en güzel günlerini Antalya'da, evimizde; uzun sohbetler ve serin akşamlarla geçirmek üzere sizi aramızda görmek isteriz.",
-        "detaylar": "Konaklama: Dilediğiniz kadar\nYer: Evimiz · Antalya\nYanınıza: Mayo, güneş kremi, iştah", "geriBaslik": "Buluşmaya kalan süre", "bitti": "Tatil başladı — hoş geldiniz! 🌊", "saat": "10:00", "gunSonra": 30,
-        "imza": "Sevgiyle,", "kurum": "Amber, Şifa, Mahir & Emir", "muhur": "ANTALYA · YAZ TATİLİ ·", "ikramBaslik": "Sizi Bekleyen Sofra", "ikramGrup": "Akdeniz'den",
-        "ikram": "Çupra\nLevrek\nKarpuz\nMango smoothie", "ikramNot": "…ve buraya sığdıramadığımız nice lezzet.", "rsvpOlEt": "Geliyoruz, sabırsızız!", "rsvpHaEt": "Bu yaz olmayacak",
-        "rsvpOlCv": "Ne güzel! Sofrayı sizin için kuruyoruz — deniz de hazır. 🌊", "rsvpHaCv": "Çok üzüldük — kapımız her yaz açık. 🤍", "ac": ["tarih", "rsvp", "muhur", "ikram"]
+        "detaylar": "Konaklama: Dilediğiniz kadar\nYer: Evimiz · Antalya\nYanınıza: Mayo, güneş kremi, iştah",
+        "geriBaslik": "Buluşmaya kalan süre",
+        "bitti": "Tatil başladı — hoş geldiniz! 🌊",
+        "saat": "10:00",
+        "gunSonra": 30,
+        "imza": "Sevgiyle,",
+        "kurum": "Amber, Şifa, Mahir & Emir",
+        "muhur": "ANTALYA · YAZ TATİLİ ·",
+        "ikramBaslik": "Sizi Bekleyen Sofra",
+        "ikramGrup": "Akdeniz'den",
+        "ikram": "Çupra\nLevrek\nKarpuz\nMango smoothie",
+        "ikramNot": "…ve buraya sığdıramadığımız nice lezzet.",
+        "rsvpOlEt": "Geliyoruz, sabırsızız!",
+        "rsvpHaEt": "Bu yaz olmayacak",
+        "rsvpOlCv": "Ne güzel! Sofrayı sizin için kuruyoruz — deniz de hazır. 🌊",
+        "rsvpHaCv": "Çok üzüldük — kapımız her yaz açık. 🤍",
+        "ac": [
+          "tarih",
+          "rsvp",
+          "muhur",
+          "ikram"
+        ]
       }
     }
   ]
