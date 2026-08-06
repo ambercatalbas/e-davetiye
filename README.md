@@ -47,7 +47,7 @@ Site GitHub Pages'te yayında (giriş gerektirmez, doğrudan paylaşılabilir):
 | Yaz Tatili | Eren & Yasemin | 9 Ağustos | https://ambercatalbas.github.io/e-davetiye/?d=eren |
 | Yaz Tatili | Yasin & Tuba + çocuklar | 25 Ağustos | https://ambercatalbas.github.io/e-davetiye/?d=yasin |
 
-## Sekiz tema
+## Dokuz tema
 
 - **`safak`** — klasik altın folyo
 - **`yaz`** — Akdeniz turkuazı ve mercan
@@ -57,6 +57,7 @@ Site GitHub Pages'te yayında (giriş gerektirmez, doğrudan paylaşılabilir):
 - **`bohem`** — kum ve terakota
 - **`gece`** — safir ve ay ışığı
 - **`luks`** — oniks ve şampanya
+- **`cocuk`** — gökyüzü mavisi ve güneş sarısı
 
 Her tema açık ve koyu modda ayrı tasarlandı; ana, ikincil ve CTA kontrastları
 WCAG AA eşiğini geçer. Token sözleşmesi ve yeni tema ekleme rehberi:

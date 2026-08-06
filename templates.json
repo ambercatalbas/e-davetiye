@@ -287,7 +287,12 @@
       "premium": false,
       "theme": "safak",
       "description": "Mevlüt ve sünnet programını tek akışta anlatan zarif tasarım.",
-      "blocks": ["geri-sayim", "program", "lcv", "muhur"],
+      "blocks": ["geri-sayim", "mevlut", "toren", "program", "harita", "lcv", "muhur"],
+      "copyOptions": [
+        {"label":"Klasik","text":"Oğlumuzun sünnet sevincini ve okunacak mevlid-i şerifi sizlerle paylaşmak isteriz. Teşrifleriniz bizleri onurlandıracaktır."},
+        {"label":"Dualı","text":"Allah'ın emrini yerine getirmenin huzurunu yaşadığımız bu mübarek günde, dualarınızla yanımızda olmanızı dileriz."},
+        {"label":"Samimi","text":"Küçük yiğidimizin büyük gününde neşemizi paylaşmak, birlikte gülmek ve güzel anılar biriktirmek için sizi bekliyoruz."}
+      ],
       "preset": {
         "tur": "sunnet", "tema": "safak", "ust": "Sünnet Merasimi & Mevlüt", "alici": "Sevgili Misafirlerimiz", "baslik": "Yiğidimiz Erkekliğe Adım Atıyor",
         "giris": "Oğlumuzun sünnet sevincini ve okunacak mevlid-i şerifi sizlerle paylaşmak isteriz. Teşrifleriniz bizleri onurlandıracak, bu günü daha da anlamlı kılacaktır.",
@@ -295,6 +300,78 @@
         "imza": "Sevgiyle,", "kurum": "Anne & Baba", "muhur": "MAŞALLAH · SÜNNET MÜBAREK OLSUN ·", "rsvpOlEt": "Katılıyorum", "rsvpHaEt": "Katılamıyorum",
         "rsvpOlCv": "Ne güzel! Yiğidimizin gününde sizi de bekleriz. 🌟", "rsvpHaCv": "Teşekkür ederiz, dualarınız yeter. 🤍", "ac": ["tarih", "rsvp", "muhur"]
       }
+    },
+    {
+      "id":"sunnet-bulut","name":"Bulutlarda Şenlik","type":"sunnet","typeLabel":"Sünnet & Mevlüt","style":"Çocuk","color":"mavi","colorLabel":"Mavi","premium":false,"theme":"cocuk",
+      "description":"Bulutlar, güneş ve neşeli detaylarla küçük çocuklara özel sevimli tasarım.",
+      "blocks":["geri-sayim","mevlut","toren","program","harita","lcv","ikram"],
+      "copyOptions":[
+        {"label":"Neşeli","text":"Küçük kahramanımızın büyük macerası başlıyor! Oyun, müzik ve sürprizlerle dolu sünnet şenliğimize bekliyoruz."},
+        {"label":"Çocukça","text":"Bulutlar hazır, balonlar şişti, pastamız da yolda! Yiğidimizin sünnet partisinde sen de bizimle ol."},
+        {"label":"Aile sıcaklığı","text":"Oğlumuzun bu güzel gününü ailemiz ve sevdiklerimizle kutlamak, sevincimizi birlikte büyütmek istiyoruz."}
+      ],
+      "preset":{"tur":"sunnet","tema":"cocuk","ust":"Sünnet Şenliği","alici":"Sevgili Ailemiz ve Dostlarımız","baslik":"Küçük Kahramanımızın Büyük Günü",
+        "giris":"Küçük kahramanımızın büyük macerası başlıyor! Oyun, müzik ve sürprizlerle dolu sünnet şenliğimize bekliyoruz.",
+        "detaylar":"Mevlüt: 13.00\nÇocuk Eğlencesi: 15.00\nTören: 16.30\nYer: Mavi Bahçe Davet Alanı\nYol Tarifi: Davet linkindeki konum","geriBaslik":"Şenliğe kalan süre","bitti":"Şenlik başladı! ☀️","saat":"13:00","gunSonra":24,
+        "imza":"Sevgiyle,","kurum":"Anne & Baba","ikramBaslik":"Çocuk Sofrası","ikramGrup":"Minik Misafirlere","ikram":"Mini pizzalar\nRenkli kurabiyeler\nLimonata ve pasta","ikramNot":"Alerji bilgisini LCV notuna yazabilirsiniz.",
+        "rsvpOlEt":"Şenlikteyiz","rsvpHaEt":"Katılamıyoruz","rsvpOlCv":"Balonları sizin için de şişiriyoruz! 🎈","rsvpHaCv":"Sevginiz bize yeter, teşekkürler.","ac":["tarih","rsvp","ikram"]}
+    },
+    {
+      "id":"sunnet-prens","name":"Küçük Prens","type":"sunnet","typeLabel":"Sünnet & Mevlüt","style":"Prens","color":"siyah","colorLabel":"Şampanya","premium":true,"theme":"luks",
+      "description":"Taç, at ve şampanya tonlarıyla masalsı bir prens merasimi.",
+      "blocks":["geri-sayim","mevlut","toren","program","harita","lcv","muhur","ikram"],
+      "copyOptions":[
+        {"label":"Masalsı","text":"Küçük prensimiz erkekliğe ilk adımını atarken, bu masalsı günü teşriflerinizle taçlandırmanızı diliyoruz."},
+        {"label":"Klasik","text":"Oğlumuzun sünnet merasiminde sizleri de aramızda görmekten onur ve mutluluk duyacağız."},
+        {"label":"Görkemli","text":"Atlar hazır, sancaklar çekildi; küçük prensimizin görkemli sünnet merasimine davetlisiniz."}
+      ],
+      "preset":{"tur":"sunnet","tema":"luks","ust":"Sünnet Merasimi","alici":"Sayın Misafirimiz","baslik":"Küçük Prensimiz Tahtında",
+        "giris":"Küçük prensimiz erkekliğe ilk adımını atarken, bu masalsı günü teşriflerinizle taçlandırmanızı diliyoruz.",
+        "detaylar":"Mevlüt: 14.00\nAtlı Karşılama: 16.00\nMerasim: 17.00\nYer: Saray Balo Salonu\nKıyafet: Şık","geriBaslik":"Prensimizin gününe kalan süre","bitti":"Prensimiz tahtında 👑","saat":"14:00","gunSonra":40,
+        "imza":"Saygı ve sevgiyle,","kurum":"… Ailesi","muhur":"KÜÇÜK PRENS · MAŞALLAH ·","ikramBaslik":"Saray Sofrası","ikramGrup":"Ziyafet","ikram":"Karşılama ikramları\nAna yemek\nSünnet pastası","ikramNot":"Çocuk menüsü mevcuttur.",
+        "rsvpOlEt":"Teşrif edeceğim","rsvpHaEt":"Katılamayacağım","rsvpOlCv":"Teşrifiniz bizi onurlandıracak.","rsvpHaCv":"Nazik yanıtınız için teşekkür ederiz.","ac":["tarih","rsvp","muhur","ikram"]}
+    },
+    {
+      "id":"sunnet-osmanli","name":"Şehzade Alayı","type":"sunnet","typeLabel":"Sünnet & Mevlüt","style":"Osmanlı","color":"toprak","colorLabel":"Bordo & Altın","premium":true,"theme":"bohem",
+      "description":"Sancak, kılıç ve geleneksel alay ruhunu sıcak Osmanlı tonlarında yorumlar.",
+      "blocks":["geri-sayim","mevlut","toren","program","harita","lcv","muhur"],
+      "copyOptions":[
+        {"label":"Geleneksel","text":"Şehzademizin sünnet düğününde kurulacak soframıza ve yapılacak duaya teşriflerinizi bekleriz."},
+        {"label":"Alaylı","text":"Sancaklar açılsın, davullar vurulsun! Yiğidimizin sünnet alayında sevincimize ortak olun."},
+        {"label":"Dualı","text":"Rabbimizin emrini yerine getirdiğimiz bu kutlu günde, oğlumuzu dualarınızla yalnız bırakmamanızı dileriz."}
+      ],
+      "preset":{"tur":"sunnet","tema":"bohem","ust":"Sünnet Düğünü","alici":"Aziz Misafirlerimiz","baslik":"Şehzademizin Sünnet Alayı",
+        "giris":"Şehzademizin sünnet düğününde kurulacak soframıza ve yapılacak duaya teşriflerinizi bekleriz.",
+        "detaylar":"Mevlid-i Şerif: 13.30\nSünnet Alayı: 15.30\nZiyafet: 17.00\nYer: Tarihi Konak","geriBaslik":"Alaya kalan süre","bitti":"Alayımız başladı! ⚔️","saat":"13:30","gunSonra":35,
+        "imza":"Hürmetlerimizle,","kurum":"… Hanesi","muhur":"ŞEHZADEMİZE MAŞALLAH ·","rsvpOlEt":"Alaydayız","rsvpHaEt":"Katılamıyoruz","rsvpOlCv":"Soframızda yeriniz hazır.","rsvpHaCv":"Dualarınız bizimle olsun.","ac":["tarih","rsvp","muhur"]}
+    },
+    {
+      "id":"sunnet-modern","name":"İlk Cesaret","type":"sunnet","typeLabel":"Sünnet & Mevlüt","style":"Modern","color":"lacivert","colorLabel":"Lacivert","premium":false,"theme":"modern",
+      "description":"Şehirli aileler için sade tipografi, net program ve modern lacivert palet.",
+      "blocks":["geri-sayim","mevlut","toren","program","harita","lcv"],
+      "copyOptions":[
+        {"label":"Modern","text":"Oğlumuzun hayatındaki bu önemli dönüm noktasını sevdiklerimizle birlikte kutlamak için sizi bekliyoruz."},
+        {"label":"Kısa","text":"Küçük bir adım, büyük bir cesaret. Sünnet kutlamamıza davetlisiniz."},
+        {"label":"Resmî","text":"Oğlumuzun sünnet merasimine katılımınızdan onur ve mutluluk duyacağız."}
+      ],
+      "preset":{"tur":"sunnet","tema":"modern","ust":"Sünnet Kutlaması","alici":"Değerli Misafirimiz","baslik":"İlk Cesaret",
+        "giris":"Oğlumuzun hayatındaki bu önemli dönüm noktasını sevdiklerimizle birlikte kutlamak için sizi bekliyoruz.",
+        "detaylar":"Mevlüt: 14.00\nKarşılama: 15.30\nKutlama: 16.00\nYer: Urban Hall\nOtopark: Mevcut","geriBaslik":"Kutlamaya kalan süre","bitti":"Cesur gün başladı.","saat":"14:00","gunSonra":28,
+        "imza":"Sevgiyle,","kurum":"Anne & Baba","rsvpOlEt":"Katılacağım","rsvpHaEt":"Katılamayacağım","rsvpOlCv":"Sizi aramızda görmek çok güzel olacak.","rsvpHaCv":"Yanıtınız için teşekkür ederiz.","ac":["tarih","rsvp"]}
+    },
+    {
+      "id":"sunnet-yildiz","name":"Ay & Yıldız","type":"sunnet","typeLabel":"Sünnet & Mevlüt","style":"Gece","color":"lacivert","colorLabel":"Safir","premium":true,"theme":"gece",
+      "description":"Ay, yıldız ve safir tonlarıyla akşam mevlütleri için huzurlu gece tasarımı.",
+      "blocks":["geri-sayim","mevlut","toren","program","harita","lcv","muhur"],
+      "copyOptions":[
+        {"label":"Manevî","text":"Ayın ve yıldızların şahitliğinde okunacak mevlid-i şerifimize ve oğlumuzun sünnet sevincine davetlisiniz."},
+        {"label":"Dualı","text":"Bu mübarek gecede yükselecek dualara ses, sevincimize ortak olmanızı gönülden dileriz."},
+        {"label":"Şiirsel","text":"Gökte ay, kalbimizde dua; yiğidimizin en özel gecesinde ışığınız bizimle olsun."}
+      ],
+      "preset":{"tur":"sunnet","tema":"gece","ust":"Mevlüt & Sünnet Gecesi","alici":"Sevgili Misafirlerimiz","baslik":"Ay ve Yıldız Şahidimiz",
+        "giris":"Ayın ve yıldızların şahitliğinde okunacak mevlid-i şerifimize ve oğlumuzun sünnet sevincine davetlisiniz.",
+        "detaylar":"Akşam Namazı: 19.45\nMevlid-i Şerif: 20.15\nİkram: 21.15\nYer: Hilal Davet Evi","geriBaslik":"Mübarek geceye kalan süre","bitti":"Dualarımız kabul olsun 🌙","saat":"19:45","gunSonra":32,
+        "imza":"Dualarınızla,","kurum":"… Ailesi","muhur":"AY & YILDIZ · MAŞALLAH ·","rsvpOlEt":"Katılıyorum","rsvpHaEt":"Katılamıyorum","rsvpOlCv":"Bu mübarek gecede görüşmek üzere.","rsvpHaCv":"Dualarınız bize yeter.","ac":["tarih","rsvp","muhur"]}
     },
     {
       "id": "bebek-narin",

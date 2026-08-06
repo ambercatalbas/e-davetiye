@@ -35,6 +35,17 @@ Her tema üç durumda eksiksiz tanımlanır:
 | `gece` | Gece Yarısı | Safir / ay ışığı | Lacivert | Premium |
 | `luks` | Maison d'Or | Oniks / şampanya / gala | Siyah | Premium |
 
+## Sünnet & Mevlüt koleksiyonu
+
+| Tema kimliği | Şablon | Tasarım dili | Paket |
+|---|---|---|---|
+| `safak` | Maşallah | Klasik mevlüt / altın | Ücretsiz |
+| `cocuk` | Bulutlarda Şenlik | Çocuk / gökyüzü / neşeli | Ücretsiz |
+| `luks` | Küçük Prens | Prens / şampanya / gala | Premium |
+| `bohem` | Şehzade Alayı | Osmanlı / sancak / sıcak tonlar | Premium |
+| `modern` | İlk Cesaret | Minimal / şehir / lacivert | Ücretsiz |
+| `gece` | Ay & Yıldız | Mevlüt gecesi / safir | Premium |
+
 ## Erişilebilirlik bütçesi
 
 - `--ink` / `--card`: WCAG AA normal metin için en az **4.5:1**.
@@ -52,4 +63,3 @@ Sekiz düğün temasının açık ve koyu paletleri bu eşiklere karşı otomati
 3. `templates.json` kaydında benzersiz `id`, `theme`, `style`, `color`, `blocks`, `copyOptions` ve `preset` alanlarını doldur.
 4. Ana/ikincil/CTA kontrastlarını hem açık hem koyu palette AA eşiğine karşı test et.
 5. 390 px mobil görünümde yatay taşma olmadığını ve gerçek iframe renderer'ını doğrula.
-
