@@ -26,7 +26,7 @@ service cloud.firestore {
         // Davetli (anonim giriş dahil) yalnızca LCV EKLEYEBİLİR.
         // Alanlar ve değerler doğrulanır; başkasının yanıtını okuyamaz/değiştiremez.
         allow create: if request.auth != null
-          && request.resource.data.keys().hasOnly(['ad', 'durum', 'kisiSayisi', 'not', 'createdAt'])
+          && request.resource.data.keys().hasOnly(['ad', 'durum', 'kisiSayisi', 'not', 'consentVersion', 'consentGranted', 'privacyNoticeVersion', 'createdAt'])
           && request.resource.data.ad is string
           && request.resource.data.ad.size() > 0
           && request.resource.data.ad.size() <= 80
@@ -36,6 +36,9 @@ service cloud.firestore {
           && request.resource.data.kisiSayisi <= 20
           && request.resource.data.not is string
           && request.resource.data.not.size() <= 300
+          && request.resource.data.consentGranted == true
+          && request.resource.data.consentVersion == 'lcv-tr-2026-08-06-v1'
+          && request.resource.data.privacyNoticeVersion == 'privacy-2026-08-06-v1'
           && request.resource.data.createdAt == request.time;
 
         // Tüm yanıtları yalnızca davetiye sahibi okur.

@@ -76,6 +76,19 @@ export async function lcvBaslat({ inviteId, firebaseConfig, mount }) {
   not.maxLength = 300;
   kok.append(not);
 
+  // Aydınlatma ve açık rıza birbirinden ayrı sunulur. Pazarlama izni bu
+  // akışın parçası değildir; LCV göndermek için yalnızca iletim rızası alınır.
+  const aydinlatma = el("p", "lcv-aydinlatma");
+  aydinlatma.innerHTML = 'Adınız ve katılım yanıtınız, etkinliği planlayabilmesi için davetiye sahibine iletilir. Ayrıntılar için <a href="./legal.html#lcv" target="_blank" rel="noopener">LCV Aydınlatma Metni</a>.';
+  kok.append(aydinlatma);
+
+  const rizaEtiket = el("label", "lcv-riza");
+  const riza = el("input", "lcv-riza-input");
+  riza.type = "checkbox";
+  riza.required = true;
+  rizaEtiket.append(riza, document.createTextNode(" LCV yanıtımın davetiye sahibine iletilmesine açık rıza veriyorum."));
+  kok.append(rizaEtiket);
+
   // Gönder
   const gonder = el("button", "btn olumlu", "Yanıtı Gönder");
   gonder.type = "button";
@@ -91,14 +104,16 @@ export async function lcvBaslat({ inviteId, firebaseConfig, mount }) {
     btnGel.classList.toggle("secili", secilen === "geliyorum");
     btnYok.classList.toggle("secili", secilen === "gelemiyorum");
     kisiSatir.style.display = secilen === "geliyorum" ? "" : "none";
-    gonder.disabled = false;
+    gonder.disabled = !riza.checked;
   }
   btnGel.addEventListener("click", () => durumSec("geliyorum"));
   btnYok.addEventListener("click", () => durumSec("gelemiyorum"));
+  riza.addEventListener("change", () => { gonder.disabled = !durum || !riza.checked; });
 
   gonder.addEventListener("click", async () => {
     if (!durum) return;
     if (!ad.value.trim()) { yanit.textContent = "Lütfen adınızı yazın."; yanit.classList.add("gorunur"); return; }
+    if (!riza.checked) { yanit.textContent = "Yanıtı iletmek için açık rıza seçimini yapın."; yanit.classList.add("gorunur"); return; }
     gonder.disabled = true;
     gonder.textContent = "Gönderiliyor…";
     try {
@@ -107,6 +122,9 @@ export async function lcvBaslat({ inviteId, firebaseConfig, mount }) {
         durum,
         kisiSayisi: durum === "geliyorum" ? Math.min(20, Math.max(1, parseInt(kisiInput.value || "1", 10))) : 0,
         not: not.value.trim().slice(0, 300),
+        consentVersion: "lcv-tr-2026-08-06-v1",
+        consentGranted: true,
+        privacyNoticeVersion: "privacy-2026-08-06-v1",
         createdAt: serverTimestamp()
       });
       // Teşekkür durumu
