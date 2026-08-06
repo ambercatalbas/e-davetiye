@@ -23,6 +23,8 @@ Hızlı filtreler: `label:priority:P0` · `milestone:"Faz 1 — Satılabilir Çe
 Kod yazmadan davetiye oluşturmak için canlı Studio'yu açın:
 https://ambercatalbas.github.io/e-davetiye/studio.html
 
+- JSON tabanlı şablon galerisi (`templates.json`), arama ve tür/renk/paket filtreleri
+- Cihazda kalıcı favoriler ve “Bu şablonu kullan” akışı
 - Davet türü ve tema seçimi
 - Metin, tarih, geri sayım, detaylar, mühür, ikram ve LCV bölümleri
 - Gerçek motorla canlı önizleme, otomatik taslak kaydı
@@ -31,6 +33,9 @@ https://ambercatalbas.github.io/e-davetiye/studio.html
 Studio şimdilik içeriği güvenli bir `#i=` paylaşım linkine kodlar. Firestore
 yayınlama ve gerçek LCV toplama altyapısı etkinleştirildiğinde aynı arayüz
 hesaba bağlı, düzenlenebilir kısa linkler de üretecektir.
+
+Yeni bir şablon eklemek için Studio kodunu değiştirmek gerekmez: `templates.json`
+içindeki `templates` listesine meta bilgiler ve `preset` içeriği eklenir.
 
 ## Canlı davetiyeler
 

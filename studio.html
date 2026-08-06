@@ -78,6 +78,33 @@
   .card > h2 .no{width:20px;height:20px;border-radius:50%;border:1px solid var(--hair);
     display:grid;place-items:center;font-size:.66rem;color:var(--soft);}
 
+  /* ---- Şablon galerisi ---- */
+  .gallery-tools{display:grid;grid-template-columns:minmax(140px,1.5fr) repeat(3,minmax(105px,1fr));gap:8px;margin-bottom:14px;}
+  .gallery-tools input,.gallery-tools select{font-size:.78rem;padding:9px 10px;}
+  .gallery-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+  .tpl{position:relative;overflow:hidden;border:1px solid var(--edge);border-radius:10px;background:var(--panel-2);
+    min-width:0;transition:transform .16s,border-color .16s,box-shadow .16s;}
+  .tpl:hover{transform:translateY(-2px);border-color:var(--hair);box-shadow:0 14px 28px -22px var(--shadow);}
+  .tpl-art{height:82px;padding:13px;display:flex;align-items:flex-end;position:relative;isolation:isolate;
+    background:linear-gradient(145deg,#202747,#856727);color:#fff;}
+  .tpl[data-color="turkuaz"] .tpl-art{background:linear-gradient(145deg,#0B4450,#21A9AE 62%,#F07A52);}
+  .tpl[data-color="bordo"] .tpl-art{background:linear-gradient(145deg,#3B1021,#8A2443 64%,#C59A4A);}
+  .tpl[data-color="pudra"] .tpl-art{background:linear-gradient(145deg,#765A6D,#D6A9AF 62%,#F0D9CC);}
+  .tpl-art::after{content:"";position:absolute;inset:9px;border:1px solid rgba(255,255,255,.3);z-index:-1;}
+  .tpl-art strong{font-family:var(--f-serif);font-size:1rem;font-weight:500;line-height:1.05;max-width:76%;}
+  .tpl-badge{position:absolute;right:9px;top:9px;font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;
+    padding:4px 6px;border-radius:4px;background:rgba(15,17,30,.66);color:#fff;backdrop-filter:blur(5px);}
+  .fav{position:absolute;right:8px;bottom:8px;width:31px;height:31px;border:0;border-radius:50%;cursor:pointer;
+    background:rgba(255,255,255,.9);color:#6B6070;font-size:1rem;display:grid;place-items:center;z-index:2;}
+  .fav.on{color:#BE5540;}
+  .tpl-body{padding:11px;}
+  .tpl-meta{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
+  .tpl-body h3{font-family:var(--f-serif);font-size:1rem;font-weight:500;margin:0 0 5px;}
+  .tpl-body p{font-size:.66rem;line-height:1.4;color:var(--soft);margin:0 0 9px;min-height:2.8em;}
+  .tpl-use{width:100%;padding:8px;font-size:.7rem;}
+  .gallery-empty{grid-column:1/-1;text-align:center;padding:24px 10px;color:var(--faint);font-size:.78rem;}
+  .gallery-summary{font-size:.65rem;color:var(--faint);margin:0 0 10px;}
+
   .field{display:flex;flex-direction:column;gap:6px;margin-bottom:13px;}
   .field:last-child{margin-bottom:0;}
   .field > label{font-family:var(--f-sans);font-size:.68rem;letter-spacing:.06em;color:var(--soft);font-weight:600;}
@@ -139,6 +166,12 @@
     .preview{position:static;order:-1;}
     .phone iframe{height:min(64dvh,560px);}
   }
+  @media (max-width:560px){
+    .gallery-tools{grid-template-columns:1fr 1fr;}
+    .gallery-tools input{grid-column:1/-1;}
+    .gallery-grid{grid-template-columns:1fr;}
+    .row2{grid-template-columns:1fr;}
+  }
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
 </head>
@@ -154,6 +187,20 @@
 
   <!-- SOL: EDİTÖR -->
   <form class="editor" id="form" autocomplete="off">
+
+    <section class="card" aria-labelledby="galeriBaslik">
+      <h2 id="galeriBaslik"><span class="no">✦</span> Şablon Galerisi</h2>
+      <div class="gallery-tools">
+        <input type="search" id="tplAra" placeholder="Şablon ara…" aria-label="Şablon ara">
+        <select id="tplTur" aria-label="Davet türüne göre filtrele"><option value="">Tüm türler</option></select>
+        <select id="tplRenk" aria-label="Renge göre filtrele"><option value="">Tüm renkler</option></select>
+        <select id="tplPlan" aria-label="Paket türüne göre filtrele">
+          <option value="">Tüm paketler</option><option value="free">Ücretsiz</option><option value="premium">Premium</option><option value="fav">Favoriler</option>
+        </select>
+      </div>
+      <p class="gallery-summary" id="tplOzet" aria-live="polite"></p>
+      <div class="gallery-grid" id="tplGrid"></div>
+    </section>
 
     <section class="card">
       <h2><span class="no">1</span> Tür &amp; Tema</h2>
@@ -415,6 +462,85 @@ function preseti_uygula(tur){
   syncBodies();
 }
 
+/* ---- Harici şablon kataloğu + galeri ----
+   templates.json içerik katmanıdır. Yeni kayıtlar Studio koduna dokunmadan
+   galeride görünür ve preset verisiyle editörü doldurur. */
+let TEMPLATES = [];
+const FAVORI_ANAHTAR = "studio.favoriler.v1";
+let favoriler = new Set();
+try{ favoriler = new Set(JSON.parse(localStorage.getItem(FAVORI_ANAHTAR)||"[]")); }catch(e){}
+
+function secenekleriKur(id, items, key, label){
+  const select = $(id), mevcut = select.value;
+  [...new Map(items.map(x=>[x[key],x[label]])).entries()]
+    .sort((a,b)=>a[1].localeCompare(b[1],"tr"))
+    .forEach(([v,t])=>{ const o=document.createElement("option"); o.value=v; o.textContent=t; select.append(o); });
+  select.value = mevcut;
+}
+
+function favoriDegistir(id){
+  favoriler.has(id) ? favoriler.delete(id) : favoriler.add(id);
+  try{ localStorage.setItem(FAVORI_ANAHTAR,JSON.stringify([...favoriler])); }catch(e){}
+  galeriRender();
+}
+
+function sablonKarti(t){
+  const card=document.createElement("article"); card.className="tpl"; card.dataset.color=t.color||"altin";
+  const art=document.createElement("div"); art.className="tpl-art";
+  const artName=document.createElement("strong"); artName.textContent=t.name;
+  const badge=document.createElement("span"); badge.className="tpl-badge"; badge.textContent=t.premium?"Premium":"Ücretsiz";
+  const fav=document.createElement("button"); fav.type="button"; fav.className="fav"+(favoriler.has(t.id)?" on":"");
+  fav.textContent=favoriler.has(t.id)?"♥":"♡"; fav.setAttribute("aria-label",favoriler.has(t.id)?`${t.name} şablonunu favorilerden çıkar`:`${t.name} şablonunu favorilere ekle`);
+  fav.addEventListener("click",()=>favoriDegistir(t.id)); art.append(artName,badge,fav);
+  const body=document.createElement("div"); body.className="tpl-body";
+  const meta=document.createElement("div"); meta.className="tpl-meta"; meta.textContent=`${t.typeLabel} · ${t.style} · ${t.colorLabel}`;
+  const h=document.createElement("h3"); h.textContent=t.name;
+  const p=document.createElement("p"); p.textContent=t.description;
+  const use=document.createElement("button"); use.type="button"; use.className="btn pri tpl-use"; use.textContent="Bu şablonu kullan";
+  use.addEventListener("click",()=>{
+    PRESETS[t.id]=t.preset;
+    setVal("selTur",t.type);
+    preseti_uygula(t.id);
+    planla();
+    $("inUst").focus({preventScroll:true});
+    $("selTur").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"});
+  });
+  body.append(meta,h,p,use); card.append(art,body); return card;
+}
+
+function galeriRender(){
+  const q=val("tplAra").trim().toLocaleLowerCase("tr");
+  const tur=val("tplTur"), renk=val("tplRenk"), plan=val("tplPlan");
+  const sonuc=TEMPLATES.filter(t=>{
+    const metin=[t.name,t.typeLabel,t.style,t.colorLabel,t.description,...(t.blocks||[])].join(" ").toLocaleLowerCase("tr");
+    return (!q||metin.includes(q)) && (!tur||t.type===tur) && (!renk||t.color===renk)
+      && (!plan||(plan==="free"&&!t.premium)||(plan==="premium"&&t.premium)||(plan==="fav"&&favoriler.has(t.id)));
+  });
+  const grid=$("tplGrid"); grid.replaceChildren();
+  sonuc.forEach(t=>grid.append(sablonKarti(t)));
+  if(!sonuc.length){ const e=document.createElement("p"); e.className="gallery-empty"; e.textContent="Bu filtrelerle eşleşen şablon yok."; grid.append(e); }
+  $("tplOzet").textContent=`${sonuc.length} şablon gösteriliyor · ${favoriler.size} favori`;
+}
+
+async function galeriYukle(){
+  try{
+    const r=await fetch("templates.json",{cache:"no-cache"});
+    if(!r.ok) throw new Error("Katalog yüklenemedi");
+    const data=await r.json(); TEMPLATES=Array.isArray(data.templates)?data.templates:[];
+  }catch(e){
+    TEMPLATES=Object.entries(PRESETS).filter(([id])=>id!=="bos").map(([id,p])=>({
+      id,name:p.baslik,type:id,typeLabel:p.ust||id,style:"Klasik",color:p.tema==="yaz"?"turkuaz":"altin",
+      colorLabel:p.tema==="yaz"?"Turkuaz":"Altın",premium:false,theme:p.tema,description:p.giris,blocks:p.ac||[],preset:{...p,tur:id}
+    }));
+  }
+  TEMPLATES.forEach(t=>{ if(t.preset) PRESETS[t.id]=t.preset; });
+  secenekleriKur("tplTur",TEMPLATES,"type","typeLabel");
+  secenekleriKur("tplRenk",TEMPLATES,"color","colorLabel");
+  galeriRender();
+}
+
+["tplAra","tplTur","tplRenk","tplPlan"].forEach(id=>$(id).addEventListener("input",galeriRender));
+
 /* ---- Formdan davetiye config'i (index.html motorunun anladığı şekil) ---- */
 function cfgKur(){
   const yaz = val("selTema") === "yaz";
@@ -564,6 +690,7 @@ $("btnSifirla").addEventListener("click", ()=>{
 /* ---- Başlat ---- */
 if(!yukle()){ preseti_uygula("dugun"); }
 onizle();
+galeriYukle();
 </script>
 </body>
 </html>
