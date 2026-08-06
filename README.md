@@ -18,6 +18,20 @@ geliştirilmektedir. Detaylar:
 
 Hızlı filtreler: `label:priority:P0` · `milestone:"Faz 1 — Satılabilir Çekirdek"` · `label:epic:studio`
 
+## Davetiye Studio
+
+Kod yazmadan davetiye oluşturmak için canlı Studio'yu açın:
+https://ambercatalbas.github.io/e-davetiye/studio.html
+
+- Davet türü ve tema seçimi
+- Metin, tarih, geri sayım, detaylar, mühür, ikram ve LCV bölümleri
+- Gerçek motorla canlı önizleme, otomatik taslak kaydı
+- Tek tıkla link kopyalama, WhatsApp ve sistem paylaşımı
+
+Studio şimdilik içeriği güvenli bir `#i=` paylaşım linkine kodlar. Firestore
+yayınlama ve gerçek LCV toplama altyapısı etkinleştirildiğinde aynı arayüz
+hesaba bağlı, düzenlenebilir kısa linkler de üretecektir.
+
 ## Canlı davetiyeler
 
 Site GitHub Pages'te yayında (giriş gerektirmez, doğrudan paylaşılabilir):

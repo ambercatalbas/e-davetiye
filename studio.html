@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="E-Davetiye Studio — kendi zarif dijital davetiyeni oluştur, canlı önizle, paylaş.">
+<title>E-Davetiye · Studio</title>
+<style>
+  /* ============================================================
+     E-DAVETİYE · STUDIO — web tabanlı davetiye oluşturucu
+     Canlı önizleme, gerçek motoru (index.html) iframe ile kullanır;
+     davetiyeyi #i=<base64url(JSON)> paylaşım linkine kodlar.
+     index.html'e DOKUNMAZ. Türkçe yorumlar.
+     ============================================================ */
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+
+  /* ---- Tema token'ları (şafak kimliği) ---- */
+  :root{
+    --bg:#EDE6EC; --bg-2:#E9E3EE; --panel:#FFFFFF; --panel-2:#FBF9FB;
+    --edge:rgba(35,40,63,.12); --ink:#23283F; --soft:#565C77; --faint:#8A8FA8;
+    --gold:#8C6A25; --gold-bright:#B98F38; --teal:#0E6E78; --coral:#BE5540;
+    --hair:rgba(140,106,37,.34); --on-gold:#FFFFFF; --shadow:rgba(60,50,90,.20);
+    --field:#FFFFFF; --field-edge:rgba(35,40,63,.16);
+    --f-serif:"Hoefler Text","Baskerville","Palatino Linotype",Palatino,Georgia,serif;
+    --f-script:"Snell Roundhand","Zapfino","Apple Chancery","Segoe Script",cursive;
+    --f-sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0D111E; --bg-2:#141833; --panel:#161B30; --panel-2:#1B2138;
+      --edge:rgba(233,203,140,.12); --ink:#ECE6D8; --soft:#A7ABC6; --faint:#7C819B;
+      --gold:#E7BE68; --gold-bright:#F2D48A; --teal:#3FC9D2; --coral:#EA8E71;
+      --hair:rgba(231,190,104,.30); --on-gold:#20160A; --shadow:rgba(0,0,0,.5);
+      --field:#0F1426; --field-edge:rgba(231,190,104,.22);
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#EDE6EC; --bg-2:#E9E3EE; --panel:#FFFFFF; --panel-2:#FBF9FB;
+    --edge:rgba(35,40,63,.12); --ink:#23283F; --soft:#565C77; --faint:#8A8FA8;
+    --gold:#8C6A25; --gold-bright:#B98F38; --teal:#0E6E78; --coral:#BE5540;
+    --hair:rgba(140,106,37,.34); --on-gold:#FFFFFF; --shadow:rgba(60,50,90,.20);
+    --field:#FFFFFF; --field-edge:rgba(35,40,63,.16);
+  }
+  :root[data-theme="dark"]{
+    --bg:#0D111E; --bg-2:#141833; --panel:#161B30; --panel-2:#1B2138;
+    --edge:rgba(233,203,140,.12); --ink:#ECE6D8; --soft:#A7ABC6; --faint:#7C819B;
+    --gold:#E7BE68; --gold-bright:#F2D48A; --teal:#3FC9D2; --coral:#EA8E71;
+    --hair:rgba(231,190,104,.30); --on-gold:#20160A; --shadow:rgba(0,0,0,.5);
+    --field:#0F1426; --field-edge:rgba(231,190,104,.22);
+  }
+
+  body{background:linear-gradient(180deg,var(--bg-2),var(--bg));color:var(--ink);
+    font-family:var(--f-sans);-webkit-font-smoothing:antialiased;min-height:100dvh;}
+
+  /* ---- Üst bar ---- */
+  .bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;
+    padding:12px clamp(14px,3vw,26px);background:color-mix(in srgb,var(--panel) 88%,transparent);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--edge);}
+  .brand{display:flex;flex-direction:column;line-height:1;margin-right:auto;}
+  .brand b{font-family:var(--f-serif);font-weight:500;font-size:1.16rem;letter-spacing:.01em;}
+  .brand small{font-family:var(--f-sans);font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-top:3px;}
+  .bar .sp{flex:1;}
+  .theme-btn{background:none;border:1px solid var(--hair);border-radius:6px;color:var(--soft);
+    width:38px;height:38px;font-size:1rem;cursor:pointer;display:grid;place-items:center;}
+  .theme-btn:hover{color:var(--ink);}
+
+  .layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);gap:clamp(16px,2.5vw,30px);
+    max-width:1180px;margin:0 auto;padding:clamp(16px,3vw,30px);align-items:start;}
+
+  /* ---- Editör ---- */
+  .editor{display:flex;flex-direction:column;gap:16px;min-width:0;}
+  .card{background:var(--panel);border:1px solid var(--edge);border-radius:12px;
+    padding:clamp(16px,2.4vw,22px);box-shadow:0 20px 46px -38px var(--shadow);}
+  .card > h2{font-family:var(--f-sans);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--gold);margin:0 0 15px;display:flex;align-items:center;gap:9px;}
+  .card > h2 .no{width:20px;height:20px;border-radius:50%;border:1px solid var(--hair);
+    display:grid;place-items:center;font-size:.66rem;color:var(--soft);}
+
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:13px;}
+  .field:last-child{margin-bottom:0;}
+  .field > label{font-family:var(--f-sans);font-size:.68rem;letter-spacing:.06em;color:var(--soft);font-weight:600;}
+  .field .hint{font-size:.66rem;color:var(--faint);font-weight:400;letter-spacing:0;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  input[type=text],input[type=date],input[type=time],input[type=number],select,textarea{
+    width:100%;font-family:var(--f-sans);font-size:.94rem;color:var(--ink);background:var(--field);
+    border:1px solid var(--field-edge);border-radius:8px;padding:11px 12px;transition:border-color .15s;}
+  textarea{resize:vertical;min-height:74px;line-height:1.5;}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);}
+  select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--soft) 50%),linear-gradient(135deg,var(--soft) 50%,transparent 50%);
+    background-position:calc(100% - 18px) 52%,calc(100% - 13px) 52%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:34px;}
+
+  /* Açılır-kapanır opsiyonel bölüm */
+  .toggle{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;}
+  .toggle input{position:absolute;opacity:0;pointer-events:none;}
+  .sw{width:40px;height:23px;border-radius:20px;background:var(--field-edge);position:relative;flex:none;transition:background .18s;}
+  .sw::after{content:"";position:absolute;top:2px;left:2px;width:19px;height:19px;border-radius:50%;
+    background:var(--panel);box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .18s;}
+  .toggle input:checked + .sw{background:var(--gold);}
+  .toggle input:checked + .sw::after{transform:translateX(17px);}
+  .toggle .tlabel{font-family:var(--f-sans);font-size:.82rem;font-weight:600;color:var(--ink);}
+  .togglebody{margin-top:13px;padding-top:14px;border-top:1px dashed var(--hair);display:none;}
+  .togglebody.open{display:block;}
+
+  /* ---- Önizleme ---- */
+  .preview{position:sticky;top:74px;}
+  .pv-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .pv-head .t{font-family:var(--f-sans);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);}
+  .pv-head .live{display:inline-flex;align-items:center;gap:6px;font-size:.66rem;color:var(--faint);}
+  .pv-head .dot{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 0 var(--teal);animation:pulse 2s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--teal) 55%,transparent)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+  .phone{background:var(--panel);border:1px solid var(--edge);border-radius:24px;padding:10px;
+    box-shadow:0 30px 70px -40px var(--shadow);}
+  .phone iframe{width:100%;height:min(74dvh,720px);border:0;border-radius:16px;background:var(--bg);display:block;}
+
+  /* Paylaş kutusu */
+  .share{margin-top:16px;}
+  .share .linkbox{display:flex;gap:8px;margin-bottom:12px;}
+  .share .linkbox input{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.74rem;color:var(--soft);}
+  .btn{font-family:var(--f-sans);font-size:.82rem;font-weight:700;letter-spacing:.03em;cursor:pointer;
+    border:1px solid var(--hair);background:transparent;color:var(--ink);border-radius:8px;padding:11px 14px;
+    transition:transform .15s,box-shadow .15s,background .15s,filter .15s;white-space:nowrap;}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 10px 20px -14px var(--shadow);}
+  .btn:focus-visible{outline:2px solid var(--coral);outline-offset:2px;}
+  .btn.pri{background:var(--gold);color:var(--on-gold);border-color:transparent;}
+  .btn.wa{background:#25D366;color:#06301A;border-color:transparent;}
+  .btn.block{width:100%;}
+  .share .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .note{font-size:.7rem;color:var(--faint);line-height:1.5;margin:12px 2px 0;}
+  .note b{color:var(--soft);font-weight:600;}
+
+  .foot{max-width:1180px;margin:0 auto;padding:8px clamp(16px,3vw,30px) 40px;
+    font-size:.72rem;color:var(--faint);text-align:center;}
+  .foot a{color:var(--gold);text-decoration:none;}
+
+  @media (max-width:880px){
+    .layout{grid-template-columns:1fr;}
+    .preview{position:static;order:-1;}
+    .phone iframe{height:min(64dvh,560px);}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand"><b>E-Davetiye</b><small>Studio</small></div>
+  <button class="btn" type="button" id="btnSifirla" title="Formu temizle">Sıfırla</button>
+  <button class="theme-btn" type="button" id="btnTema" title="Açık / koyu" aria-label="Tema değiştir">◐</button>
+</header>
+
+<div class="layout">
+
+  <!-- SOL: EDİTÖR -->
+  <form class="editor" id="form" autocomplete="off">
+
+    <section class="card">
+      <h2><span class="no">1</span> Tür &amp; Tema</h2>
+      <div class="row2">
+        <div class="field">
+          <label for="selTur">Davet türü</label>
+          <select id="selTur">
+            <option value="dugun">Düğün</option>
+            <option value="nisan">Nişan / Söz</option>
+            <option value="kina">Kına Gecesi</option>
+            <option value="sunnet">Sünnet &amp; Mevlüt</option>
+            <option value="bebek">Bebek &amp; Mevlüt</option>
+            <option value="dogumgunu">Doğum Günü</option>
+            <option value="yaz">Yaz Daveti</option>
+            <option value="bos">Boş / Serbest</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="selTema">Tema</label>
+          <select id="selTema">
+            <option value="safak">Şafak · klasik altın</option>
+            <option value="yaz">Yaz · Akdeniz turkuaz</option>
+          </select>
+        </div>
+      </div>
+      <p class="note" style="margin-top:4px">Tür seçince örnek metinler otomatik dolar — hepsini serbestçe düzenleyebilirsin.</p>
+    </section>
+
+    <section class="card">
+      <h2><span class="no">2</span> Metin</h2>
+      <div class="field">
+        <label for="inUst">Üst başlık <span class="hint">(küçük etiket)</span></label>
+        <input type="text" id="inUst" maxlength="60">
+      </div>
+      <div class="field">
+        <label for="inAlici">Kime <span class="hint">(el yazısı hitap)</span></label>
+        <input type="text" id="inAlici" maxlength="60">
+      </div>
+      <div class="field">
+        <label for="inBaslik">Başlık</label>
+        <input type="text" id="inBaslik" maxlength="80">
+      </div>
+      <div class="field">
+        <label for="taGiris">Davet metni</label>
+        <textarea id="taGiris" maxlength="600"></textarea>
+      </div>
+      <div class="row2">
+        <div class="field"><label for="inImza">İmza</label><input type="text" id="inImza" maxlength="40"></div>
+        <div class="field"><label for="inKurum">İmza (kurum/isimler)</label><input type="text" id="inKurum" maxlength="80"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="no">3</span> Tarih, Yer &amp; Detaylar</h2>
+      <label class="toggle" style="margin-bottom:4px">
+        <input type="checkbox" id="chkTarih"><span class="sw"></span>
+        <span class="tlabel">Tarih ve canlı geri sayım</span>
+      </label>
+      <div class="togglebody" id="bodyTarih">
+        <div class="row2">
+          <div class="field"><label for="inTarih">Tarih</label><input type="date" id="inTarih"></div>
+          <div class="field"><label for="inSaat">Saat</label><input type="time" id="inSaat" value="19:00"></div>
+        </div>
+        <div class="field"><label for="inGeriBaslik">Geri sayım başlığı</label><input type="text" id="inGeriBaslik" maxlength="60"></div>
+        <div class="field"><label for="inBitti">Zamanı gelince yazısı</label><input type="text" id="inBitti" maxlength="80"></div>
+      </div>
+      <div class="field" style="margin-top:14px">
+        <label for="taDetaylar">Detaylar <span class="hint">— her satır “Etiket: Değer”. Tarih otomatik eklenir.</span></label>
+        <textarea id="taDetaylar" placeholder="Yer: Kristal Balo Salonu&#10;Kıyafet: Şık"></textarea>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="no">4</span> Ek bölümler <span style="margin-left:auto;font-size:.6rem;color:var(--faint);letter-spacing:.1em">İSTEĞE BAĞLI</span></h2>
+
+      <label class="toggle"><input type="checkbox" id="chkRsvp"><span class="sw"></span><span class="tlabel">Katılım (LCV) butonları</span></label>
+      <div class="togglebody" id="bodyRsvp">
+        <div class="row2">
+          <div class="field"><label>“Geliyorum” yazısı</label><input type="text" id="inRsvpOlEt" maxlength="40"></div>
+          <div class="field"><label>“Gelemem” yazısı</label><input type="text" id="inRsvpHaEt" maxlength="40"></div>
+        </div>
+        <div class="field"><label>Olumlu yanıt</label><input type="text" id="inRsvpOlCv" maxlength="120"></div>
+        <div class="field"><label>Olumsuz yanıt</label><input type="text" id="inRsvpHaCv" maxlength="120"></div>
+        <p class="note">Bu butonlar önizlemede çalışır ama yanıtı <b>kaydetmez</b>. Gerçek LCV toplama (Firestore) yakında — bkz. aşağıdaki not.</p>
+      </div>
+
+      <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkMuhur"><span class="sw"></span><span class="tlabel">Yuvarlak mühür yazısı</span></label>
+      <div class="togglebody" id="bodyMuhur">
+        <div class="field"><input type="text" id="inMuhur" maxlength="60" placeholder="MUTLULUĞA İLK ADIM"></div>
+      </div>
+
+      <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkIkram"><span class="sw"></span><span class="tlabel">İkram / sofra menüsü</span></label>
+      <div class="togglebody" id="bodyIkram">
+        <div class="row2">
+          <div class="field"><label>Bölüm başlığı</label><input type="text" id="inIkramBaslik" maxlength="60" placeholder="Sizi Bekleyen Sofra"></div>
+          <div class="field"><label>Grup adı</label><input type="text" id="inIkramGrup" maxlength="60" placeholder="İkramlar"></div>
+        </div>
+        <div class="field"><label>Öğeler <span class="hint">— her satır bir öğe</span></label><textarea id="taIkram" placeholder="Çupra&#10;Levrek&#10;Karpuz"></textarea></div>
+        <div class="field"><label>Alt not</label><input type="text" id="inIkramNot" maxlength="100" placeholder="…ve nice lezzet."></div>
+      </div>
+
+      <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkSart"><span class="sw"></span><span class="tlabel">İnce yazı / notlar</span></label>
+      <div class="togglebody" id="bodySart">
+        <div class="field"><label>Başlık</label><input type="text" id="inSartBaslik" maxlength="60" placeholder="İnce Yazı"></div>
+        <div class="field"><label>Maddeler <span class="hint">— her satır bir madde</span></label><textarea id="taSart" placeholder="Lütfen zamanında teşrif ediniz."></textarea></div>
+      </div>
+    </section>
+  </form>
+
+  <!-- SAĞ: ÖNİZLEME + PAYLAŞ -->
+  <aside class="preview">
+    <div class="pv-head">
+      <span class="t">Canlı önizleme</span>
+      <span class="live"><span class="dot"></span> gerçek görünüm</span>
+    </div>
+    <div class="phone"><iframe id="onizleme" title="Davetiye önizleme" loading="lazy"></iframe></div>
+
+    <div class="card share">
+      <h2><span class="no">✓</span> Paylaş</h2>
+      <div class="linkbox">
+        <input type="text" id="outLink" readonly aria-label="Paylaşım linki">
+        <button class="btn pri" type="button" id="btnKopya">Kopyala</button>
+      </div>
+      <div class="grid">
+        <button class="btn wa" type="button" id="btnWa">WhatsApp</button>
+        <button class="btn" type="button" id="btnPaylas">Paylaş…</button>
+      </div>
+      <p class="note" id="paylasNot"><b>Alıcı uygulama indirmeden</b> davetiyeyi tarayıcıda görür — geri sayım dâhil. Link davetiyenin tüm içeriğini taşır.</p>
+    </div>
+  </aside>
+</div>
+
+<p class="foot">E-Davetiye · Studio — <a href="index.html">canlı motor</a> · <a href="https://github.com/ambercatalbas/e-davetiye">GitHub</a></p>
+
+<script>
+/* ============================================================
+   Şablon ön ayarları (davet türleri). Her tür örnek metin +
+   uygun bölümleri açar. Kullanıcı sonra serbestçe düzenler.
+   ============================================================ */
+const PRESETS = {
+  dugun: { tema:"safak", ust:"Düğün Davetiyesi", alici:"Sevgili Misafirlerimiz",
+    baslik:"Mutluluğumuza Ortak Olun",
+    giris:"İki ailenin bir olduğu bu özel günde, sevincimizi sizinle paylaşmaktan mutluluk duyarız. Bizi kırmayıp aramızda olmanız en büyük hediyemiz olacaktır.",
+    detaylar:"Yer: Kristal Balo Salonu\nKıyafet: Şık", geriBaslik:"Törene kalan süre",
+    bitti:"Mutluluğa ilk adım — hoş geldiniz! 🤍", saat:"19:00", gunSonra:45,
+    imza:"Sevgiyle,", kurum:"Ayşe & Mehmet",
+    muhur:"MUTLULUĞA İLK ADIM ·", rsvpOlEt:"Katılıyorum", rsvpHaEt:"Katılamıyorum",
+    rsvpOlCv:"Ne mutlu bize! Sizi aramızda görmek için sabırsızız. 🎉", rsvpHaCv:"Çok üzüldük — teşekkür ederiz, kalbimizdesiniz. 🤍",
+    ac:["tarih","rsvp","muhur"] },
+
+  nisan: { tema:"safak", ust:"Nişan Davetiyesi", alici:"Sevgili Dostlarımız",
+    baslik:"Sözümüzü Nişanlıyoruz",
+    giris:"Hayatımızı birleştirme yolundaki bu ilk adımı atarken, sevincimize ortak olmanızı dileriz. Teşrifleriniz bizi onurlandıracaktır.",
+    detaylar:"Yer: Bahçe Restoran\nKıyafet: Şık", geriBaslik:"Nişana kalan süre",
+    bitti:"Söz verildi 💍", saat:"19:30", gunSonra:30,
+    imza:"Sevgiyle,", kurum:"Elif & Kaan",
+    rsvpOlEt:"Geliyorum", rsvpHaEt:"Gelemiyorum",
+    rsvpOlCv:"Harika! Bu güzel günde sizi de görmek isteriz. 🎉", rsvpHaCv:"Çok yazık — yine de teşekkürler. 🤍",
+    ac:["tarih","rsvp"] },
+
+  kina: { tema:"safak", ust:"Kına Gecesi", alici:"Sevgili Misafirler",
+    baslik:"Kınamızı Yakıyoruz",
+    giris:"Telli duvaklı, kınalı ellerle geleneğimizi yaşatacağımız bu özel gecede, kızımızın kınasında sizleri de aramızda görmek en büyük dileğimiz.",
+    detaylar:"Yer: Baba Ocağı\nKıyafet: Geleneksel / bindallı", geriBaslik:"Kına gecesine kalan süre",
+    bitti:"Kınamız kutlu olsun 🌙", saat:"20:00", gunSonra:44,
+    imza:"Sevgiyle,", kurum:"… Ailesi",
+    muhur:"KINAMIZ KUTLU OLSUN ·",
+    ac:["tarih","muhur"] },
+
+  sunnet: { tema:"safak", ust:"Sünnet Merasimi & Mevlüt", alici:"Sevgili Misafirlerimiz",
+    baslik:"Yiğidimiz Erkekliğe Adım Atıyor",
+    giris:"Oğlumuzun sünnet sevincini ve okunacak mevlid-i şerifi sizlerle paylaşmak isteriz. Teşrifleriniz bizleri onurlandıracak, bu günü daha da anlamlı kılacaktır.",
+    detaylar:"Mevlüt: 14.00\nTören: 16.00\nYer: Ziyafet Salonu", geriBaslik:"Merasime kalan süre",
+    bitti:"Maşallah — hoş geldiniz! 🌟", saat:"14:00", gunSonra:21,
+    imza:"Sevgiyle,", kurum:"Anne & Baba",
+    muhur:"MAŞALLAH · SÜNNET MÜBAREK OLSUN ·", rsvpOlEt:"Katılıyorum", rsvpHaEt:"Katılamıyorum",
+    rsvpOlCv:"Ne güzel! Yiğidimizin gününde sizi de bekleriz. 🌟", rsvpHaCv:"Teşekkür ederiz, dualarınız yeter. 🤍",
+    ac:["tarih","rsvp","muhur"] },
+
+  bebek: { tema:"safak", ust:"Hoş Geldin Bebek & Mevlüt", alici:"Sevgili Sevdiklerimiz",
+    baslik:"Aramıza Hoş Geldin",
+    giris:"Uzun zamandır beklediğimiz mutluluk nihayet kucağımızda. Minik yavrumuzun dünyaya gelişini ve mevlid-i şerifimizi sizlerle kutlamak isteriz.",
+    detaylar:"Yer: Evimiz\nNot: Bebeğimiz için dua ile", geriBaslik:"Mevlüde kalan süre",
+    bitti:"Hoş geldin minik 🍼", saat:"14:00", gunSonra:20,
+    imza:"Sevgiyle,", kurum:"… Ailesi",
+    rsvpOlEt:"Geliyorum", rsvpHaEt:"Gelemiyorum",
+    rsvpOlCv:"Sevindik! Minik yavrumuzla tanışmaya bekleriz. 🍼", rsvpHaCv:"Teşekkürler, sevginiz yeter. 🤍",
+    ac:["tarih","rsvp"] },
+
+  dogumgunu: { tema:"yaz", ust:"Doğum Günü Partisi", alici:"Sevgili Arkadaşlar",
+    baslik:"Yaşımıza Bir Yenisini Ekliyoruz",
+    giris:"Mumları üflerken, pastayı keserken ve doyasıya eğlenirken sen de yanımızda ol! Neşeli bir kutlama için seni bekliyoruz.",
+    detaylar:"Yer: Sahil Cafe\nGetir: Sadece neşeni 🎈", geriBaslik:"Partiye kalan süre",
+    bitti:"Parti başladı! 🎉", saat:"15:00", gunSonra:14,
+    imza:"Sevgiyle,", kurum:"Doğum Günü Çocuğu",
+    muhur:"İYİ Kİ DOĞDUN ·", rsvpOlEt:"Geliyorum!", rsvpHaEt:"Gelemem 🙁",
+    rsvpOlCv:"Süper! Seni görmek çok güzel olacak. 🎈", rsvpHaCv:"Özleyeceğiz — bir dahakine mutlaka! 🤍",
+    ac:["tarih","rsvp","muhur"] },
+
+  yaz: { tema:"yaz", ust:"Akdeniz'den Yaz Daveti", alici:"Sevgili Dostlar",
+    baslik:"Yazı Bizimle Geçirin",
+    giris:"Deniz ılık, güneş cömert, sofra kurulmayı bekliyor. Bu yazın en güzel günlerini Antalya'da, evimizde; uzun sohbetler ve serin akşamlarla geçirmek üzere sizi aramızda görmek isteriz.",
+    detaylar:"Konaklama: Dilediğiniz kadar\nYer: Evimiz · Antalya\nYanınıza: Mayo, güneş kremi, iştah",
+    geriBaslik:"Buluşmaya kalan süre", bitti:"Tatil başladı — hoş geldiniz! 🌊", saat:"10:00", gunSonra:30,
+    imza:"Sevgiyle,", kurum:"Amber, Şifa, Mahir & Emir",
+    muhur:"ANTALYA · YAZ TATİLİ ·",
+    ikramBaslik:"Sizi Bekleyen Sofra", ikramGrup:"Akdeniz'den",
+    ikram:"Çupra\nLevrek\nKarpuz\nMango smoothie", ikramNot:"…ve buraya sığdıramadığımız nice lezzet.",
+    rsvpOlEt:"Geliyoruz, sabırsızız!", rsvpHaEt:"Bu yaz olmayacak",
+    rsvpOlCv:"Ne güzel! Sofrayı sizin için kuruyoruz — deniz de hazır. 🌊", rsvpHaCv:"Çok üzüldük — kapımız her yaz açık. 🤍",
+    ac:["tarih","rsvp","muhur","ikram"] },
+
+  bos: { tema:"safak", ust:"Davetiye", alici:"Sevgili Misafirler",
+    baslik:"Davetlisiniz",
+    giris:"Bu özel günümüzde sizi de aramızda görmekten mutluluk duyarız.",
+    detaylar:"Yer: ", geriBaslik:"Etkinliğe kalan süre", bitti:"Zamanı geldi!", saat:"19:00", gunSonra:14,
+    imza:"Sevgiyle,", kurum:"",
+    ac:["tarih"] }
+};
+
+/* ---- Yardımcılar ---- */
+const $ = id => document.getElementById(id);
+const val = id => ($(id) ? $(id).value : "");
+const setVal = (id,v) => { if($(id)) $(id).value = v == null ? "" : v; };
+const chk = id => $(id) && $(id).checked;
+const setChk = (id,v) => { if($(id)) $(id).checked = !!v; };
+
+// YYYY-MM-DD (yerel), n gün sonrası
+function isoSonra(n){
+  const d = new Date(); d.setDate(d.getDate()+ (n||0));
+  const p = x => String(x).padStart(2,"0");
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`;
+}
+
+// Bölüm aç/kapa gövdesini eşitle
+const BODIES = { tarih:"bodyTarih", rsvp:"bodyRsvp", muhur:"bodyMuhur", ikram:"bodyIkram", sart:"bodySart" };
+const CHKS   = { tarih:"chkTarih", rsvp:"chkRsvp", muhur:"chkMuhur", ikram:"chkIkram", sart:"chkSart" };
+function syncBodies(){
+  for(const k in BODIES){ $(BODIES[k]).classList.toggle("open", chk(CHKS[k])); }
+}
+
+/* ---- Ön ayar uygula ---- */
+function preseti_uygula(tur){
+  const p = PRESETS[tur] || PRESETS.bos;
+  setVal("selTema", p.tema);
+  setVal("inUst", p.ust); setVal("inAlici", p.alici); setVal("inBaslik", p.baslik);
+  setVal("taGiris", p.giris); setVal("inImza", p.imza); setVal("inKurum", p.kurum);
+  setVal("taDetaylar", p.detaylar || ""); setVal("inGeriBaslik", p.geriBaslik || "");
+  setVal("inBitti", p.bitti || ""); setVal("inSaat", p.saat || "19:00");
+  setVal("inTarih", isoSonra(p.gunSonra || 14));
+  setVal("inMuhur", p.muhur || "");
+  setVal("inIkramBaslik", p.ikramBaslik || ""); setVal("inIkramGrup", p.ikramGrup || "");
+  setVal("taIkram", p.ikram || ""); setVal("inIkramNot", p.ikramNot || "");
+  setVal("inSartBaslik", p.sartBaslik || "İnce Yazı"); setVal("taSart", p.sart || "");
+  setVal("inRsvpOlEt", p.rsvpOlEt || "Geliyorum"); setVal("inRsvpHaEt", p.rsvpHaEt || "Gelemiyorum");
+  setVal("inRsvpOlCv", p.rsvpOlCv || "Harika, sizi bekliyoruz! 🎉"); setVal("inRsvpHaCv", p.rsvpHaCv || "Çok üzüldük. 🤍");
+  const ac = p.ac || [];
+  for(const k in CHKS){ setChk(CHKS[k], ac.includes(k)); }
+  syncBodies();
+}
+
+/* ---- Formdan davetiye config'i (index.html motorunun anladığı şekil) ---- */
+function cfgKur(){
+  const yaz = val("selTema") === "yaz";
+  const cfg = {
+    belgeBaslik: val("inBaslik").trim() || "Davetiye",
+    tema: val("selTema"),
+    tepeSusu: yaz ? "deniz" : "gunes",
+    sayacSusu: yaz ? "bardak" : "cup"
+  };
+  const s = id => val(id).trim();
+  if(s("inUst")) cfg.ustBaslik = s("inUst");
+  if(s("inAlici")) cfg.alici = s("inAlici");
+  if(s("inBaslik")) cfg.baslik = s("inBaslik");
+  if(s("taGiris")) cfg.girisMetni = s("taGiris");
+
+  // Tarih & geri sayım
+  const tarihAcik = chk("chkTarih") && val("inTarih");
+  if(tarihAcik){
+    const [H,M] = (val("inSaat")||"19:00").split(":").map(Number);
+    cfg.zaman = { tarih: val("inTarih"), saat: H||0, dakika: M||0 };
+    if(s("inBitti")) cfg.zaman.bittiMetni = s("inBitti");
+    if(s("inGeriBaslik")) cfg.geriSayimBaslik = s("inGeriBaslik");
+  }
+
+  // Detaylar: her satır "Etiket: Değer"; en üste Tarih {{tarih}} eklenir
+  const detaylar = [];
+  if(tarihAcik) detaylar.push({ etiket:"Tarih", deger:"{{tarih}}" });
+  (val("taDetaylar")||"").split("\n").forEach(satir=>{
+    const t = satir.trim(); if(!t) return;
+    const i = t.indexOf(":");
+    if(i>0){ const e=t.slice(0,i).trim(), d=t.slice(i+1).trim(); if(e&&d) detaylar.push({etiket:e,deger:d}); }
+    else detaylar.push({ etiket:"", deger:t });
+  });
+  if(detaylar.length) cfg.detaylar = detaylar;
+
+  // İkram
+  if(chk("chkIkram")){
+    const ogeler = (val("taIkram")||"").split("\n").map(x=>x.trim()).filter(Boolean);
+    if(ogeler.length){
+      cfg.ikramlar = [{ grup: s("inIkramGrup")||"", ogeler }];
+      if(s("inIkramBaslik")) cfg.ikramlarBaslik = s("inIkramBaslik");
+      if(s("inIkramNot")) cfg.ikramlarNot = s("inIkramNot");
+    }
+  }
+
+  // İnce yazı
+  if(chk("chkSart")){
+    const maddeler = (val("taSart")||"").split("\n").map(x=>x.trim()).filter(Boolean);
+    if(maddeler.length){ cfg.sartlar = maddeler; if(s("inSartBaslik")) cfg.sartlarBaslik = s("inSartBaslik"); }
+  }
+
+  // Mühür
+  if(chk("chkMuhur") && s("inMuhur")) cfg.muhurYazi = s("inMuhur");
+
+  // LCV
+  if(chk("chkRsvp")){
+    cfg.rsvp = {
+      olumlu:  { etiket: s("inRsvpOlEt")||"Geliyorum", cevap: s("inRsvpOlCv")||"Harika! 🎉" },
+      olumsuz: { etiket: s("inRsvpHaEt")||"Gelemiyorum", cevap: s("inRsvpHaCv")||"Çok üzüldük. 🤍" }
+    };
+  }
+
+  if(s("inImza")) cfg.imza = s("inImza");
+  if(s("inKurum")) cfg.imzaKurum = s("inKurum");
+  return cfg;
+}
+
+/* ---- base64url (index.html cozHash ile uyumlu) ---- */
+function b64url(obj){
+  const bytes = new TextEncoder().encode(JSON.stringify(obj));
+  let bin=""; bytes.forEach(b=> bin += String.fromCharCode(b));
+  return btoa(bin).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+}
+const RENDER = new URL("index.html", location.href).href;
+function link(){ return RENDER + "#i=" + b64url(cfgKur()); }
+
+/* ---- Önizleme (gerçek motoru iframe'de çalıştırır) ---- */
+let sonHash = "";
+function onizle(){
+  const l = link();
+  $("outLink").value = l;
+  const ifr = $("onizleme");
+  const yeni = l.split("#")[1] || "";
+  // Sadece hash değiştiyse tazele (index.html hashchange'de reload eder)
+  if(yeni !== sonHash){ sonHash = yeni; ifr.src = l; }
+}
+let zaman=null;
+function planla(){ clearTimeout(zaman); zaman=setTimeout(()=>{ onizle(); kaydet(); }, 320); }
+
+/* ---- Taslak (localStorage) ---- */
+const ALANLAR = ["selTur","selTema","inUst","inAlici","inBaslik","taGiris","inImza","inKurum",
+  "inTarih","inSaat","inGeriBaslik","inBitti","taDetaylar","inMuhur","inIkramBaslik","inIkramGrup",
+  "taIkram","inIkramNot","inSartBaslik","taSart","inRsvpOlEt","inRsvpHaEt","inRsvpOlCv","inRsvpHaCv"];
+const ANAHTAR = "studio.taslak.v1";
+function kaydet(){
+  const d = {}; ALANLAR.forEach(a=> d[a]=val(a));
+  for(const k in CHKS) d[CHKS[k]] = chk(CHKS[k]);
+  try{ localStorage.setItem(ANAHTAR, JSON.stringify(d)); }catch(e){}
+}
+function yukle(){
+  let d=null; try{ d = JSON.parse(localStorage.getItem(ANAHTAR)||"null"); }catch(e){}
+  if(!d) return false;
+  ALANLAR.forEach(a=> { if(d[a]!=null) setVal(a,d[a]); });
+  for(const k in CHKS) setChk(CHKS[k], !!d[CHKS[k]]);
+  syncBodies();
+  return true;
+}
+
+/* ---- Paylaş eylemleri ---- */
+function paylasMesaji(){
+  const alici = val("inAlici").trim(), baslik = val("inBaslik").trim();
+  const bas = (alici ? alici+", " : "") + (baslik || "Davetiyeniz hazır");
+  return bas + " — davetiyeniz:\n" + link();
+}
+$("btnKopya").addEventListener("click", async ()=>{
+  try{ await navigator.clipboard.writeText(link()); $("btnKopya").textContent="Kopyalandı ✓";
+    setTimeout(()=> $("btnKopya").textContent="Kopyala", 1600);
+  }catch(e){ $("outLink").select(); document.execCommand && document.execCommand("copy"); }
+});
+$("btnWa").addEventListener("click", ()=>{
+  window.open("https://wa.me/?text=" + encodeURIComponent(paylasMesaji()), "_blank", "noopener");
+});
+if(navigator.share){
+  $("btnPaylas").addEventListener("click", async ()=>{
+    try{ await navigator.share({ title: val("inBaslik")||"Davetiye", text: paylasMesaji(), url: link() }); }catch(e){}
+  });
+} else { $("btnPaylas").textContent = "Linki Aç"; $("btnPaylas").addEventListener("click", ()=> window.open(link(),"_blank","noopener")); }
+
+/* ---- Tema düğmesi ---- */
+$("btnTema").addEventListener("click", ()=>{
+  const kok = document.documentElement;
+  const simdi = kok.getAttribute("data-theme");
+  const karanlik = simdi ? simdi==="dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  kok.setAttribute("data-theme", karanlik ? "light" : "dark");
+});
+
+/* ---- Olaylar ---- */
+$("selTur").addEventListener("change", ()=>{ preseti_uygula(val("selTur")); planla(); });
+for(const k in CHKS){ $(CHKS[k]).addEventListener("change", ()=>{ syncBodies(); planla(); }); }
+$("form").addEventListener("input", planla);
+$("btnSifirla").addEventListener("click", ()=>{
+  if(!confirm("Form temizlensin mi? Kaydedilmemiş içerik silinir.")) return;
+  try{ localStorage.removeItem(ANAHTAR); }catch(e){}
+  setVal("selTur","dugun"); preseti_uygula("dugun"); onizle();
+});
+
+/* ---- Başlat ---- */
+if(!yukle()){ preseti_uygula("dugun"); }
+onizle();
+</script>
+</body>
+</html>
