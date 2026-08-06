@@ -290,6 +290,8 @@
   .detay .etiket { font-family:var(--f-sans); font-size:.64rem; letter-spacing:.2em;
                    text-transform:uppercase; color:var(--gold); }
   .detay .deger { font-family:var(--f-serif); font-size:1rem; color:var(--ink); line-height:1.35; }
+  /* Tek sayıda detay varsa son madde iki sütunu birden kaplar — boş çirkin hücre kalmaz */
+  .detay:last-child:nth-child(odd) { grid-column: 1 / -1; }
   @media (max-width:460px){ .detaylar{ grid-template-columns:1fr; } }
 
   /* Geri sayım */
