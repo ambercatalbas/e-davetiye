@@ -680,13 +680,29 @@
     return kok;
   }
 
+  // Mobil uygulamadan gelen özel davetiye: #i=<base64url(JSON)>
+  function cozHash() {
+    const h = location.hash ? location.hash.slice(1) : "";
+    const enc = new URLSearchParams(h).get("i");
+    if (!enc) return null;
+    try {
+      let s = enc.replace(/-/g, "+").replace(/_/g, "/");
+      while (s.length % 4) s += "=";
+      const bin = atob(s);
+      const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+      return JSON.parse(new TextDecoder("utf-8").decode(bytes));
+    } catch (e) { return null; }
+  }
+
+  const ozel = cozHash();
   const slug = new URLSearchParams(location.search).get("d") || "kahvalti";
-  const cfg = DAVETIYELER[slug] || DAVETIYELER.kahvalti;
+  const cfg = ozel || DAVETIYELER[slug] || DAVETIYELER.kahvalti;
   if (cfg.tema) document.documentElement.dataset.tema = cfg.tema;
   const mount = document.getElementById("davetiye");
   mount.innerHTML = "";
   mount.append(olustur(cfg));
-  if (cfg.belgeBaslik) document.title = cfg.belgeBaslik;
+  document.title = cfg.belgeBaslik || cfg.baslik || "Davetiye";
+  window.addEventListener("hashchange", () => location.reload());
 </script>
 <!-- ICERIK-SONU -->
 </body>
