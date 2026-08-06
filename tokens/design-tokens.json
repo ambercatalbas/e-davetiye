@@ -1,0 +1,122 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "version": "1.0.0",
+  "description": "E-Davetiye platformlar arası tasarım token kaynağı",
+  "font": {
+    "family": {
+      "serif": {"$type": "fontFamily", "$value": ["Hoefler Text", "Baskerville", "Georgia", "serif"]},
+      "script": {"$type": "fontFamily", "$value": ["Snell Roundhand", "Apple Chancery", "Segoe Script", "cursive"]},
+      "sans": {"$type": "fontFamily", "$value": ["-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"]}
+    },
+    "size": {
+      "xs": {"$type": "dimension", "$value": "0.6875rem"},
+      "sm": {"$type": "dimension", "$value": "0.8125rem"},
+      "md": {"$type": "dimension", "$value": "1rem"},
+      "lg": {"$type": "dimension", "$value": "1.25rem"},
+      "xl": {"$type": "dimension", "$value": "1.75rem"},
+      "display": {"$type": "dimension", "$value": "clamp(2rem, 8vw, 4.25rem)"}
+    },
+    "lineHeight": {
+      "tight": {"$type": "number", "$value": 1.1},
+      "body": {"$type": "number", "$value": 1.6},
+      "relaxed": {"$type": "number", "$value": 1.8}
+    }
+  },
+  "space": {
+    "0": {"$type": "dimension", "$value": "0"},
+    "1": {"$type": "dimension", "$value": "0.25rem"},
+    "2": {"$type": "dimension", "$value": "0.5rem"},
+    "3": {"$type": "dimension", "$value": "0.75rem"},
+    "4": {"$type": "dimension", "$value": "1rem"},
+    "5": {"$type": "dimension", "$value": "1.5rem"},
+    "6": {"$type": "dimension", "$value": "2rem"},
+    "7": {"$type": "dimension", "$value": "3rem"},
+    "8": {"$type": "dimension", "$value": "4rem"}
+  },
+  "radius": {
+    "sm": {"$type": "dimension", "$value": "6px"},
+    "md": {"$type": "dimension", "$value": "10px"},
+    "lg": {"$type": "dimension", "$value": "18px"},
+    "pill": {"$type": "dimension", "$value": "999px"}
+  },
+  "motion": {
+    "duration": {
+      "fast": {"$type": "duration", "$value": "160ms"},
+      "standard": {"$type": "duration", "$value": "240ms"},
+      "ceremonial": {"$type": "duration", "$value": "800ms"}
+    },
+    "easing": {
+      "standard": {"$type": "cubicBezier", "$value": [0.2, 0, 0, 1]},
+      "entrance": {"$type": "cubicBezier", "$value": [0.16, 1, 0.3, 1]}
+    }
+  },
+  "shadow": {
+    "card": {"$type": "shadow", "$value": {"color": "#3C325A47", "offsetX": "0px", "offsetY": "18px", "blur": "46px", "spread": "-24px"}},
+    "modal": {"$type": "shadow", "$value": {"color": "#00000059", "offsetX": "0px", "offsetY": "24px", "blur": "64px", "spread": "-20px"}}
+  },
+  "theme": {
+    "safak": {
+      "light": {
+        "sky1": {"$type": "color", "$value": "#E6E3F0"},
+        "sky2": {"$type": "color", "$value": "#EDE6EC"},
+        "card": {"$type": "color", "$value": "#FFFFFF"},
+        "ink": {"$type": "color", "$value": "#23283F"},
+        "inkSoft": {"$type": "color", "$value": "#565C77"},
+        "accent": {"$type": "color", "$value": "#8C6A25"},
+        "accentBright": {"$type": "color", "$value": "#B98F38"},
+        "coral": {"$type": "color", "$value": "#BE5540"},
+        "onAccent": {"$type": "color", "$value": "#FFFFFF"}
+      },
+      "dark": {
+        "sky1": {"$type": "color", "$value": "#0D111E"},
+        "sky2": {"$type": "color", "$value": "#151830"},
+        "card": {"$type": "color", "$value": "#161B30"},
+        "ink": {"$type": "color", "$value": "#ECE6D8"},
+        "inkSoft": {"$type": "color", "$value": "#A7ABC6"},
+        "accent": {"$type": "color", "$value": "#E7BE68"},
+        "accentBright": {"$type": "color", "$value": "#F2D48A"},
+        "coral": {"$type": "color", "$value": "#EA8E71"},
+        "onAccent": {"$type": "color", "$value": "#20160A"}
+      }
+    },
+    "yaz": {
+      "light": {
+        "sky1": {"$type": "color", "$value": "#DCEFEC"},
+        "sky2": {"$type": "color", "$value": "#E8F4EF"},
+        "card": {"$type": "color", "$value": "#FFFFFF"},
+        "ink": {"$type": "color", "$value": "#123A40"},
+        "inkSoft": {"$type": "color", "$value": "#4E6E70"},
+        "accent": {"$type": "color", "$value": "#0E6E78"},
+        "accentBright": {"$type": "color", "$value": "#17A2AD"},
+        "coral": {"$type": "color", "$value": "#E4633B"},
+        "onAccent": {"$type": "color", "$value": "#FFFFFF"}
+      },
+      "dark": {
+        "sky1": {"$type": "color", "$value": "#061F24"},
+        "sky2": {"$type": "color", "$value": "#0A2A30"},
+        "card": {"$type": "color", "$value": "#0E2E33"},
+        "ink": {"$type": "color", "$value": "#E6F1EE"},
+        "inkSoft": {"$type": "color", "$value": "#97B4B4"},
+        "accent": {"$type": "color", "$value": "#3FC9D2"},
+        "accentBright": {"$type": "color", "$value": "#6FE0E6"},
+        "coral": {"$type": "color", "$value": "#FF8A62"},
+        "onAccent": {"$type": "color", "$value": "#052227"}
+      }
+    }
+  },
+  "component": {
+    "button": {
+      "height": {"$type": "dimension", "$value": "44px"},
+      "radius": {"$type": "dimension", "$value": "8px"},
+      "paddingInline": {"$type": "dimension", "$value": "14px"}
+    },
+    "field": {
+      "height": {"$type": "dimension", "$value": "44px"},
+      "radius": {"$type": "dimension", "$value": "8px"}
+    },
+    "card": {
+      "radius": {"$type": "dimension", "$value": "18px"},
+      "maxWidth": {"$type": "dimension", "$value": "720px"}
+    }
+  }
+}

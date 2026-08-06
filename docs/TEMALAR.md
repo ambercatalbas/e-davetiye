@@ -2,6 +2,8 @@
 
 E-Davetiye renderer'ı bütün görsel varyantları aynı semantik CSS token sözleşmesiyle üretir. Şablon içeriği `templates.json` içinde, görsel tema token'ları `index.html` içinde tutulur.
 
+Platformlar arası makinece okunabilir çekirdek token paketi: [`tokens/design-tokens.json`](../tokens/design-tokens.json). Bu paket iOS/Android üreticileri için kaynak sözleşmedir; web renderer'daki CSS değişkenleriyle birlikte sürümlenir.
+
 ## Token sözleşmesi
 
 | Token | Rol |
