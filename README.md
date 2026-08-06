@@ -47,13 +47,20 @@ Site GitHub Pages'te yayında (giriş gerektirmez, doğrudan paylaşılabilir):
 | Yaz Tatili | Eren & Yasemin | 9 Ağustos | https://ambercatalbas.github.io/e-davetiye/?d=eren |
 | Yaz Tatili | Yasin & Tuba + çocuklar | 25 Ağustos | https://ambercatalbas.github.io/e-davetiye/?d=yasin |
 
-## İki tema
+## Sekiz tema
 
-- **`safak`** (varsayılan) — gece indigosundan şafağa; altın folyo. Kahvaltı davetiyesi bunu kullanır.
-- **`yaz`** — Akdeniz turkuazı + gün batımı mercan; deniz köpüğü zemin. Yaz davetiyeleri bunu kullanır.
+- **`safak`** — klasik altın folyo
+- **`yaz`** — Akdeniz turkuazı ve mercan
+- **`minimal`** — fildişi ve adaçayı
+- **`botanik`** — orman yeşili ve gül
+- **`modern`** — inci ve lacivert
+- **`bohem`** — kum ve terakota
+- **`gece`** — safir ve ay ışığı
+- **`luks`** — oniks ve şampanya
 
-Her tema hem açık hem koyu modda ayrı ayrı tasarlandı; görüntüleyenin telefonu
-hangi moddaysa ona göre görünür.
+Her tema açık ve koyu modda ayrı tasarlandı; ana, ikincil ve CTA kontrastları
+WCAG AA eşiğini geçer. Token sözleşmesi ve yeni tema ekleme rehberi:
+[`docs/TEMALAR.md`](docs/TEMALAR.md).
 
 ## Güncelleme / yeniden yayınlama
 

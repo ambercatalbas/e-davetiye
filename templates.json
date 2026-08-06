@@ -12,7 +12,12 @@
       "premium": false,
       "theme": "safak",
       "description": "Zarif serif, altın folyo ve zamansız bir düğün dili.",
-      "blocks": ["geri-sayim", "detaylar", "lcv", "muhur"],
+      "blocks": ["geri-sayim", "program", "harita", "lcv", "hediye", "muhur"],
+      "copyOptions": [
+        {"label":"Klasik","text":"İki ailenin bir olduğu bu özel günde, sevincimizi sizinle paylaşmaktan mutluluk duyarız. Bizi kırmayıp aramızda olmanız en büyük hediyemiz olacaktır."},
+        {"label":"Resmî","text":"Evlilik törenimizde sizleri de aramızda görmekten onur ve mutluluk duyacağız."},
+        {"label":"Şiirsel","text":"Bir ömrü aynı cümlede tamamlamak üzere verdiğimiz söze, sevginizle şahit olmanızı diliyoruz."}
+      ],
       "preset": {
         "tur": "dugun",
         "tema": "safak",
@@ -46,7 +51,12 @@
       "premium": true,
       "theme": "yaz",
       "description": "Sahil nikâhları için turkuaz, mercan ve ferah bir kompozisyon.",
-      "blocks": ["geri-sayim", "detaylar", "lcv", "muhur", "ikram"],
+      "blocks": ["geri-sayim", "program", "harita", "lcv", "hediye", "muhur", "ikram"],
+      "copyOptions": [
+        {"label":"Sahil","text":"Denizin kıyısında, gün batımının en güzel saatinde hayatlarımızı birleştirirken sevincimize ortak olmanızı diliyoruz."},
+        {"label":"Samimi","text":"Güneş batarken evet diyoruz; deniz, müzik ve sevdiklerimizle bu anı birlikte yaşayalım."},
+        {"label":"Şiirsel","text":"Ufuk denize, biz birbirimize kavuşurken gün batımının en güzel rengine siz de ortak olun."}
+      ],
       "preset": {
         "tur": "dugun",
         "tema": "yaz",
@@ -71,6 +81,160 @@
         "rsvpOlCv": "Harika! Gün batımında buluşuyoruz. 🌊",
         "rsvpHaCv": "Sevginizi yanımızda hissedeceğiz. 🤍",
         "ac": ["tarih", "rsvp", "muhur", "ikram"]
+      }
+    },
+    {
+      "id": "dugun-minimal",
+      "name": "Sessiz Zarafet",
+      "type": "dugun",
+      "typeLabel": "Düğün",
+      "style": "Minimal",
+      "color": "krem",
+      "colorLabel": "Krem",
+      "premium": false,
+      "theme": "minimal",
+      "description": "Fildişi, kömür ve adaçayıyla sakin; tipografi odaklı bir nikâh tasarımı.",
+      "blocks": ["geri-sayim", "program", "harita", "lcv", "hediye"],
+      "copyOptions": [
+        {"label":"Sade","text":"Hayatlarımızı birleştirdiğimiz bu özel günde yanımızda olmanızdan mutluluk duyacağız."},
+        {"label":"Samimi","text":"Birlikte çıktığımız yolun en güzel durağında, sevincimizi sizinle paylaşmak istiyoruz."},
+        {"label":"Şiirsel","text":"Aynı gökyüzüne bakıp aynı hayali kurduk; şimdi o hayale birlikte adım atarken sizi de yanımızda bekliyoruz."}
+      ],
+      "preset": {
+        "tur":"dugun","tema":"minimal","ust":"Nikâh Daveti","alici":"Sevgili Dostlarımız","baslik":"Birlikte, Daima",
+        "giris":"Hayatlarımızı birleştirdiğimiz bu özel günde yanımızda olmanızdan mutluluk duyacağız.",
+        "detaylar":"Nikâh: 18.00\nKokteyl: 19.00\nYer: Şehir Bahçesi\nYol Tarifi: Davet linkindeki konum",
+        "geriBaslik":"Birlikte daima demeye kalan süre","bitti":"Birlikte, daima. 🤍","saat":"18:00","gunSonra":50,
+        "imza":"Sevgiyle,","kurum":"Selin & Can","sartBaslik":"Küçük Bir Not","sart":"En güzel hediyemiz bu günü sizinle paylaşmak.",
+        "rsvpOlEt":"Katılıyorum","rsvpHaEt":"Katılamıyorum","rsvpOlCv":"Sizi aramızda görmek çok güzel olacak.","rsvpHaCv":"Sevginiz bizimle, teşekkür ederiz.","ac":["tarih","rsvp","sart"]
+      }
+    },
+    {
+      "id": "dugun-botanik",
+      "name": "Yeşil Yemin",
+      "type": "dugun",
+      "typeLabel": "Düğün",
+      "style": "Botanik",
+      "color": "yesil",
+      "colorLabel": "Yeşil",
+      "premium": true,
+      "theme": "botanik",
+      "description": "Orman yeşili, gül tonları ve kır düğünlerine yakışan doğal bir atmosfer.",
+      "blocks": ["geri-sayim", "program", "harita", "lcv", "hediye", "muhur"],
+      "copyOptions": [
+        {"label":"Doğal","text":"Ağaçların gölgesinde, sevdiklerimizin huzurunda birbirimize söz verirken sizi de yanımızda görmek isteriz."},
+        {"label":"Romantik","text":"Aşkımız kök salıp büyürken, hayat boyu sürecek yolculuğumuzun ilk gününe davetlisiniz."},
+        {"label":"Şiirsel","text":"Bir dalın iki yaprağı gibi aynı rüzgârda savrulmaya söz verdiğimiz gün, mutluluğumuza ortak olun."}
+      ],
+      "preset": {
+        "tur":"dugun","tema":"botanik","ust":"Kır Düğünü","alici":"Sevgili Misafirlerimiz","baslik":"Aşkımız Kök Salıyor",
+        "giris":"Ağaçların gölgesinde, sevdiklerimizin huzurunda birbirimize söz verirken sizi de yanımızda görmek isteriz.",
+        "detaylar":"Karşılama: 17.30\nTören: 18.30\nYer: Zeytinlik Bahçe\nKıyafet: Kır şıklığı",
+        "geriBaslik":"Kır düğününe kalan süre","bitti":"Aşkımız kök saldı 🌿","saat":"17:30","gunSonra":70,
+        "imza":"Sevgiyle,","kurum":"İdil & Ege","muhur":"AŞKIMIZ KÖK SALIYOR ·","sartBaslik":"Dileğimiz","sart":"Çiçek yerine bir fidan bağışı bizi mutlu eder.",
+        "rsvpOlEt":"Bahçedeyiz","rsvpHaEt":"Katılamıyoruz","rsvpOlCv":"Doğanın kalbinde buluşuyoruz. 🌿","rsvpHaCv":"Sevginizi yanımızda hissedeceğiz.","ac":["tarih","rsvp","muhur","sart"]
+      }
+    },
+    {
+      "id": "dugun-modern",
+      "name": "Mavi Çizgi",
+      "type": "dugun",
+      "typeLabel": "Düğün",
+      "style": "Modern",
+      "color": "lacivert",
+      "colorLabel": "Lacivert",
+      "premium": false,
+      "theme": "modern",
+      "description": "İnci zemin, güçlü lacivert ve şehir düğünleri için keskin bir modernizm.",
+      "blocks": ["geri-sayim", "program", "harita", "lcv"],
+      "copyOptions": [
+        {"label":"Modern","text":"Yeni hayatımızın ilk gecesinde, şehrin ışıkları altında birlikte kutlamak için sizi bekliyoruz."},
+        {"label":"Kısa","text":"Evet diyoruz. Bu unutulmaz geceye davetlisiniz."},
+        {"label":"Resmî","text":"Evlilik törenimizde sizleri de aramızda görmekten onur ve mutluluk duyacağız."}
+      ],
+      "preset": {
+        "tur":"dugun","tema":"modern","ust":"Düğün · Şehir · Gece","alici":"Değerli Misafirimiz","baslik":"Yeni Bir Başlangıç",
+        "giris":"Yeni hayatımızın ilk gecesinde, şehrin ışıkları altında birlikte kutlamak için sizi bekliyoruz.",
+        "detaylar":"Kokteyl: 19.00\nTören: 20.00\nYer: Sky Hall İstanbul\nOtopark: Vale hizmeti mevcut",
+        "geriBaslik":"Yeni başlangıca kalan süre","bitti":"Yeni hayatımız başladı.","saat":"19:00","gunSonra":55,
+        "imza":"Saygı ve sevgiyle,","kurum":"Naz & Arda","rsvpOlEt":"Katılacağım","rsvpHaEt":"Katılamayacağım","rsvpOlCv":"Bu geceyi birlikte kutlayacağız.","rsvpHaCv":"Nazik yanıtınız için teşekkür ederiz.","ac":["tarih","rsvp"]
+      }
+    },
+    {
+      "id": "dugun-bohem",
+      "name": "Toprak & Rüzgâr",
+      "type": "dugun",
+      "typeLabel": "Düğün",
+      "style": "Bohem",
+      "color": "toprak",
+      "colorLabel": "Toprak",
+      "premium": true,
+      "theme": "bohem",
+      "description": "Kum, terakota ve özgür ruhlu sahil veya kır kutlamaları için sıcak tonlar.",
+      "blocks": ["geri-sayim", "program", "harita", "lcv", "hediye", "ikram"],
+      "copyOptions": [
+        {"label":"Bohem","text":"Ayaklarımız kumda, kalbimiz gökyüzünde; özgürce evet diyeceğimiz bu günü sizinle kutlamak istiyoruz."},
+        {"label":"Samimi","text":"Biraz gün batımı, bolca müzik ve en sevdiğimiz insanlar… Düğünümüzde sizi de bekliyoruz."},
+        {"label":"Şiirsel","text":"Rüzgârın denize anlattığı her hikâyede biz vardık; şimdi kendi hikâyemizin yeni sayfasını birlikte açıyoruz."}
+      ],
+      "preset": {
+        "tur":"dugun","tema":"bohem","ust":"Bohem Düğün","alici":"Sevgili İnsanlarımız","baslik":"Toprak, Rüzgâr ve Biz",
+        "giris":"Ayaklarımız kumda, kalbimiz gökyüzünde; özgürce evet diyeceğimiz bu günü sizinle kutlamak istiyoruz.",
+        "detaylar":"Gün Batımı: 18.45\nTören: 19.15\nYer: Kumsal 42 · Kaş\nKıyafet: Rahat ve doğal",
+        "geriBaslik":"Kumsalda buluşmaya kalan süre","bitti":"Rüzgâr şahidimiz oldu. 🧡","saat":"18:45","gunSonra":65,
+        "imza":"Aşkla,","kurum":"Maya & Atlas","ikramBaslik":"Uzun Sofra","ikramGrup":"Mevsimden","ikram":"Ege mezeleri\nTaş fırın lezzetleri\nMevsim meyveleri","ikramNot":"Paylaştıkça çoğalan bir sofra.",
+        "sartBaslik":"Küçük Bir Rica","sart":"Hediye yerine sokak hayvanları için mama bağışı yapabilirsiniz.","rsvpOlEt":"Dans pistindeyiz","rsvpHaEt":"Bu kez yokuz","rsvpOlCv":"Gün batımında görüşürüz!","rsvpHaCv":"Sevginizi uzaktan hissedeceğiz.","ac":["tarih","rsvp","ikram","sart"]
+      }
+    },
+    {
+      "id": "dugun-gece",
+      "name": "Gece Yarısı",
+      "type": "dugun",
+      "typeLabel": "Düğün",
+      "style": "Gece",
+      "color": "lacivert",
+      "colorLabel": "Lacivert",
+      "premium": true,
+      "theme": "gece",
+      "description": "Safir gece, ay ışığı ve yıldızların altında dramatik bir kutlama.",
+      "blocks": ["geri-sayim", "program", "harita", "lcv", "muhur"],
+      "copyOptions": [
+        {"label":"Dramatik","text":"Yıldızların altında birbirimize sonsuzluk sözü verirken, gecemizi ışığınızla tamamlamanızı diliyoruz."},
+        {"label":"Şiirsel","text":"Gece göğe, ay denize kavuşurken biz de birbirimize kavuşacağız. Bu masalın şahidi olun."},
+        {"label":"Klasik","text":"Bu özel gecede evlilik törenimize katılarak mutluluğumuzu paylaşmanızı dileriz."}
+      ],
+      "preset": {
+        "tur":"dugun","tema":"gece","ust":"Gece Düğünü","alici":"Sevgili Misafirlerimiz","baslik":"Yıldızların Altında",
+        "giris":"Yıldızların altında birbirimize sonsuzluk sözü verirken, gecemizi ışığınızla tamamlamanızı diliyoruz.",
+        "detaylar":"Kapı Açılışı: 20.00\nTören: 21.00\nYer: Ay Işığı Terası\nKıyafet: Siyah kravat",
+        "geriBaslik":"Yıldızlar doğana kadar","bitti":"Gece bizimle ışıldıyor ✦","saat":"20:00","gunSonra":80,
+        "imza":"Sonsuzlukla,","kurum":"Lara & Baran","muhur":"YILDIZLARIN ALTINDA ·","rsvpOlEt":"Bu gece oradayız","rsvpHaEt":"Katılamıyoruz","rsvpOlCv":"Gecemiz sizinle ışıldayacak.","rsvpHaCv":"Kalbiniz bizimle, teşekkür ederiz.","ac":["tarih","rsvp","muhur"]
+      }
+    },
+    {
+      "id": "dugun-luks",
+      "name": "Maison d'Or",
+      "type": "dugun",
+      "typeLabel": "Düğün",
+      "style": "Lüks",
+      "color": "siyah",
+      "colorLabel": "Siyah",
+      "premium": true,
+      "theme": "luks",
+      "description": "Oniks, şampanya ve bordo detaylarla gala estetiğinde seçkin bir davetiye.",
+      "blocks": ["geri-sayim", "program", "harita", "lcv", "hediye", "muhur", "ikram"],
+      "copyOptions": [
+        {"label":"Seçkin","text":"Hayatımızın en özel gecesinde, mutluluğumuzu teşriflerinizle onurlandırmanızı dileriz."},
+        {"label":"Resmî","text":"Evlilik töreni ve ardından düzenlenecek gala yemeğinde sizleri aramızda görmekten onur duyacağız."},
+        {"label":"Zamansız","text":"İki hayat, tek bir gelecek… Sonsuzluğa adım attığımız bu seçkin geceye davetlisiniz."}
+      ],
+      "preset": {
+        "tur":"dugun","tema":"luks","ust":"Wedding Gala","alici":"Sayın Misafirimiz","baslik":"Maison d'Or",
+        "giris":"Hayatımızın en özel gecesinde, mutluluğumuzu teşriflerinizle onurlandırmanızı dileriz.",
+        "detaylar":"Karşılama: 19.30\nTören: 20.30\nGala: 21.00\nYer: The Grand Ballroom\nKıyafet: Black tie",
+        "geriBaslik":"Gala gecesine kalan süre","bitti":"Sonsuzluğa hoş geldiniz.","saat":"19:30","gunSonra":90,
+        "imza":"Saygı ve sevgiyle,","kurum":"Alara & Kerem","muhur":"MAISON D'OR · FOREVER ·","ikramBaslik":"Gala Menüsü","ikramGrup":"Şefin Seçkisi","ikram":"Karşılama kokteyli\nÜç servis gala menüsü\nGece yarısı ikramı","ikramNot":"Özel beslenme tercihinizi LCV notuna yazabilirsiniz.",
+        "sartBaslik":"Hediye Notu","sart":"Arzu eden misafirlerimiz eğitim fonumuza katkıda bulunabilir.","rsvpOlEt":"Teşrif edeceğim","rsvpHaEt":"Katılamayacağım","rsvpOlCv":"Teşrifiniz bizi onurlandıracak.","rsvpHaCv":"Nazik yanıtınız için teşekkür ederiz.","ac":["tarih","rsvp","muhur","ikram","sart"]
       }
     },
     {

@@ -93,6 +93,64 @@
     --hairline:rgba(63,201,210,.40);  --on-gold:#052227;  --shadow:rgba(0,0,0,.5);
   }
 
+  /* ===================== DÜĞÜN KOLEKSİYONU ===================== */
+  /* Minimal: fildişi, kömür ve adaçayı */
+  :root[data-tema="minimal"], :root[data-tema="minimal"][data-theme="light"] {
+    --sky-1:#F4F1EA; --sky-2:#EDE9E0; --glow:rgba(126,137,112,.20);
+    --card:#FCFBF7; --card-edge:rgba(43,47,42,.08); --ink:#292D2B; --ink-soft:#686D68;
+    --gold:#65715D; --gold-bright:#87967D; --coral:#9D695E; --hairline:rgba(101,113,93,.42);
+    --on-gold:#FFFFFF; --shadow:rgba(42,47,42,.22);
+  }
+  /* Botanik: orman yeşili, krem ve gül */
+  :root[data-tema="botanik"], :root[data-tema="botanik"][data-theme="light"] {
+    --sky-1:#E8EFE6; --sky-2:#F3F0E7; --glow:rgba(157,112,91,.22);
+    --card:#FFFEF8; --card-edge:rgba(34,73,52,.09); --ink:#234333; --ink-soft:#5E7467;
+    --gold:#557354; --gold-bright:#789473; --coral:#A8666A; --hairline:rgba(85,115,84,.44);
+    --on-gold:#FFFFFF; --shadow:rgba(31,70,48,.24);
+  }
+  /* Modern: inci, lacivert ve kobalt */
+  :root[data-tema="modern"], :root[data-tema="modern"][data-theme="light"] {
+    --sky-1:#E7EBF2; --sky-2:#F2F3F5; --glow:rgba(63,99,153,.19);
+    --card:#FFFFFF; --card-edge:rgba(22,44,80,.09); --ink:#172B49; --ink-soft:#5A687A;
+    --gold:#315C8A; --gold-bright:#517EAF; --coral:#B65C58; --hairline:rgba(49,92,138,.42);
+    --on-gold:#FFFFFF; --shadow:rgba(20,42,76,.23);
+  }
+  /* Bohem: kum, terakota ve zeytin */
+  :root[data-tema="bohem"], :root[data-tema="bohem"][data-theme="light"] {
+    --sky-1:#EEE1D0; --sky-2:#F6EDE2; --glow:rgba(194,104,68,.24);
+    --card:#FFF9F0; --card-edge:rgba(91,65,44,.09); --ink:#5A4132; --ink-soft:#826C5C;
+    --gold:#9A5B3E; --gold-bright:#C17855; --coral:#B9533F; --hairline:rgba(154,91,62,.43);
+    --on-gold:#FFFFFF; --shadow:rgba(92,61,42,.25);
+  }
+  /* Gece: safir, ay ışığı ve gümüş */
+  :root[data-tema="gece"], :root[data-tema="gece"][data-theme="light"] {
+    --sky-1:#DDE4F0; --sky-2:#E9EDF4; --glow:rgba(72,93,145,.22);
+    --card:#F9FAFD; --card-edge:rgba(25,42,83,.09); --ink:#172446; --ink-soft:#5C6782;
+    --gold:#52658E; --gold-bright:#778AB3; --coral:#9B5E70; --hairline:rgba(82,101,142,.44);
+    --on-gold:#FFFFFF; --shadow:rgba(17,31,68,.28);
+  }
+  /* Lüks: şampanya, oniks ve bordo */
+  :root[data-tema="luks"], :root[data-tema="luks"][data-theme="light"] {
+    --sky-1:#E9E0D1; --sky-2:#F3EBDD; --glow:rgba(130,84,51,.22);
+    --card:#FFFBF2; --card-edge:rgba(40,28,22,.10); --ink:#211D1B; --ink-soft:#665B55;
+    --gold:#8A643C; --gold-bright:#B58A56; --coral:#7E3340; --hairline:rgba(138,100,60,.48);
+    --on-gold:#FFFFFF; --shadow:rgba(38,26,20,.30);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root[data-tema="minimal"] { --sky-1:#171A18;--sky-2:#20231F;--glow:rgba(146,160,133,.13);--card:#242824;--card-edge:rgba(218,224,211,.09);--ink:#ECEDE7;--ink-soft:#A7ADA3;--gold:#AAB7A0;--gold-bright:#CAD3C3;--coral:#D29789;--hairline:rgba(170,183,160,.38);--on-gold:#182016;--shadow:rgba(0,0,0,.48); }
+    :root[data-tema="botanik"] { --sky-1:#0D2117;--sky-2:#153023;--glow:rgba(103,153,108,.14);--card:#173326;--card-edge:rgba(164,209,168,.09);--ink:#E8F0E6;--ink-soft:#A0BAA6;--gold:#93BB91;--gold-bright:#B7D4B3;--coral:#D58B8C;--hairline:rgba(147,187,145,.38);--on-gold:#102315;--shadow:rgba(0,0,0,.50); }
+    :root[data-tema="modern"] { --sky-1:#081426;--sky-2:#101F35;--glow:rgba(80,126,183,.14);--card:#13243B;--card-edge:rgba(143,180,224,.10);--ink:#E9EFF7;--ink-soft:#9FB0C5;--gold:#79A5D5;--gold-bright:#A7C8EA;--coral:#E08781;--hairline:rgba(121,165,213,.40);--on-gold:#0B1A2C;--shadow:rgba(0,0,0,.52); }
+    :root[data-tema="bohem"] { --sky-1:#281910;--sky-2:#3A2418;--glow:rgba(194,104,68,.15);--card:#40291C;--card-edge:rgba(226,174,133,.10);--ink:#F3E8DB;--ink-soft:#C2A58E;--gold:#D99870;--gold-bright:#EAB493;--coral:#E57D62;--hairline:rgba(217,152,112,.40);--on-gold:#2D160C;--shadow:rgba(0,0,0,.50); }
+    :root[data-tema="gece"] { --sky-1:#050A19;--sky-2:#0A1230;--glow:rgba(108,131,202,.16);--card:#0E1838;--card-edge:rgba(170,188,235,.11);--ink:#EFF2FF;--ink-soft:#A6B1D4;--gold:#AAB9E5;--gold-bright:#D2DBF6;--coral:#CF839B;--hairline:rgba(170,185,229,.42);--on-gold:#0A1230;--shadow:rgba(0,0,0,.58); }
+    :root[data-tema="luks"] { --sky-1:#0B0908;--sky-2:#17120F;--glow:rgba(181,138,86,.14);--card:#1D1814;--card-edge:rgba(226,194,148,.11);--ink:#F4EBDD;--ink-soft:#BDAE9E;--gold:#D8B47F;--gold-bright:#EACB9C;--coral:#C26979;--hairline:rgba(216,180,127,.43);--on-gold:#21160C;--shadow:rgba(0,0,0,.62); }
+  }
+  :root[data-tema="minimal"][data-theme="dark"] { --sky-1:#171A18;--sky-2:#20231F;--glow:rgba(146,160,133,.13);--card:#242824;--card-edge:rgba(218,224,211,.09);--ink:#ECEDE7;--ink-soft:#A7ADA3;--gold:#AAB7A0;--gold-bright:#CAD3C3;--coral:#D29789;--hairline:rgba(170,183,160,.38);--on-gold:#182016;--shadow:rgba(0,0,0,.48); }
+  :root[data-tema="botanik"][data-theme="dark"] { --sky-1:#0D2117;--sky-2:#153023;--glow:rgba(103,153,108,.14);--card:#173326;--card-edge:rgba(164,209,168,.09);--ink:#E8F0E6;--ink-soft:#A0BAA6;--gold:#93BB91;--gold-bright:#B7D4B3;--coral:#D58B8C;--hairline:rgba(147,187,145,.38);--on-gold:#102315;--shadow:rgba(0,0,0,.50); }
+  :root[data-tema="modern"][data-theme="dark"] { --sky-1:#081426;--sky-2:#101F35;--glow:rgba(80,126,183,.14);--card:#13243B;--card-edge:rgba(143,180,224,.10);--ink:#E9EFF7;--ink-soft:#9FB0C5;--gold:#79A5D5;--gold-bright:#A7C8EA;--coral:#E08781;--hairline:rgba(121,165,213,.40);--on-gold:#0B1A2C;--shadow:rgba(0,0,0,.52); }
+  :root[data-tema="bohem"][data-theme="dark"] { --sky-1:#281910;--sky-2:#3A2418;--glow:rgba(194,104,68,.15);--card:#40291C;--card-edge:rgba(226,174,133,.10);--ink:#F3E8DB;--ink-soft:#C2A58E;--gold:#D99870;--gold-bright:#EAB493;--coral:#E57D62;--hairline:rgba(217,152,112,.40);--on-gold:#2D160C;--shadow:rgba(0,0,0,.50); }
+  :root[data-tema="gece"][data-theme="dark"] { --sky-1:#050A19;--sky-2:#0A1230;--glow:rgba(108,131,202,.16);--card:#0E1838;--card-edge:rgba(170,188,235,.11);--ink:#EFF2FF;--ink-soft:#A6B1D4;--gold:#AAB9E5;--gold-bright:#D2DBF6;--coral:#CF839B;--hairline:rgba(170,185,229,.42);--on-gold:#0A1230;--shadow:rgba(0,0,0,.58); }
+  :root[data-tema="luks"][data-theme="dark"] { --sky-1:#0B0908;--sky-2:#17120F;--glow:rgba(181,138,86,.14);--card:#1D1814;--card-edge:rgba(226,194,148,.11);--ink:#F4EBDD;--ink-soft:#BDAE9E;--gold:#D8B47F;--gold-bright:#EACB9C;--coral:#C26979;--hairline:rgba(216,180,127,.43);--on-gold:#21160C;--shadow:rgba(0,0,0,.62); }
+
   body {
     background: var(--sky-2);
     color: var(--ink);

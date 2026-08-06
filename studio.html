@@ -90,6 +90,11 @@
   .tpl[data-color="turkuaz"] .tpl-art{background:linear-gradient(145deg,#0B4450,#21A9AE 62%,#F07A52);}
   .tpl[data-color="bordo"] .tpl-art{background:linear-gradient(145deg,#3B1021,#8A2443 64%,#C59A4A);}
   .tpl[data-color="pudra"] .tpl-art{background:linear-gradient(145deg,#765A6D,#D6A9AF 62%,#F0D9CC);}
+  .tpl[data-color="krem"] .tpl-art{background:linear-gradient(145deg,#4A4D48,#A8AD9E 58%,#EEE7D8);}
+  .tpl[data-color="yesil"] .tpl-art{background:linear-gradient(145deg,#143A27,#54785B 60%,#C8A0A0);}
+  .tpl[data-color="lacivert"] .tpl-art{background:linear-gradient(145deg,#08152D,#284F82 62%,#9DAFD6);}
+  .tpl[data-color="toprak"] .tpl-art{background:linear-gradient(145deg,#513020,#A75C3E 60%,#D8AD7D);}
+  .tpl[data-color="siyah"] .tpl-art{background:linear-gradient(145deg,#090807,#2A211A 62%,#B58A56);}
   .tpl-art::after{content:"";position:absolute;inset:9px;border:1px solid rgba(255,255,255,.3);z-index:-1;}
   .tpl-art strong{font-family:var(--f-serif);font-size:1rem;font-weight:500;line-height:1.05;max-width:76%;}
   .tpl-badge{position:absolute;right:9px;top:9px;font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;
@@ -223,6 +228,12 @@
           <select id="selTema">
             <option value="safak">Şafak · klasik altın</option>
             <option value="yaz">Yaz · Akdeniz turkuaz</option>
+            <option value="minimal">Minimal · fildişi adaçayı</option>
+            <option value="botanik">Botanik · orman gülü</option>
+            <option value="modern">Modern · inci lacivert</option>
+            <option value="bohem">Bohem · kum terakota</option>
+            <option value="gece">Gece · safir ay ışığı</option>
+            <option value="luks">Lüks · oniks şampanya</option>
           </select>
         </div>
       </div>
@@ -246,6 +257,10 @@
       <div class="field">
         <label for="taGiris">Davet metni</label>
         <textarea id="taGiris" maxlength="600"></textarea>
+      </div>
+      <div class="field">
+        <label for="selMetin">Hazır metin tonu <span class="hint">(seçilen şablona göre)</span></label>
+        <select id="selMetin" disabled><option value="">Şablondan bir metin tonu seçin</option></select>
       </div>
       <div class="row2">
         <div class="field"><label for="inImza">İmza</label><input type="text" id="inImza" maxlength="40"></div>
@@ -466,6 +481,7 @@ function preseti_uygula(tur){
    templates.json içerik katmanıdır. Yeni kayıtlar Studio koduna dokunmadan
    galeride görünür ve preset verisiyle editörü doldurur. */
 let TEMPLATES = [];
+let AKTIF_SABLON = null;
 const FAVORI_ANAHTAR = "studio.favoriler.v1";
 let favoriler = new Set();
 try{ favoriler = new Set(JSON.parse(localStorage.getItem(FAVORI_ANAHTAR)||"[]")); }catch(e){}
@@ -484,6 +500,14 @@ function favoriDegistir(id){
   galeriRender();
 }
 
+function metinVaryantlariniKur(t){
+  const select=$("selMetin"); select.replaceChildren();
+  const ilk=document.createElement("option"); ilk.value=""; ilk.textContent="Metin tonunu seçin"; select.append(ilk);
+  const secenekler=(t&&t.copyOptions)||[];
+  secenekler.forEach((x,i)=>{ const o=document.createElement("option"); o.value=String(i); o.textContent=x.label; select.append(o); });
+  select.disabled=!secenekler.length;
+}
+
 function sablonKarti(t){
   const card=document.createElement("article"); card.className="tpl"; card.dataset.color=t.color||"altin";
   const art=document.createElement("div"); art.className="tpl-art";
@@ -498,9 +522,11 @@ function sablonKarti(t){
   const p=document.createElement("p"); p.textContent=t.description;
   const use=document.createElement("button"); use.type="button"; use.className="btn pri tpl-use"; use.textContent="Bu şablonu kullan";
   use.addEventListener("click",()=>{
+    AKTIF_SABLON=t;
     PRESETS[t.id]=t.preset;
     setVal("selTur",t.type);
     preseti_uygula(t.id);
+    metinVaryantlariniKur(t);
     planla();
     $("inUst").focus({preventScroll:true});
     $("selTur").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"});
@@ -540,15 +566,20 @@ async function galeriYukle(){
 }
 
 ["tplAra","tplTur","tplRenk","tplPlan"].forEach(id=>$(id).addEventListener("input",galeriRender));
+$("selMetin").addEventListener("change",()=>{
+  const t=AKTIF_SABLON;
+  const i=Number(val("selMetin"));
+  if(t&&val("selMetin")!==""&&t.copyOptions&&t.copyOptions[i]){ setVal("taGiris",t.copyOptions[i].text); planla(); }
+});
 
 /* ---- Formdan davetiye config'i (index.html motorunun anladığı şekil) ---- */
 function cfgKur(){
-  const yaz = val("selTema") === "yaz";
+  const deniz = ["yaz","bohem"].includes(val("selTema"));
   const cfg = {
     belgeBaslik: val("inBaslik").trim() || "Davetiye",
     tema: val("selTema"),
-    tepeSusu: yaz ? "deniz" : "gunes",
-    sayacSusu: yaz ? "bardak" : "cup"
+    tepeSusu: deniz ? "deniz" : "gunes",
+    sayacSusu: deniz ? "bardak" : "cup"
   };
   const s = id => val(id).trim();
   if(s("inUst")) cfg.ustBaslik = s("inUst");
@@ -678,13 +709,13 @@ $("btnTema").addEventListener("click", ()=>{
 });
 
 /* ---- Olaylar ---- */
-$("selTur").addEventListener("change", ()=>{ preseti_uygula(val("selTur")); planla(); });
+$("selTur").addEventListener("change", ()=>{ AKTIF_SABLON=null; metinVaryantlariniKur(null); preseti_uygula(val("selTur")); planla(); });
 for(const k in CHKS){ $(CHKS[k]).addEventListener("change", ()=>{ syncBodies(); planla(); }); }
 $("form").addEventListener("input", planla);
 $("btnSifirla").addEventListener("click", ()=>{
   if(!confirm("Form temizlensin mi? Kaydedilmemiş içerik silinir.")) return;
   try{ localStorage.removeItem(ANAHTAR); }catch(e){}
-  setVal("selTur","dugun"); preseti_uygula("dugun"); onizle();
+  AKTIF_SABLON=null; metinVaryantlariniKur(null); setVal("selTur","dugun"); preseti_uygula("dugun"); onizle();
 });
 
 /* ---- Başlat ---- */
