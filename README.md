@@ -12,6 +12,8 @@ geliştirilmektedir. Detaylar:
 
 - **Ürün planı:** [`docs/URUN-PLANI.md`](docs/URUN-PLANI.md) — vizyon, pazar, personalar,
   mimari evrim, gelir modeli, fazlar ve KPI'lar.
+- **Marka kılavuzu:** [`docs/MARKA.md`](docs/MARKA.md) — konumlandırma, persona mesajları,
+  ses tonu, görsel kimlik, rekabet matrisi ve ölçüm çerçevesi.
 - **İş kalemleri:** [Issues](https://github.com/ambercatalbas/e-davetiye/issues) —
   `epic:*`, `type:*`, `priority:*`, `platform:*` etiketleri ve Faz milestone'ları ile.
 - **Pano:** [E-Davetiye Yol Haritası](https://github.com/users/ambercatalbas/projects/1).
