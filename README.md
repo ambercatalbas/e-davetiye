@@ -5,6 +5,19 @@ Tek bir `index.html` dosyası — harici bağımlılık yok, internet gerekmez.
 İçerik `DAVETIYELER` objesinden gelir; yeni davetiye eklemek oraya bir giriş
 eklemekten ibarettir.
 
+## 🚀 Yol Haritası & Profesyonelleşme
+
+Bu depo, MVP'den **pazarlanabilir bir ürüne** geçiş için planlı biçimde
+geliştirilmektedir. Detaylar:
+
+- **Ürün planı:** [`docs/URUN-PLANI.md`](docs/URUN-PLANI.md) — vizyon, pazar, personalar,
+  mimari evrim, gelir modeli, fazlar ve KPI'lar.
+- **İş kalemleri:** [Issues](https://github.com/ambercatalbas/e-davetiye/issues) —
+  `epic:*`, `type:*`, `priority:*`, `platform:*` etiketleri ve Faz milestone'ları ile.
+- **Pano:** [E-Davetiye Yol Haritası](https://github.com/users/ambercatalbas/projects/1).
+
+Hızlı filtreler: `label:priority:P0` · `milestone:"Faz 1 — Satılabilir Çekirdek"` · `label:epic:studio`
+
 ## Canlı davetiyeler
 
 Site GitHub Pages'te yayında (giriş gerektirmez, doğrudan paylaşılabilir):

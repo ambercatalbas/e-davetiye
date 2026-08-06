@@ -1,0 +1,11 @@
+# OS / editör
+.DS_Store
+*.swp
+
+# Yerel araç ayarları
+.claude/
+
+# Repoya ait olmayan üretim artıkları (mobil ikon vb.)
+AppIcons/
+AppIcons.zip
+ChatGPT Image*.png

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Ürün planı & yol haritası
+    url: https://github.com/ambercatalbas/e-davetiye/blob/main/docs/URUN-PLANI.md
+    about: Vizyon, strateji, fazlar ve issue haritası bu belgede.
+  - name: Yol haritası panosu
+    url: https://github.com/users/ambercatalbas/projects/1
+    about: Tüm iş kalemlerinin durumunu panodan takip edin.
