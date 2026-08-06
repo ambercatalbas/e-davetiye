@@ -221,6 +221,8 @@
             <option value="bebek">Bebek &amp; Mevlüt</option>
             <option value="dogumgunu">Doğum Günü</option>
             <option value="yaz">Yaz Daveti</option>
+            <option value="save-the-date">Save the Date</option>
+            <option value="tesekkur">Teşekkür Kartı</option>
             <option value="bos">Boş / Serbest</option>
           </select>
         </div>
@@ -236,6 +238,7 @@
             <option value="gece">Gece · safir ay ışığı</option>
             <option value="luks">Lüks · oniks şampanya</option>
             <option value="cocuk">Çocuk · gökyüzü mavisi</option>
+            <option value="pudra">Pudra · gül altını</option>
           </select>
         </div>
       </div>
@@ -470,6 +473,21 @@ const PRESETS = {
     rsvpOlEt:"Geliyoruz, sabırsızız!", rsvpHaEt:"Bu yaz olmayacak",
     rsvpOlCv:"Ne güzel! Sofrayı sizin için kuruyoruz — deniz de hazır. 🌊", rsvpHaCv:"Çok üzüldük — kapımız her yaz açık. 🤍",
     ac:["tarih","rsvp","muhur","ikram"] },
+
+  "save-the-date": { tema:"safak", ust:"Tarihi Ajandanıza Alın", alici:"Sevgili Dostlarımız",
+    baslik:"Save the Date",
+    giris:"Büyük günümüzün tarihini şimdiden paylaşıyoruz; ayrıntılı davetiyemiz yakında sizlerle. O gün yanımızda olmanızı çok isteriz.",
+    detaylar:"Yer: Antalya\nAyrıntılar: Yakında", geriBaslik:"O güne kalan süre", bitti:"O gün geldi! 🤍",
+    saat:"19:00", gunSonra:120, imza:"Sevgiyle,", kurum:"Ayşe & Mehmet",
+    haritaBaslik:"Şehir", haritaAdres:"Antalya",
+    ac:["tarih","harita"] },
+
+  "tesekkur": { tema:"safak", ust:"Teşekkürler", alici:"Sevgili Misafirlerimiz",
+    baslik:"Teşekkür Ederiz",
+    giris:"Bu özel günümüzde yanımızda olduğunuz, sevincimize ortak olduğunuz için tüm kalbimizle teşekkür ederiz. Varlığınız bizi çok mutlu etti.",
+    detaylar:"", geriBaslik:"", bitti:"", saat:"19:00", gunSonra:1,
+    imza:"Sevgiyle,", kurum:"Ayşe & Mehmet", muhur:"TEŞEKKÜRLER ·",
+    ac:["muhur"] },
 
   bos: { tema:"safak", ust:"Davetiye", alici:"Sevgili Misafirler",
     baslik:"Davetlisiniz",

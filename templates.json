@@ -1186,6 +1186,964 @@
           "ikram"
         ]
       }
+    },
+    {
+      "id": "nisan-altin",
+      "name": "Altın Yüzük",
+      "type": "nisan",
+      "typeLabel": "Nişan",
+      "style": "Klasik",
+      "color": "altin",
+      "colorLabel": "Altın",
+      "premium": false,
+      "theme": "safak",
+      "description": "Altın folyo dokunuşlu, zamansız bir nişan dili.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "program",
+        "harita",
+        "lcv"
+      ],
+      "copyOptions": [
+        {
+          "label": "Klasik",
+          "text": "Hayatımızı birleştirme yolundaki bu ilk adımı, sevdiklerimizle paylaşmak isteriz. Nişan törenimizde aramızda olmanız en büyük mutluluğumuz olur."
+        },
+        {
+          "label": "Resmî",
+          "text": "Nişanlanma törenimizde sizleri de aramızda görmekten onur duyacağız."
+        },
+        {
+          "label": "Şiirsel",
+          "text": "Bir ömre uzanan yolun ilk adımını atarken, sevginizle yanımızda olmanızı diliyoruz."
+        }
+      ],
+      "preset": {
+        "tur": "nisan",
+        "tema": "safak",
+        "giris": "Hayatımızı birleştirme yolundaki bu ilk adımı, sevdiklerimizle paylaşmak isteriz. Nişan törenimizde aramızda olmanız en büyük mutluluğumuz olur.",
+        "ust": "Nişan Davetiyesi",
+        "alici": "Sevgili Dostlarımız",
+        "baslik": "Sözümüzü Nişanlıyoruz",
+        "detaylar": "Yer: Bahçe Restoran\nKıyafet: Şık",
+        "geriBaslik": "Nişana kalan süre",
+        "bitti": "Söz verildi 💍",
+        "saat": "19:30",
+        "gunSonra": 30,
+        "kurum": "Elif & Kaan",
+        "program": "19.30 | Nişan Töreni | Bahçe Restoran",
+        "programBaslik": "Program",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Bahçe Restoran, Konyaaltı / Antalya",
+        "rsvpOlEt": "Geliyorum",
+        "rsvpHaEt": "Gelemiyorum",
+        "rsvpOlCv": "Harika! Bu güzel günde sizi de görmek isteriz. 🎉",
+        "rsvpHaCv": "Çok yazık — yine de teşekkürler. 🤍",
+        "imza": "Sevgiyle,",
+        "ac": [
+          "tarih",
+          "program",
+          "harita",
+          "rsvp"
+        ]
+      }
+    },
+    {
+      "id": "nisan-modern",
+      "name": "İki Kalp",
+      "type": "nisan",
+      "typeLabel": "Nişan",
+      "style": "Modern",
+      "color": "lacivert",
+      "colorLabel": "Lacivert",
+      "premium": true,
+      "theme": "modern",
+      "description": "İnci lacivert zeminde sade, çağdaş bir kompozisyon.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "harita",
+        "lcv"
+      ],
+      "copyOptions": [
+        {
+          "label": "Sade",
+          "text": "İki kalbin bir olduğu bu güzel günde, sevincimize ortak olmanızı dileriz."
+        },
+        {
+          "label": "Sıcak",
+          "text": "Sevgimizi taçlandırdığımız bu akşamda sizi de yanımızda görmek isteriz."
+        }
+      ],
+      "preset": {
+        "tur": "nisan",
+        "tema": "modern",
+        "giris": "İki kalbin bir olduğu bu güzel günde, sevincimize ortak olmanızı dileriz.",
+        "ust": "Nişan Davetiyesi",
+        "alici": "Sevgili Dostlar",
+        "baslik": "Nişanlanıyoruz",
+        "detaylar": "Yer: Marina Teras\nKıyafet:Şık",
+        "geriBaslik": "Nişana kalan süre",
+        "bitti": "Söz verildi 💍",
+        "saat": "20:00",
+        "gunSonra": 35,
+        "kurum": "Zeynep & Efe",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Marina Teras, Antalya",
+        "rsvpOlEt": "Katılıyorum",
+        "rsvpHaEt": "Katılamıyorum",
+        "rsvpOlCv": "Ne güzel! Sizi bekliyoruz. 🎉",
+        "rsvpHaCv": "Çok üzüldük. 🤍",
+        "imza": "Sevgiyle,",
+        "ac": [
+          "tarih",
+          "harita",
+          "rsvp"
+        ]
+      }
+    },
+    {
+      "id": "nisan-pudra",
+      "name": "Gül Vaadi",
+      "type": "nisan",
+      "typeLabel": "Nişan",
+      "style": "Zarif",
+      "color": "pudra",
+      "colorLabel": "Pudra",
+      "premium": true,
+      "theme": "pudra",
+      "description": "Pudra pembesi ve gül altını; romantik bir nişan teması.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "harita",
+        "lcv"
+      ],
+      "copyOptions": [
+        {
+          "label": "Romantik",
+          "text": "Aşkımızı sözle mühürlediğimiz bu özel günde, en sevdiklerimizle bir arada olmak isteriz."
+        },
+        {
+          "label": "Nazik",
+          "text": "Kalbimizin sözünü verdiğimiz bu akşama sizleri de bekliyoruz."
+        }
+      ],
+      "preset": {
+        "tur": "nisan",
+        "tema": "pudra",
+        "giris": "Aşkımızı sözle mühürlediğimiz bu özel günde, en sevdiklerimizle bir arada olmak isteriz.",
+        "ust": "Nişan Davetiyesi",
+        "alici": "Sevgili Sevdiklerimiz",
+        "baslik": "Söz Bizden, Mutluluk Hepimizden",
+        "detaylar": "Yer: Gül Bahçesi\nKıyafet: Şık",
+        "geriBaslik": "Nişana kalan süre",
+        "bitti": "Söz verildi 💍",
+        "saat": "19:00",
+        "gunSonra": 28,
+        "kurum": "Naz & Arda",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Gül Bahçesi, Antalya",
+        "rsvpOlEt": "Geliyorum",
+        "rsvpHaEt": "Gelemiyorum",
+        "rsvpOlCv": "Sevindik, sizi bekliyoruz! 🌷",
+        "rsvpHaCv": "Çok üzüldük. 🤍",
+        "imza": "Sevgiyle,",
+        "ac": [
+          "tarih",
+          "harita",
+          "rsvp"
+        ]
+      }
+    },
+    {
+      "id": "kina-bordo",
+      "name": "Kınalı Eller",
+      "type": "kina",
+      "typeLabel": "Kına",
+      "style": "Geleneksel",
+      "color": "bordo",
+      "colorLabel": "Bordo",
+      "premium": false,
+      "theme": "luks",
+      "description": "Bordo ve altın; geleneksel kına gecesi sıcaklığı.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "program",
+        "harita",
+        "muhur"
+      ],
+      "copyOptions": [
+        {
+          "label": "Geleneksel",
+          "text": "Telli duvaklı, kınalı ellerle geleneğimizi yaşatacağımız bu gecede sizleri de aramızda görmek isteriz."
+        },
+        {
+          "label": "Duygusal",
+          "text": "Baba ocağından uğurlanışın o özel gecesinde, sevdiklerimizle bir arada olmak isteriz."
+        }
+      ],
+      "preset": {
+        "tur": "kina",
+        "tema": "luks",
+        "giris": "Telli duvaklı, kınalı ellerle geleneğimizi yaşatacağımız bu gecede sizleri de aramızda görmek isteriz.",
+        "ust": "Kına Gecesi",
+        "alici": "Sevgili Misafirler",
+        "baslik": "Kınamızı Yakıyoruz",
+        "detaylar": "Yer: Baba Ocağı\nKıyafet: Bindallı / geleneksel",
+        "geriBaslik": "Kına gecesine kalan süre",
+        "bitti": "Kınamız kutlu olsun 🌙",
+        "saat": "20:00",
+        "gunSonra": 40,
+        "kurum": "… Ailesi",
+        "muhur": "KINAMIZ KUTLU OLSUN ·",
+        "program": "20.00 | Karşılama | Bahçe\n21.00 | Kına Merasimi | Bahçe",
+        "programBaslik": "Gecemizin Akışı",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Antalya",
+        "imza": "Sevgiyle,",
+        "ac": [
+          "tarih",
+          "program",
+          "harita",
+          "muhur"
+        ]
+      }
+    },
+    {
+      "id": "kina-yesil",
+      "name": "Hüma Kuşu",
+      "type": "kina",
+      "typeLabel": "Kına",
+      "style": "Naif",
+      "color": "yesil",
+      "colorLabel": "Yeşil",
+      "premium": true,
+      "theme": "botanik",
+      "description": "Orman yeşili ve nazik motifler; naif bir kına teması.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "program",
+        "harita",
+        "muhur"
+      ],
+      "copyOptions": [
+        {
+          "label": "Naif",
+          "text": "Kız evladımızın kınasında, en güzel dileklerle sizleri de aramızda görmek isteriz."
+        },
+        {
+          "label": "Sıcak",
+          "text": "Gönlümüzün en güzel gecesinde sofralarımızı ve sevincimizi paylaşmak isteriz."
+        }
+      ],
+      "preset": {
+        "tur": "kina",
+        "tema": "botanik",
+        "giris": "Kız evladımızın kınasında, en güzel dileklerle sizleri de aramızda görmek isteriz.",
+        "ust": "Kına Gecesi",
+        "alici": "Sevgili Misafirler",
+        "baslik": "Kına Gecemize Davetlisiniz",
+        "detaylar": "Yer: Kır Bahçesi\nKıyafet: Geleneksel",
+        "geriBaslik": "Kına gecesine kalan süre",
+        "bitti": "Kınamız kutlu olsun 🌙",
+        "saat": "20:00",
+        "gunSonra": 38,
+        "kurum": "… Ailesi",
+        "muhur": "KINAMIZ KUTLU OLSUN ·",
+        "program": "20.00 | Karşılama | Bahçe\n21.00 | Kına Merasimi | Bahçe",
+        "programBaslik": "Gecemizin Akışı",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Kır Bahçesi, Antalya",
+        "imza": "Sevgiyle,",
+        "ac": [
+          "tarih",
+          "program",
+          "harita",
+          "muhur"
+        ]
+      }
+    },
+    {
+      "id": "kina-gece",
+      "name": "Telli Duvak",
+      "type": "kina",
+      "typeLabel": "Kına",
+      "style": "Modern",
+      "color": "lacivert",
+      "colorLabel": "Lacivert",
+      "premium": true,
+      "theme": "gece",
+      "description": "Gece mavisi ve ay ışığı; modern bir kına yorumu.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "harita",
+        "muhur"
+      ],
+      "copyOptions": [
+        {
+          "label": "Modern",
+          "text": "Kınamızı yakıp geleneği modern bir dokunuşla kutlayacağımız bu gecede sizi de bekliyoruz."
+        },
+        {
+          "label": "Kısa",
+          "text": "Kına gecemizde eğlenceye ortak olun; sizi aramızda görmek isteriz."
+        }
+      ],
+      "preset": {
+        "tur": "kina",
+        "tema": "gece",
+        "giris": "Kınamızı yakıp geleneği modern bir dokunuşla kutlayacağımız bu gecede sizi de bekliyoruz.",
+        "ust": "Kına Gecesi",
+        "alici": "Sevgili Misafirler",
+        "baslik": "Kınamıza Buyurun",
+        "detaylar": "Yer: Teras Bahçe\nKıyafet: Şık / geleneksel",
+        "geriBaslik": "Kına gecesine kalan süre",
+        "bitti": "Kınamız kutlu olsun 🌙",
+        "saat": "20:30",
+        "gunSonra": 36,
+        "kurum": "… Ailesi",
+        "muhur": "KINAMIZ KUTLU OLSUN ·",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Teras Bahçe, Antalya",
+        "imza": "Sevgiyle,",
+        "ac": [
+          "tarih",
+          "harita",
+          "muhur"
+        ]
+      }
+    },
+    {
+      "id": "bebek-prens",
+      "name": "Hoş Geldin Prensimiz",
+      "type": "bebek",
+      "typeLabel": "Bebek",
+      "style": "Erkek",
+      "color": "mavi",
+      "colorLabel": "Mavi",
+      "premium": false,
+      "theme": "cocuk",
+      "description": "Gökyüzü mavisi ve bulut motifleri; erkek bebek için.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "harita",
+        "lcv",
+        "hediye"
+      ],
+      "copyOptions": [
+        {
+          "label": "Sevimli",
+          "text": "Uzun zamandır beklediğimiz mutluluk nihayet kucağımızda. Minik prensimizle tanışmanızı çok isteriz."
+        },
+        {
+          "label": "Mevlütlü",
+          "text": "Yavrumuzun dünyaya gelişini ve mevlid-i şerifimizi sizlerle paylaşmak isteriz."
+        }
+      ],
+      "preset": {
+        "tur": "bebek",
+        "tema": "cocuk",
+        "giris": "Uzun zamandır beklediğimiz mutluluk nihayet kucağımızda. Minik prensimizle tanışmanızı çok isteriz.",
+        "ust": "Hoş Geldin Bebek",
+        "alici": "Sevgili Sevdiklerimiz",
+        "baslik": "Aramıza Hoş Geldi",
+        "detaylar": "Yer: Evimiz",
+        "geriBaslik": "Kutlamaya kalan süre",
+        "bitti": "Hoş geldin minik 🍼",
+        "saat": "14:00",
+        "gunSonra": 20,
+        "kurum": "… Ailesi",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Antalya",
+        "rsvpOlEt": "Geliyorum",
+        "rsvpHaEt": "Gelemiyorum",
+        "rsvpOlCv": "Sevindik! Minik yavrumuzla tanışmaya bekleriz. 🍼",
+        "rsvpHaCv": "Teşekkürler, sevginiz yeter. 🤍",
+        "hediyeBaslik": "Hediye",
+        "hediyeMesaj": "Minik yavrumuza hediyeniz için:",
+        "hediyeIban": "TR00 0000 0000 0000 0000 0000 00",
+        "hediyeAd": "Ad Soyad",
+        "hediyeNot": "Varlığınız en büyük hediye. 🤍",
+        "imza": "Sevgiyle,",
+        "ac": [
+          "tarih",
+          "harita",
+          "rsvp",
+          "hediye"
+        ]
+      }
+    },
+    {
+      "id": "bebek-prenses",
+      "name": "Hoş Geldin Prensesimiz",
+      "type": "bebek",
+      "typeLabel": "Bebek",
+      "style": "Kız",
+      "color": "pudra",
+      "colorLabel": "Pudra",
+      "premium": true,
+      "theme": "pudra",
+      "description": "Pudra pembesi ve nazik motifler; kız bebek için.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "harita",
+        "lcv",
+        "hediye"
+      ],
+      "copyOptions": [
+        {
+          "label": "Sevimli",
+          "text": "Küçük prensesimiz aramıza katıldı! Bu tatlı mutluluğu sizinle kutlamak isteriz."
+        },
+        {
+          "label": "Mevlütlü",
+          "text": "Kızımızın dünyaya gelişini ve okunacak mevlid-i şerifi sizlerle paylaşmak isteriz."
+        }
+      ],
+      "preset": {
+        "tur": "bebek",
+        "tema": "pudra",
+        "giris": "Küçük prensesimiz aramıza katıldı! Bu tatlı mutluluğu sizinle kutlamak isteriz.",
+        "ust": "Hoş Geldin Bebek",
+        "alici": "Sevgili Sevdiklerimiz",
+        "baslik": "Aramıza Hoş Geldi",
+        "detaylar": "Yer: Evimiz",
+        "geriBaslik": "Kutlamaya kalan süre",
+        "bitti": "Hoş geldin minik 🍼",
+        "saat": "14:00",
+        "gunSonra": 20,
+        "kurum": "… Ailesi",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Antalya",
+        "rsvpOlEt": "Geliyorum",
+        "rsvpHaEt": "Gelemiyorum",
+        "rsvpOlCv": "Sevindik! Minik prensesimizle tanışmaya bekleriz. 🌷",
+        "rsvpHaCv": "Teşekkürler, sevginiz yeter. 🤍",
+        "hediyeBaslik": "Hediye",
+        "hediyeMesaj": "Minik yavrumuza hediyeniz için:",
+        "hediyeIban": "TR00 0000 0000 0000 0000 0000 00",
+        "hediyeAd": "Ad Soyad",
+        "hediyeNot": "Varlığınız en büyük hediye. 🤍",
+        "imza": "Sevgiyle,",
+        "ac": [
+          "tarih",
+          "harita",
+          "rsvp",
+          "hediye"
+        ]
+      }
+    },
+    {
+      "id": "bebek-notr",
+      "name": "Minik Ayak İzleri",
+      "type": "bebek",
+      "typeLabel": "Bebek",
+      "style": "Nötr",
+      "color": "krem",
+      "colorLabel": "Krem",
+      "premium": false,
+      "theme": "minimal",
+      "description": "Fildişi ve adaçayı; sade, cinsiyet-nötr bir tema.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "lcv"
+      ],
+      "copyOptions": [
+        {
+          "label": "Sade",
+          "text": "Küçük bir mucize aramıza katıldı. Bu mutluluğu sevdiklerimizle paylaşmak isteriz."
+        },
+        {
+          "label": "Zarif",
+          "text": "Minik misafirimizin gelişini kutlamak için sizleri de aramızda görmek isteriz."
+        }
+      ],
+      "preset": {
+        "tur": "bebek",
+        "tema": "minimal",
+        "giris": "Küçük bir mucize aramıza katıldı. Bu mutluluğu sevdiklerimizle paylaşmak isteriz.",
+        "ust": "Hoş Geldin Bebek",
+        "alici": "Sevgili Dostlarımız",
+        "baslik": "Bir Yıldız Doğdu",
+        "detaylar": "Yer: Evimiz",
+        "geriBaslik": "Kutlamaya kalan süre",
+        "bitti": "Hoş geldin minik 🍼",
+        "saat": "15:00",
+        "gunSonra": 18,
+        "kurum": "… Ailesi",
+        "rsvpOlEt": "Geliyorum",
+        "rsvpHaEt": "Gelemiyorum",
+        "rsvpOlCv": "Ne güzel! Sizi bekliyoruz. 🤍",
+        "rsvpHaCv": "Teşekkürler. 🤍",
+        "imza": "Sevgiyle,",
+        "ac": [
+          "tarih",
+          "rsvp"
+        ]
+      }
+    },
+    {
+      "id": "bebek-mevlut",
+      "name": "Bebek Mevlüdü",
+      "type": "bebek",
+      "typeLabel": "Bebek",
+      "style": "Mevlüt",
+      "color": "altin",
+      "colorLabel": "Altın",
+      "premium": true,
+      "theme": "safak",
+      "description": "Altın folyo; mevlid-i şerif için zarif ve manevi.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "program",
+        "harita",
+        "lcv",
+        "muhur"
+      ],
+      "copyOptions": [
+        {
+          "label": "Manevi",
+          "text": "Yavrumuzun sağlıkla aramıza katılışına şükranla, okunacak mevlid-i şerife sizleri de davet ederiz."
+        },
+        {
+          "label": "Klasik",
+          "text": "Bebeğimiz için okutacağımız mevlid-i şerifte teşrifleriniz bizleri onurlandıracaktır."
+        }
+      ],
+      "preset": {
+        "tur": "bebek",
+        "tema": "safak",
+        "giris": "Yavrumuzun sağlıkla aramıza katılışına şükranla, okunacak mevlid-i şerife sizleri de davet ederiz.",
+        "ust": "Bebek Mevlüdü",
+        "alici": "Sevgili Misafirlerimiz",
+        "baslik": "Mevlid-i Şerifimize Davetlisiniz",
+        "detaylar": "Yer: Ziyafet Salonu",
+        "geriBaslik": "Mevlüde kalan süre",
+        "bitti": "Hayırlı olsun 🤲",
+        "saat": "14:00",
+        "gunSonra": 15,
+        "kurum": "… Ailesi",
+        "muhur": "MAŞALLAH ·",
+        "program": "14.00 | Mevlid-i Şerif | Salon\n15.00 | İkram | Salon",
+        "programBaslik": "Program",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Ziyafet Salonu, Antalya",
+        "rsvpOlEt": "Katılıyorum",
+        "rsvpHaEt": "Katılamıyorum",
+        "rsvpOlCv": "Teşekkürler, sizi bekleriz. 🤲",
+        "rsvpHaCv": "Dualarınız yeter, teşekkürler. 🤍",
+        "imza": "Sevgiyle,",
+        "ac": [
+          "tarih",
+          "program",
+          "harita",
+          "rsvp",
+          "muhur"
+        ]
+      }
+    },
+    {
+      "id": "dg-cocuk-mavi",
+      "name": "Bugün Benim Günüm",
+      "type": "dogumgunu",
+      "typeLabel": "Doğum Günü",
+      "style": "Çocuk",
+      "color": "mavi",
+      "colorLabel": "Mavi",
+      "premium": false,
+      "theme": "cocuk",
+      "description": "Gökyüzü mavisi, neşeli ve çocuksu.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "program",
+        "lcv",
+        "muhur"
+      ],
+      "copyOptions": [
+        {
+          "label": "Neşeli",
+          "text": "Doğum günümü kutluyorum! Balonlar, pasta ve oyunlarla dolu günümde sen de yanımda ol."
+        },
+        {
+          "label": "Kısa",
+          "text": "Partime davetlisin — birlikte eğlenelim! 🎈"
+        }
+      ],
+      "preset": {
+        "tur": "dogumgunu",
+        "tema": "cocuk",
+        "giris": "Doğum günümü kutluyorum! Balonlar, pasta ve oyunlarla dolu günümde sen de yanımda ol.",
+        "ust": "Doğum Günü Partisi",
+        "alici": "Sevgili Arkadaşlar",
+        "baslik": "Yaşımı Kutluyorum",
+        "detaylar": "Yer: Oyun Evi\nGetir: Neşeni 🎈",
+        "geriBaslik": "Partiye kalan süre",
+        "bitti": "Parti başladı! 🎉",
+        "saat": "15:00",
+        "gunSonra": 14,
+        "kurum": "Doğum Günü Çocuğu",
+        "muhur": "İYİ Kİ DOĞDUM ·",
+        "program": "15.00 | Karşılama | Oyun Evi\n15.30 | Pasta & Kutlama | Oyun Evi",
+        "programBaslik": "Program",
+        "rsvpOlEt": "Geliyorum!",
+        "rsvpHaEt": "Gelemem 🙁",
+        "rsvpOlCv": "Yaşasın! Seni bekliyorum. 🎈",
+        "rsvpHaCv": "Özleyeceğim! 🤍",
+        "imza": "Sevgiyle,",
+        "ac": [
+          "tarih",
+          "program",
+          "rsvp",
+          "muhur"
+        ]
+      }
+    },
+    {
+      "id": "dg-cocuk-pembe",
+      "name": "Prensesin Partisi",
+      "type": "dogumgunu",
+      "typeLabel": "Doğum Günü",
+      "style": "Çocuk",
+      "color": "pudra",
+      "colorLabel": "Pudra",
+      "premium": true,
+      "theme": "pudra",
+      "description": "Pudra pembesi; prenses temalı çocuk doğum günü.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "lcv",
+        "muhur"
+      ],
+      "copyOptions": [
+        {
+          "label": "Prenses",
+          "text": "Küçük prensesin doğum günü partisine davetlisin! Taçları takıp birlikte eğlenelim."
+        },
+        {
+          "label": "Kısa",
+          "text": "Doğum günü partime bekliyorum — hadi eğlenelim! 👑"
+        }
+      ],
+      "preset": {
+        "tur": "dogumgunu",
+        "tema": "pudra",
+        "giris": "Küçük prensesin doğum günü partisine davetlisin! Taçları takıp birlikte eğlenelim.",
+        "ust": "Doğum Günü Partisi",
+        "alici": "Sevgili Arkadaşlar",
+        "baslik": "Prensesin Doğum Günü",
+        "detaylar": "Yer: Parti Salonu\nGetir: Neşeni 🎈",
+        "geriBaslik": "Partiye kalan süre",
+        "bitti": "Parti başladı! 🎉",
+        "saat": "15:00",
+        "gunSonra": 14,
+        "kurum": "Doğum Günü Prensesi",
+        "muhur": "İYİ Kİ DOĞDUM ·",
+        "rsvpOlEt": "Geliyorum!",
+        "rsvpHaEt": "Gelemem 🙁",
+        "rsvpOlCv": "Yaşasın! Seni bekliyorum. 👑",
+        "rsvpHaCv": "Özleyeceğim! 🤍",
+        "imza": "Sevgiyle,",
+        "ac": [
+          "tarih",
+          "rsvp",
+          "muhur"
+        ]
+      }
+    },
+    {
+      "id": "dg-modern",
+      "name": "Yaşasın!",
+      "type": "dogumgunu",
+      "typeLabel": "Doğum Günü",
+      "style": "Yetişkin",
+      "color": "lacivert",
+      "colorLabel": "Lacivert",
+      "premium": false,
+      "theme": "modern",
+      "description": "İnci lacivert; sade ve modern yetişkin kutlaması.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "harita",
+        "lcv"
+      ],
+      "copyOptions": [
+        {
+          "label": "Modern",
+          "text": "Bir yaşımı daha devirdim! Sevdiklerimle birlikte kutlamak isterim, gel eğlenelim."
+        },
+        {
+          "label": "Samimi",
+          "text": "Doğum günümü seninle kutlamak isterim; keyifli bir akşam bizi bekliyor."
+        }
+      ],
+      "preset": {
+        "tur": "dogumgunu",
+        "tema": "modern",
+        "giris": "Bir yaşımı daha devirdim! Sevdiklerimle birlikte kutlamak isterim, gel eğlenelim.",
+        "ust": "Doğum Günü",
+        "alici": "Sevgili Dostlar",
+        "baslik": "Bir Yaş Daha",
+        "detaylar": "Yer: Sahil Cafe\nKıyafet: Rahat",
+        "geriBaslik": "Kutlamaya kalan süre",
+        "bitti": "Kutlama başladı! 🎉",
+        "saat": "20:00",
+        "gunSonra": 10,
+        "kurum": "—",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Sahil Cafe, Antalya",
+        "rsvpOlEt": "Geliyorum",
+        "rsvpHaEt": "Gelemiyorum",
+        "rsvpOlCv": "Harika, seni bekliyorum! 🎉",
+        "rsvpHaCv": "Özleyeceğim! 🤍",
+        "imza": "Sevgiyle,",
+        "ac": [
+          "tarih",
+          "harita",
+          "rsvp"
+        ]
+      }
+    },
+    {
+      "id": "dg-luks",
+      "name": "Bir Yaş Daha",
+      "type": "dogumgunu",
+      "typeLabel": "Doğum Günü",
+      "style": "Şık",
+      "color": "siyah",
+      "colorLabel": "Siyah",
+      "premium": true,
+      "theme": "luks",
+      "description": "Oniks ve şampanya; şık bir yetişkin doğum günü.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "harita",
+        "lcv"
+      ],
+      "copyOptions": [
+        {
+          "label": "Şık",
+          "text": "Özel bir akşamla bir yaşımı daha kutluyorum. Zarafet ve keyif dolu bu geceye davetlisin."
+        },
+        {
+          "label": "Kısa",
+          "text": "Doğum günü kutlamama bekliyorum — şık ve keyifli bir akşam. 🥂"
+        }
+      ],
+      "preset": {
+        "tur": "dogumgunu",
+        "tema": "luks",
+        "giris": "Özel bir akşamla bir yaşımı daha kutluyorum. Zarafet ve keyif dolu bu geceye davetlisin.",
+        "ust": "Doğum Günü",
+        "alici": "Sevgili Dostlar",
+        "baslik": "Kutlamaya Davetlisin",
+        "detaylar": "Yer: Lounge\nKıyafet: Şık",
+        "geriBaslik": "Kutlamaya kalan süre",
+        "bitti": "Şerefe! 🥂",
+        "saat": "21:00",
+        "gunSonra": 12,
+        "kurum": "—",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "Lounge, Antalya",
+        "rsvpOlEt": "Geliyorum",
+        "rsvpHaEt": "Gelemiyorum",
+        "rsvpOlCv": "Harika, bekliyorum! 🥂",
+        "rsvpHaCv": "Özleyeceğim! 🤍",
+        "imza": "Sevgiyle,",
+        "ac": [
+          "tarih",
+          "harita",
+          "rsvp"
+        ]
+      }
+    },
+    {
+      "id": "std-klasik",
+      "name": "Tarihi Not Alın",
+      "type": "save-the-date",
+      "typeLabel": "Save the Date",
+      "style": "Klasik",
+      "color": "altin",
+      "colorLabel": "Altın",
+      "premium": false,
+      "theme": "safak",
+      "description": "Altın folyo; büyük gün için zarif ön-duyuru.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "harita"
+      ],
+      "copyOptions": [
+        {
+          "label": "Klasik",
+          "text": "Büyük günümüzün tarihini şimdiden paylaşıyoruz; ayrıntılı davetiyemiz yakında sizlerle."
+        },
+        {
+          "label": "Kısa",
+          "text": "O günü ajandanıza alın — yakında görüşmek üzere!"
+        }
+      ],
+      "preset": {
+        "tur": "save-the-date",
+        "tema": "safak",
+        "giris": "Büyük günümüzün tarihini şimdiden paylaşıyoruz; ayrıntılı davetiyemiz yakında sizlerle.",
+        "ust": "Tarihi Ajandanıza Alın",
+        "alici": "Sevgili Dostlarımız",
+        "baslik": "Save the Date",
+        "detaylar": "Yer: Antalya\nAyrıntılar: Yakında",
+        "geriBaslik": "O güne kalan süre",
+        "bitti": "O gün geldi! 🤍",
+        "saat": "19:00",
+        "gunSonra": 120,
+        "kurum": "Ayşe & Mehmet",
+        "haritaBaslik": "Şehir",
+        "haritaAdres": "Antalya",
+        "imza": "Sevgiyle,",
+        "ac": [
+          "tarih",
+          "harita"
+        ]
+      }
+    },
+    {
+      "id": "std-modern",
+      "name": "Save the Date",
+      "type": "save-the-date",
+      "typeLabel": "Save the Date",
+      "style": "Modern",
+      "color": "lacivert",
+      "colorLabel": "Lacivert",
+      "premium": true,
+      "theme": "modern",
+      "description": "İnci lacivert; modern ve sade ön-duyuru.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "harita"
+      ],
+      "copyOptions": [
+        {
+          "label": "Modern",
+          "text": "O büyük gün için tarihi paylaşıyoruz. Detaylar yolda; şimdilik takviminizde bize yer ayırın."
+        },
+        {
+          "label": "Kısa",
+          "text": "Tarihi kaydedin — resmi davetiye yakında."
+        }
+      ],
+      "preset": {
+        "tur": "save-the-date",
+        "tema": "modern",
+        "giris": "O büyük gün için tarihi paylaşıyoruz. Detaylar yolda; şimdilik takviminizde bize yer ayırın.",
+        "ust": "Save the Date",
+        "alici": "Sevgili Dostlar",
+        "baslik": "Tarihi Kaydedin",
+        "detaylar": "Yer: Antalya\nAyrıntılar: Yakında",
+        "geriBaslik": "O güne kalan süre",
+        "bitti": "O gün geldi! 🤍",
+        "saat": "19:00",
+        "gunSonra": 100,
+        "kurum": "Zeynep & Efe",
+        "haritaBaslik": "Şehir",
+        "haritaAdres": "Antalya",
+        "imza": "Sevgiyle,",
+        "ac": [
+          "tarih",
+          "harita"
+        ]
+      }
+    },
+    {
+      "id": "tesekkur-klasik",
+      "name": "Teşekkür Ederiz",
+      "type": "tesekkur",
+      "typeLabel": "Teşekkür",
+      "style": "Klasik",
+      "color": "altin",
+      "colorLabel": "Altın",
+      "premium": false,
+      "theme": "safak",
+      "description": "Altın folyo; etkinlik sonrası zarif teşekkür.",
+      "blocks": [
+        "kapak",
+        "muhur"
+      ],
+      "copyOptions": [
+        {
+          "label": "Klasik",
+          "text": "Bu özel günümüzde yanımızda olduğunuz için tüm kalbimizle teşekkür ederiz. Varlığınız bizi çok mutlu etti."
+        },
+        {
+          "label": "Kısa",
+          "text": "Bizimle olduğunuz için teşekkürler — kalbimizde ayrı bir yeriniz var. 🤍"
+        }
+      ],
+      "preset": {
+        "tur": "tesekkur",
+        "tema": "safak",
+        "giris": "Bu özel günümüzde yanımızda olduğunuz için tüm kalbimizle teşekkür ederiz. Varlığınız bizi çok mutlu etti.",
+        "ust": "Teşekkürler",
+        "alici": "Sevgili Misafirlerimiz",
+        "baslik": "Teşekkür Ederiz",
+        "kurum": "Ayşe & Mehmet",
+        "muhur": "TEŞEKKÜRLER ·",
+        "imza": "Sevgiyle,",
+        "ac": [
+          "muhur"
+        ]
+      }
+    },
+    {
+      "id": "tesekkur-yaz",
+      "name": "Teşekkürler",
+      "type": "tesekkur",
+      "typeLabel": "Teşekkür",
+      "style": "Sıcak",
+      "color": "turkuaz",
+      "colorLabel": "Turkuaz",
+      "premium": false,
+      "theme": "yaz",
+      "description": "Akdeniz turkuazı; sıcak bir teşekkür kartı.",
+      "blocks": [
+        "kapak",
+        "muhur"
+      ],
+      "copyOptions": [
+        {
+          "label": "Sıcak",
+          "text": "Güzel gününüzü bizimle paylaştığınız için teşekkür ederiz. Sizinle daha da anlamlıydı."
+        },
+        {
+          "label": "Kısa",
+          "text": "Katıldığınız için teşekkürler! 🌊"
+        }
+      ],
+      "preset": {
+        "tur": "tesekkur",
+        "tema": "yaz",
+        "giris": "Güzel gününüzü bizimle paylaştığınız için teşekkür ederiz. Sizinle daha da anlamlıydı.",
+        "ust": "Teşekkürler",
+        "alici": "Sevgili Dostlar",
+        "baslik": "Teşekkür Ederiz",
+        "kurum": "Amber, Şifa, Mahir & Emir",
+        "muhur": "TEŞEKKÜRLER ·",
+        "imza": "Sevgiyle,",
+        "ac": [
+          "muhur"
+        ]
+      }
     }
   ]
 }
