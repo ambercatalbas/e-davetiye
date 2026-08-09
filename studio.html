@@ -824,10 +824,9 @@ function onizle(){
   const l = link();
   $("outLink").value = l;
   const ifr = $("onizleme");
-  const yeni = l.split("#")[1] || "";
-  // Sadece hash değiştiyse tazele (index.html hashchange'de reload eder).
-  // ?ac=1 → önizlemede kapak (zarf açılışı) atlanır, kart doğrudan görünür.
-  if(yeni !== sonHash){ sonHash = yeni; ifr.src = RENDER + "?ac=1#i=" + yeni; }
+  const b64 = l.split("#i=")[1] || "";   // yalnız base64 kısmı ("i=" öneki hariç)
+  // Sadece içerik değiştiyse tazele. ?ac=1 → önizlemede kapak (zarf açılışı) atlanır.
+  if(b64 !== sonHash){ sonHash = b64; ifr.src = RENDER + "?ac=1#i=" + b64; }
 }
 let zaman=null;
 function planla(){ clearTimeout(zaman); zaman=setTimeout(()=>{ onizle(); kaydet(); }, 320); }
