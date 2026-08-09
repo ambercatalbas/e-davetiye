@@ -1,0 +1,24 @@
+rules_version = '2';
+
+// Davetiye görselleri (hero + galeri) — Firebase Storage kuralları
+// Dağıtım: firebase deploy --only storage   (ya da Console → Storage → Rules → Publish)
+//
+// Model: uploads/{uid}/{dosya}  — sahibi yazar/siler, herkes okur (davetli görsün).
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /uploads/{uid}/{dosya=**} {
+      // Davetli (giriş yapmasa da) görseli görebilir.
+      allow read: if true;
+
+      // Yalnızca sahibi kendi klasörüne yükler; tip görsel, boyut < 6MB.
+      allow write: if request.auth != null
+                   && request.auth.uid == uid
+                   && request.resource.size < 6 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+
+      // Sahibi kendi görselini silebilir.
+      allow delete: if request.auth != null && request.auth.uid == uid;
+    }
+  }
+}

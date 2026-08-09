@@ -275,6 +275,15 @@
   .giris { font-family: var(--f-serif); font-size: clamp(1.02rem, 2.6vw, 1.14rem);
            line-height:1.62; max-width: 52ch; color: var(--ink); margin:0; }
 
+  /* Fotoğraf: hero + galeri */
+  .foto-hero { width:100%; border-radius:4px; overflow:hidden;
+               box-shadow:0 16px 36px -22px var(--shadow); }
+  .foto-hero img { width:100%; height:auto; max-height:62vh; object-fit:cover; display:block; }
+  .foto-galeri { display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr));
+                 gap:8px; width:100%; }
+  .foto-galeri img { width:100%; aspect-ratio:1/1; object-fit:cover;
+                     border-radius:3px; display:block; }
+
   /* Bölücü */
   .bolucu { display:flex; align-items:center; gap:14px; width:min(240px,70%); }
   .bolucu span { flex:1; height:1px; background:linear-gradient(90deg,transparent,var(--hairline)); }
@@ -712,6 +721,14 @@
     const say  = cfg.sayacSusu || "cup";
 
     kok.append(el("div", "orn " + tepe, ORN[tepe] || ORN.gunes));
+    if (cfg.foto && cfg.foto.hero) {
+      const box = el("div", "foto-hero");
+      const img = el("img");
+      img.src = cfg.foto.hero; img.loading = "lazy";
+      img.alt = cfg.alici || cfg.baslik || "Davetiye görseli";
+      box.append(img);
+      kok.append(box);
+    }
     if (cfg.ustBaslik) kok.append(el("p", "ust", cfg.ustBaslik));
     if (cfg.alici)     kok.append(el("p", "alici", cfg.alici));
     if (cfg.baslik) {
@@ -720,6 +737,16 @@
       kok.append(h);
     }
     if (cfg.girisMetni) kok.append(el("p", "giris", cfg.girisMetni));
+
+    if (cfg.foto && cfg.foto.galeri && cfg.foto.galeri.length) {
+      const grid = el("div", "foto-galeri");
+      cfg.foto.galeri.forEach((u, i) => {
+        const im = el("img");
+        im.src = u; im.loading = "lazy"; im.alt = "Fotoğraf " + (i + 1);
+        grid.append(im);
+      });
+      kok.append(grid);
+    }
 
     kok.append(el("div", "bolucu", "<span></span><i></i><span></span>"));
 

@@ -167,6 +167,17 @@
   .share-quick summary:hover{color:var(--ink);}
   a.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;}
 
+  /* Fotoğraf yükleme widget'ı */
+  .foto-tek,.foto-galeri-duzen{display:flex;flex-wrap:wrap;gap:8px;}
+  .foto-ekle{display:inline-flex;align-items:center;justify-content:center;text-align:center;
+    min-width:96px;height:72px;padding:8px;border:1px dashed var(--field-edge);border-radius:8px;
+    color:var(--soft);font-size:.75rem;font-weight:600;cursor:pointer;background:var(--field);transition:border-color .15s,color .15s;}
+  .foto-ekle:hover{border-color:var(--gold);color:var(--ink);}
+  .foto-mini{position:relative;width:72px;height:72px;border-radius:8px;overflow:hidden;border:1px solid var(--edge);flex:none;}
+  .foto-mini img{width:100%;height:100%;object-fit:cover;display:block;}
+  .foto-mini .sil{position:absolute;top:3px;right:3px;width:20px;height:20px;border:0;border-radius:50%;
+    background:rgba(15,17,30,.72);color:#fff;font-size:.82rem;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0;}
+  .foto-mini.yukleniyor{display:grid;place-items:center;color:var(--soft);font-size:.62rem;background:var(--panel-2);}
   .foot{max-width:1180px;margin:0 auto;padding:8px clamp(16px,3vw,30px) 40px;
     font-size:.72rem;color:var(--faint);text-align:center;}
   .foot a{color:var(--gold);text-decoration:none;}
@@ -279,7 +290,24 @@
     </section>
 
     <section class="card">
-      <h2><span class="no">3</span> Tarih, Yer &amp; Detaylar</h2>
+      <h2><span class="no">3</span> Fotoğraflar</h2>
+      <div class="field">
+        <label>Kapak (hero) görseli</label>
+        <div class="foto-tek" id="heroKutu">
+          <label class="foto-ekle" id="heroEkle"><input type="file" accept="image/*" id="heroInput" hidden> ＋ Görsel yükle</label>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>Galeri <span class="hint">— birden çok seçebilirsin</span></label>
+        <div class="foto-galeri-duzen" id="galeriKutu">
+          <label class="foto-ekle" id="galeriEkle"><input type="file" accept="image/*" multiple id="galeriInput" hidden> ＋ Fotoğraf ekle</label>
+        </div>
+      </div>
+      <p class="note" id="fotoNot">Görseller yüklenirken küçültülür (maks. 1600px), buluta yüklenir. İlk yüklemede giriş (anonim) yapılır.</p>
+    </section>
+
+    <section class="card">
+      <h2><span class="no">4</span> Tarih, Yer &amp; Detaylar</h2>
       <label class="toggle" style="margin-bottom:4px">
         <input type="checkbox" id="chkTarih"><span class="sw"></span>
         <span class="tlabel">Tarih ve canlı geri sayım</span>
@@ -299,7 +327,7 @@
     </section>
 
     <section class="card">
-      <h2><span class="no">4</span> Ek bölümler <span style="margin-left:auto;font-size:.6rem;color:var(--faint);letter-spacing:.1em">İSTEĞE BAĞLI</span></h2>
+      <h2><span class="no">5</span> Ek bölümler <span style="margin-left:auto;font-size:.6rem;color:var(--faint);letter-spacing:.1em">İSTEĞE BAĞLI</span></h2>
 
       <label class="toggle"><input type="checkbox" id="chkKapak"><span class="sw"></span><span class="tlabel">Kapak / zarf açılışı</span></label>
       <div class="togglebody" id="bodyKapak">
@@ -769,6 +797,13 @@ function cfgKur(){
     cfg.kapak = k; // boş obje bile olsa kapak açık (motor isim/başlığı diğer alanlardan türetir)
   }
 
+  // Fotoğraflar (Storage URL'leri)
+  if(_fotoHero || _fotoGaleri.length){
+    cfg.foto = {};
+    if(_fotoHero) cfg.foto.hero = _fotoHero;
+    if(_fotoGaleri.length) cfg.foto.galeri = _fotoGaleri.slice();
+  }
+
   if(s("inImza")) cfg.imza = s("inImza");
   if(s("inKurum")) cfg.imzaKurum = s("inKurum");
   return cfg;
@@ -808,6 +843,7 @@ const ANAHTAR = "studio.taslak.v1";
 function kaydet(){
   const d = {}; ALANLAR.forEach(a=> d[a]=val(a));
   for(const k in CHKS) d[CHKS[k]] = chk(CHKS[k]);
+  d._fotoHero = _fotoHero; d._fotoGaleri = _fotoGaleri;
   try{ localStorage.setItem(ANAHTAR, JSON.stringify(d)); }catch(e){}
 }
 function yukle(){
@@ -815,6 +851,8 @@ function yukle(){
   if(!d) return false;
   ALANLAR.forEach(a=> { if(d[a]!=null) setVal(a,d[a]); });
   for(const k in CHKS) setChk(CHKS[k], !!d[CHKS[k]]);
+  _fotoHero = d._fotoHero || ""; _fotoGaleri = Array.isArray(d._fotoGaleri) ? d._fotoGaleri : [];
+  heroCiz(); galeriCiz();
   syncBodies();
   return true;
 }
@@ -841,15 +879,78 @@ if(navigator.share){
 
 /* ---- Firestore yayını (gerçek LCV) ---- */
 const YAYIN_ANAHTAR = "studio.yayinId.v1";
-let _auth = null, _db = null;
+let _auth = null, _db = null, _app = null;
 async function firebaseHazir(){
   if(_db) return;
   const authMod = await import("./firebase/auth.js");
   const { getFirestore } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
-  await authMod.anonSagla();        // en az anonim oturum (yayın için yeterli)
+  await authMod.anonSagla();        // en az anonim oturum (yayın/yükleme için yeterli)
+  _app = authMod.app();
   _auth = authMod.auth();
-  _db = getFirestore(authMod.app());
+  _db = getFirestore(_app);
 }
+
+/* ---- Fotoğraf: istemcide küçült + Storage'a yükle ---- */
+let _fotoHero = "", _fotoGaleri = [];
+function el2(tag, cls, txt){ const n = document.createElement(tag); if(cls) n.className = cls; if(txt != null) n.textContent = txt; return n; }
+
+function kucult(file, maxBoyut, kalite){
+  return new Promise((res, rej)=>{
+    const img = new Image();
+    img.onload = ()=>{
+      let w = img.naturalWidth, h = img.naturalHeight; const m = Math.max(w, h);
+      if(m > maxBoyut){ const o = maxBoyut / m; w = Math.round(w*o); h = Math.round(h*o); }
+      const c = document.createElement("canvas"); c.width = w; c.height = h;
+      c.getContext("2d").drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(img.src);
+      c.toBlob(b => b ? res(b) : rej(new Error("blob")), "image/jpeg", kalite || 0.85);
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(img.src); rej(new Error("görsel okunamadı")); };
+    img.src = URL.createObjectURL(file);
+  });
+}
+async function fotoYukle(file){
+  await firebaseHazir();
+  const { getStorage, ref, uploadBytes, getDownloadURL } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js");
+  const blob = await kucult(file, 1600, 0.85);
+  const ad = Date.now() + "-" + Math.random().toString(36).slice(2,8) + ".jpg";
+  const r = ref(getStorage(_app), "uploads/" + _auth.currentUser.uid + "/" + ad);
+  await uploadBytes(r, blob, { contentType: "image/jpeg" });
+  return await getDownloadURL(r);
+}
+function miniGorsel(url, silCb){
+  const d = el2("div","foto-mini");
+  const im = document.createElement("img"); im.src = url; im.alt = "";
+  const sil = el2("button","sil","×"); sil.type = "button"; sil.title = "Kaldır";
+  sil.addEventListener("click", silCb);
+  d.append(im, sil); return d;
+}
+function heroCiz(){
+  const kutu = $("heroKutu"); kutu.querySelectorAll(".foto-mini").forEach(x=>x.remove());
+  if(_fotoHero) kutu.insertBefore(miniGorsel(_fotoHero, ()=>{ _fotoHero=""; heroCiz(); planla(); }), $("heroEkle"));
+  $("heroEkle").style.display = _fotoHero ? "none" : "";
+}
+function galeriCiz(){
+  const kutu = $("galeriKutu"); kutu.querySelectorAll(".foto-mini").forEach(x=>x.remove());
+  _fotoGaleri.forEach((u,i)=> kutu.insertBefore(miniGorsel(u, ()=>{ _fotoGaleri.splice(i,1); galeriCiz(); planla(); }), $("galeriEkle")));
+}
+$("heroInput").addEventListener("change", async (e)=>{
+  const f = e.target.files && e.target.files[0]; e.target.value=""; if(!f) return;
+  const yer = el2("div","foto-mini yukleniyor","yükleniyor…"); $("heroKutu").insertBefore(yer, $("heroEkle")); $("heroEkle").style.display="none";
+  try{ _fotoHero = await fotoYukle(f); heroCiz(); planla(); }
+  catch(err){ console.error(err); alert("Görsel yüklenemedi ("+(err.code||err.message||"")+"). Storage açık ve kurallar publish edilmiş mi?"); }
+  finally{ yer.remove(); if(!_fotoHero) $("heroEkle").style.display=""; }
+});
+$("galeriInput").addEventListener("change", async (e)=>{
+  const files = [...(e.target.files||[])]; e.target.value=""; if(!files.length) return;
+  for(const f of files){
+    const yer = el2("div","foto-mini yukleniyor","yükleniyor…"); $("galeriKutu").insertBefore(yer, $("galeriEkle"));
+    try{ const u = await fotoYukle(f); _fotoGaleri.push(u); }
+    catch(err){ console.error(err); alert("Görsel yüklenemedi ("+(err.code||err.message||"")+")."); }
+    finally{ yer.remove(); }
+  }
+  galeriCiz(); planla();
+});
 
 /* ---- Bulut hesabı (Google ile giriş) — yanıtlara her cihazdan erişim ---- */
 function girisChip(u){
@@ -943,6 +1044,7 @@ $("form").addEventListener("input", planla);
 $("btnSifirla").addEventListener("click", ()=>{
   if(!confirm("Yeni bir davetiye başlatılsın mı? Taslak temizlenir. (Yayınladıysan eski linkin çalışmaya devam eder.)")) return;
   try{ localStorage.removeItem(ANAHTAR); localStorage.removeItem(YAYIN_ANAHTAR); }catch(e){}
+  _fotoHero=""; _fotoGaleri=[]; heroCiz(); galeriCiz();
   $("yayinSonuc").style.display="none"; $("btnYayinla").textContent="Yayınla & LCV Topla";
   $("yayinNot").innerHTML="Yayınlayınca kısa bir <b>?id=</b> linki oluşur; davetliler <b>gerçek LCV</b> gönderir, yanıtları panelden görürsün.";
   AKTIF_SABLON=null; metinVaryantlariniKur(null); setVal("selTur","dugun"); preseti_uygula("dugun"); onizle();
