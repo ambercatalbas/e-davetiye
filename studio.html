@@ -189,7 +189,8 @@
 
 <header class="bar">
   <div class="brand"><b>E-Davetiye</b><small>Studio</small></div>
-  <button class="btn" type="button" id="btnSifirla" title="Formu temizle">Sıfırla</button>
+  <button class="btn" type="button" id="btnGiris" title="Google ile giriş — yanıtları her cihazdan gör">☁︎ Giriş</button>
+  <button class="btn" type="button" id="btnSifirla" title="Yeni davetiye">Sıfırla</button>
   <button class="theme-btn" type="button" id="btnTema" title="Açık / koyu" aria-label="Tema değiştir">◐</button>
 </header>
 
@@ -843,16 +844,42 @@ const YAYIN_ANAHTAR = "studio.yayinId.v1";
 let _auth = null, _db = null;
 async function firebaseHazir(){
   if(_db) return;
-  const [{initializeApp,getApps,getApp},{getAuth,signInAnonymously},{getFirestore},{firebaseConfig}] = await Promise.all([
-    import("https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js"),
-    import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js"),
-    import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js"),
-    import("./firebase/config.js")
-  ]);
-  const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-  _auth = getAuth(app); _db = getFirestore(app);
-  if(!_auth.currentUser) await signInAnonymously(_auth);
+  const authMod = await import("./firebase/auth.js");
+  const { getFirestore } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
+  await authMod.anonSagla();        // en az anonim oturum (yayın için yeterli)
+  _auth = authMod.auth();
+  _db = getFirestore(authMod.app());
 }
+
+/* ---- Bulut hesabı (Google ile giriş) — yanıtlara her cihazdan erişim ---- */
+function girisChip(u){
+  const b = $("btnGiris");
+  if(u && !u.isAnonymous){
+    b.textContent = "✓ " + (u.displayName ? u.displayName.split(" ")[0] : (u.email || "Hesap"));
+    b.title = (u.email || "") + " — çıkış için tıkla";
+    b.dataset.signed = "1";
+  } else {
+    b.textContent = "☁︎ Giriş";
+    b.title = "Google ile giriş — yanıtları her cihazdan gör";
+    b.dataset.signed = "";
+  }
+}
+$("btnGiris").addEventListener("click", async ()=>{
+  const authMod = await import("./firebase/auth.js");
+  if($("btnGiris").dataset.signed === "1"){
+    if(confirm("Çıkış yapılsın mı?")) await authMod.cikis();
+    return;
+  }
+  const b = $("btnGiris"); const t0 = b.textContent; b.disabled = true; b.textContent = "Giriş yapılıyor…";
+  try{ await authMod.googleGiris(); }
+  catch(e){ alert(authMod.authHataMetni(e)); }
+  finally{ b.disabled = false; if(b.dataset.signed !== "1") b.textContent = t0; }
+});
+// Oturum durumunu dinle (sayfa açılışında hafif Firebase yüklemesi)
+(async () => {
+  try{ const authMod = await import("./firebase/auth.js"); authMod.kullaniciIzle(girisChip); }
+  catch(e){ /* çevrimdışı: chip 'Giriş' kalır */ }
+})();
 const idLinki = id => RENDER + "?id=" + id;
 function yanitLinki(id){ return new URL("yanitlar.html?id=" + id, location.href).href; }
 

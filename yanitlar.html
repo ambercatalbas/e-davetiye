@@ -87,13 +87,14 @@
   </div>
   <div class="liste" id="liste"></div>
   <div class="durum" id="durum"></div>
+  <div id="giris" style="display:none;text-align:center;margin-top:6px">
+    <button class="btn" id="btnGirisY" type="button" style="background:var(--gold);color:#20160A;border-color:transparent;font-size:.86rem;padding:11px 18px">Google ile Giriş</button>
+  </div>
 </div>
 
 <script type="module">
-import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-import { firebaseConfig } from "./firebase/config.js";
+import { app as fbApp, anonSagla, googleGiris, authHataMetni } from "./firebase/auth.js";
 
 const $ = id => document.getElementById(id);
 const id = new URLSearchParams(location.search).get("id");
@@ -117,15 +118,15 @@ if(!id){
   });
 }
 
+let _db = null, _unsub = null;
+
 async function baslat(){
-  const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  if(!auth.currentUser) await signInAnonymously(auth);
+  await anonSagla();
+  _db = getFirestore(fbApp());
 
   // Başlık için davetiyeyi oku (herkese açık)
   try{
-    const snap = await getDoc(doc(db,"invitations",id));
+    const snap = await getDoc(doc(_db,"invitations",id));
     if(snap.exists()){
       const cfg = (snap.data().cfg) || snap.data();
       $("baslik").textContent = (cfg.baslik || "Davetiye") + " — Yanıtlar";
@@ -133,22 +134,40 @@ async function baslat(){
     }
   }catch(e){ /* başlık kritik değil */ }
 
-  // Yanıtları canlı dinle (yalnız sahip okuyabilir — kurallar)
-  const q = query(collection(db,"invitations",id,"rsvps"), orderBy("createdAt","desc"));
+  dinle();
+}
+
+// Yanıtları canlı dinle (yalnız sahip okuyabilir — kurallar).
+function dinle(){
+  if(_unsub){ _unsub(); _unsub = null; }
+  $("giris").style.display = "none";
   durum.textContent = "Yanıtlar yükleniyor…";
-  onSnapshot(q, snap=>{
+  const q = query(collection(_db,"invitations",id,"rsvps"), orderBy("createdAt","desc"));
+  _unsub = onSnapshot(q, snap=>{
     yanitlar = snap.docs.map(d=>d.data());
     ciz();
   }, err=>{
     console.error(err);
-    if(err.code === "permission-denied"){
-      $("altBaslik").textContent = "";
-      durum.innerHTML = "Yanıtları yalnızca davetiyeyi <b>yayınlayan cihaz</b> görebilir. Bu tarayıcıdan yayınlamadıysanız erişemezsiniz.<br><br>Cihazlar arası erişim için <b>Google ile giriş</b> yakında.";
-    } else {
-      durum.textContent = "Yanıtlar yüklenemedi: " + (err.code||err.message);
-    }
+    if(err.code === "permission-denied") girisGoster();
+    else durum.textContent = "Yanıtlar yüklenemedi: " + (err.code||err.message);
   });
 }
+
+function girisGoster(){
+  $("altBaslik").textContent = "";
+  $("tiles").style.display = "none";
+  $("toolbar").style.display = "none";
+  $("liste").innerHTML = "";
+  durum.innerHTML = "Yanıtları yalnızca davetiyeyi <b>yayınlayan hesap</b> görebilir. Studio'da Google ile giriş yaptıysan, burada da <b>aynı hesapla</b> giriş yap:";
+  $("giris").style.display = "";
+}
+
+$("btnGirisY").addEventListener("click", async ()=>{
+  const b = $("btnGirisY"); const t0 = b.textContent; b.disabled = true; b.textContent = "Giriş yapılıyor…";
+  try{ await googleGiris(); dinle(); }
+  catch(e){ durum.innerHTML = authHataMetni(e); }
+  finally{ b.disabled = false; b.textContent = t0; }
+});
 
 function ciz(){
   const gel = yanitlar.filter(y=>y.durum==="geliyorum");
