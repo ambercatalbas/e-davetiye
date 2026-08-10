@@ -1,24 +1,29 @@
 rules_version = '2';
 
-// Davetiye görselleri (hero + galeri) — Firebase Storage kuralları
-// Dağıtım: firebase deploy --only storage   (ya da Console → Storage → Rules → Publish)
+// Davetiye görselleri — Firebase Storage kuralları
+// Dağıtım: firebase deploy --only storage
 //
-// Model: uploads/{uid}/{dosya}  — sahibi yazar/siler, herkes okur (davetli görsün).
+//   uploads/{uid}/{dosya}   -> davetiye görselleri (sahibi yazar/siler, herkes okur)
+//   albums/{inviteId}/{...}  -> etkinlik sonrası misafir albümü (davetli yükler, herkes görür)
 
 service firebase.storage {
   match /b/{bucket}/o {
-    match /uploads/{uid}/{dosya=**} {
-      // Davetli (giriş yapmasa da) görseli görebilir.
-      allow read: if true;
 
-      // Yalnızca sahibi kendi klasörüne yükler; tip görsel, boyut < 6MB.
+    match /uploads/{uid}/{dosya=**} {
+      allow read: if true;
       allow write: if request.auth != null
                    && request.auth.uid == uid
                    && request.resource.size < 6 * 1024 * 1024
                    && request.resource.contentType.matches('image/.*');
-
-      // Sahibi kendi görselini silebilir.
       allow delete: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Misafir foto albümü: giriş yapmış (anonim dahil) davetli yükler; herkes görür.
+    match /albums/{inviteId}/{dosya=**} {
+      allow read: if true;
+      allow write: if request.auth != null
+                   && request.resource.size < 8 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
     }
   }
 }
