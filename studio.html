@@ -391,6 +391,11 @@
         <p class="note">Davetliler davetiyede mesaj/dilek bırakır, canlı görünür. <b>Yayınlanan (?id=) davetiyelerde</b> çalışır; moderasyonu Yanıtlar panelinden yaparsın.</p>
       </div>
 
+      <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkAlbom"><span class="sw"></span><span class="tlabel">Misafir foto albümü</span></label>
+      <div class="togglebody" id="bodyAlbom">
+        <p class="note">Davetliler etkinlik fotoğraflarını yükler, herkes görür. <b>Yayınlanan (?id=) davetiyelerde</b> çalışır.</p>
+      </div>
+
       <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkMuhur"><span class="sw"></span><span class="tlabel">Yuvarlak mühür yazısı</span></label>
       <div class="togglebody" id="bodyMuhur">
         <div class="field"><input type="text" id="inMuhur" maxlength="60" placeholder="MUTLULUĞA İLK ADIM"></div>
@@ -631,9 +636,9 @@ function isoSonra(n){
 }
 
 // Bölüm aç/kapa gövdesini eşitle
-const BODIES = { kapak:"bodyKapak", tarih:"bodyTarih", rsvp:"bodyRsvp", dilek:"bodyDilek", muhur:"bodyMuhur", ikram:"bodyIkram", sart:"bodySart",
+const BODIES = { kapak:"bodyKapak", tarih:"bodyTarih", rsvp:"bodyRsvp", dilek:"bodyDilek", albom:"bodyAlbom", muhur:"bodyMuhur", ikram:"bodyIkram", sart:"bodySart",
                  program:"bodyProgram", harita:"bodyHarita", hediye:"bodyHediye" };
-const CHKS   = { kapak:"chkKapak", tarih:"chkTarih", rsvp:"chkRsvp", dilek:"chkDilek", muhur:"chkMuhur", ikram:"chkIkram", sart:"chkSart",
+const CHKS   = { kapak:"chkKapak", tarih:"chkTarih", rsvp:"chkRsvp", dilek:"chkDilek", albom:"chkAlbom", muhur:"chkMuhur", ikram:"chkIkram", sart:"chkSart",
                  program:"chkProgram", harita:"chkHarita", hediye:"chkHediye" };
 function syncBodies(){
   for(const k in BODIES){ $(BODIES[k]).classList.toggle("open", chk(CHKS[k])); }
@@ -866,8 +871,9 @@ function cfgKur(){
     cfg.kapak = k; // boş obje bile olsa kapak açık (motor isim/başlığı diğer alanlardan türetir)
   }
 
-  // Dilek defteri (yalnız yayınlanan ?id= davetiyelerde çalışır)
+  // Dilek defteri + misafir albümü (yalnız yayınlanan ?id= davetiyelerde çalışır)
   if(chk("chkDilek")) cfg.dilek = true;
+  if(chk("chkAlbom")) cfg.albom = true;
 
   // Fotoğraflar (Storage URL'leri)
   if(_fotoHero || _fotoGaleri.length){
@@ -1151,6 +1157,7 @@ function formDoldur(cfg, tur){
   setChk("chkKapak", !!cfg.kapak);
   setVal("inKapakIsim", (cfg.kapak&&cfg.kapak.isim)||""); setVal("inKapakButon", (cfg.kapak&&cfg.kapak.buton)||"Davetiyeyi Aç");
   setChk("chkDilek", !!cfg.dilek);
+  setChk("chkAlbom", !!cfg.albom);
   _fotoHero = (cfg.foto&&cfg.foto.hero)||""; _fotoGaleri = (cfg.foto&&Array.isArray(cfg.foto.galeri))?cfg.foto.galeri.slice():[];
   heroCiz(); galeriCiz();
   syncBodies();
