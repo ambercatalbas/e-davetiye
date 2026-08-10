@@ -13,11 +13,17 @@
 <meta property="og:locale" content="tr_TR">
 <meta name="twitter:card" content="summary_large_image">
 <title>E-Davetiye — Zarif Dijital Davetiye · Düğün, Sünnet, Kına, Nişan</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0D111E">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="E-Davetiye">
 <script>
   /* Davetiye parametresi varsa "davetiye modu": landing gizlenir, kart gösterilir.
      Boya girmeden çalışır → flash olmaz, arama motoru boş root'ta landing'i görür. */
   (function(){ var s=location.search, h=location.hash;
     if(/[?&](id|d)=/.test(s) || /(^#|&)i=/.test(h)) document.documentElement.className += " dav"; })();
+  if ("serviceWorker" in navigator) addEventListener("load", function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
 </script>
 </head>
 <body>
