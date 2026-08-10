@@ -201,6 +201,9 @@
   .dv-eylem{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
   .dv-eylem a,.dv-eylem button{font-size:.7rem;padding:7px 10px;text-decoration:none;}
   .dv-bos{text-align:center;color:var(--faint);font-size:.85rem;padding:26px 10px;line-height:1.6;}
+  .dv-say{font-family:var(--f-sans);font-size:.7rem;color:var(--soft);margin-top:3px;}
+  .dv-yeni{font-family:var(--f-sans);font-size:.58rem;font-weight:700;letter-spacing:.03em;color:#fff;
+    background:var(--coral);border-radius:20px;padding:2px 7px;margin-left:6px;white-space:nowrap;}
   .foot{max-width:1180px;margin:0 auto;padding:8px clamp(16px,3vw,30px) 40px;
     font-size:.72rem;color:var(--faint);text-align:center;}
   .foot a{color:var(--gold);text-decoration:none;}
@@ -1128,26 +1131,60 @@ function listeYaz(a){ try{ localStorage.setItem(LISTE_ANAHTAR, JSON.stringify(a)
 function listeUpsert(k){ const a = listeAl().filter(x=>x.id!==k.id); a.unshift(k); listeYaz(a); }
 function tarihKisa(ms){ try{ return new Date(ms).toLocaleDateString("tr-TR",{day:"numeric",month:"short"}); }catch(e){ return ""; } }
 
+const GORULEN_ANAHTAR = "studio.gorulenYanit.v1";
+function gorulenAl(){ try{ return JSON.parse(localStorage.getItem(GORULEN_ANAHTAR)||"{}"); }catch(e){ return {}; } }
+function gorulenYaz(o){ try{ localStorage.setItem(GORULEN_ANAHTAR, JSON.stringify(o)); }catch(e){} }
+
 function davetlerimCiz(){
   const kutu = $("davetlerimListe"); kutu.innerHTML = "";
   const a = listeAl();
   if(!a.length){ kutu.innerHTML = '<p class="dv-bos">Henüz yayınlanmış davetiyen yok.<br>Bir davetiye hazırlayıp <b>Yayınla</b>\'ya bastığında burada listelenir.</p>'; return; }
   a.forEach(k=>{
-    const item = el2("div","dv-item");
+    const item = el2("div","dv-item"); item.dataset.id = k.id;
     let thumb;
     if(k.hero){ thumb = document.createElement("img"); thumb.className="dv-thumb"; thumb.src=k.hero; thumb.alt=""; }
     else { thumb = el2("div","dv-thumb","✦"); }
     const orta = el2("div","dv-orta");
-    orta.append(el2("div","dv-ad", k.baslik||"Adsız davetiye"));
+    const ad = el2("div","dv-ad", k.baslik||"Adsız davetiye");
+    const yeni = el2("span","dv-yeni"); yeni.hidden = true; ad.append(yeni);
+    orta.append(ad);
     orta.append(el2("div","dv-alt", (TUR_ETIKET[k.tur]||"Davetiye") + (k.guncelleme?" · "+tarihKisa(k.guncelleme):"")));
+    orta.append(el2("div","dv-say","yanıtlar yükleniyor…"));
     const eylem = el2("div","dv-eylem");
     const ac = document.createElement("a"); ac.className="btn"; ac.textContent="Aç"; ac.target="_blank"; ac.rel="noopener"; ac.href=idLinki(k.id);
     const yan = document.createElement("a"); yan.className="btn"; yan.textContent="Yanıtlar"; yan.target="_blank"; yan.rel="noopener"; yan.href=yanitLinki(k.id);
+    yan.addEventListener("click",()=>{ if(item._toplam!=null){ const g=gorulenAl(); g[k.id]=item._toplam; gorulenYaz(g); yeni.hidden=true; } });
     const duz = el2("button","btn pri","Düzenle"); duz.type="button"; duz.addEventListener("click",()=>davetiyeDuzenle(k.id,k.tur));
     const sil = el2("button","btn","Sil"); sil.type="button"; sil.addEventListener("click",()=>davetiyeSil(k.id));
     eylem.append(ac,yan,duz,sil); orta.append(eylem);
     item.append(thumb, orta); kutu.append(item);
   });
+  sayilariGuncelle();
+}
+
+// Her davetiyenin yanıt sayısı + "yeni" rozeti (uygulama-içi bildirim). Sahip okuyabilir.
+async function sayilariGuncelle(){
+  const items = [...document.querySelectorAll('#davetlerimListe .dv-item')];
+  if(!items.length) return;
+  let getDocs, collection;
+  try{
+    await firebaseHazir();
+    const m = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
+    getDocs = m.getDocs; collection = m.collection;
+  }catch(e){ items.forEach(it=>{ const s=it.querySelector('.dv-say'); if(s) s.textContent=""; }); return; }
+  const gorulen = gorulenAl();
+  for(const it of items){
+    const id = it.dataset.id, say = it.querySelector('.dv-say'), yeni = it.querySelector('.dv-yeni');
+    try{
+      const snap = await getDocs(collection(_db,"invitations",id,"rsvps"));
+      let toplam=0, geliyor=0, kisi=0;
+      snap.forEach(d=>{ const r=d.data(); toplam++; if(r.durum==="geliyorum"){ geliyor++; kisi += Number(r.kisiSayisi)||0; } });
+      it._toplam = toplam;
+      say.textContent = toplam ? (geliyor+" geliyor · "+kisi+" kişi · "+toplam+" yanıt") : "Henüz yanıt yok";
+      const yeniSayi = toplam - (gorulen[id]||0);
+      if(yeniSayi>0){ yeni.textContent = yeniSayi+" yeni"; yeni.hidden=false; } else yeni.hidden=true;
+    }catch(e){ say.textContent = "yanıtlar için giriş gerekli"; }
+  }
 }
 function davetlerimAc(){ $("davetlerim").hidden = false; davetlerimCiz(); }
 function davetlerimKapat(){ $("davetlerim").hidden = true; }
