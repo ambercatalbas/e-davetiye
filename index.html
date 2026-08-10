@@ -435,6 +435,16 @@
               line-height:1.45; color:var(--ink); text-align:left; max-width:44ch; cursor:pointer; }
   .lcv-riza-input { margin-top:3px; flex:none; accent-color:var(--gold); width:16px; height:16px; }
 
+  /* Dilek defteri */
+  .dilek-blok { width:100%; display:flex; flex-direction:column; align-items:center; gap:16px; }
+  .dilek-form { width:100%; max-width:360px; display:flex; flex-direction:column; gap:10px; }
+  .dilek-liste { width:100%; max-width:460px; display:flex; flex-direction:column; gap:10px; }
+  .dilek-kart { background:var(--card); border:1px solid var(--hairline); border-radius:8px;
+                padding:14px 16px; text-align:left; }
+  .dilek-mesaj { font-family:var(--f-serif); font-size:1rem; color:var(--ink); line-height:1.5; margin:0; }
+  .dilek-imza { font-family:var(--f-sans); font-size:.72rem; letter-spacing:.06em; color:var(--ink-soft); margin:8px 0 0; }
+  .dilek-bos { font-family:var(--f-serif); font-style:italic; color:var(--ink-soft); text-align:center; margin:0; }
+
   /* İmza */
   .imza-blok { display:flex; flex-direction:column; align-items:center; gap:4px; }
   .imza { font-family:var(--f-script); font-size:clamp(1.5rem,6vw,2.1rem); color:var(--ink); line-height:1.1; margin:0; }
@@ -1227,6 +1237,12 @@
         const lcvMount = el("div", "lcv-mount");
         kok.append(lcvMount);
         lcvBaslat({ inviteId, firebaseConfig, mount: lcvMount, dil: cfg.dil });
+        if (cfg.dilek) {
+          const { dilekBaslat } = await import("./firebase/dilek.js");
+          const dMount = el("div", "lcv-mount");
+          kok.append(dMount);
+          dilekBaslat({ inviteId, firebaseConfig, mount: dMount, dil: cfg.dil });
+        }
       } catch (e) {
         console.error(e);
         goster({ ustBaslik: "E-Davetiye", baslik: "Bir Sorun Oluştu",

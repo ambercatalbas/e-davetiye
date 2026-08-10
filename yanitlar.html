@@ -90,10 +90,15 @@
   <div id="giris" style="display:none;text-align:center;margin-top:6px">
     <button class="btn" id="btnGirisY" type="button" style="background:var(--gold);color:#20160A;border-color:transparent;font-size:.86rem;padding:11px 18px">Google ile Giriş</button>
   </div>
+
+  <div id="dilekBolum" style="display:none;margin-top:34px">
+    <div class="toolbar"><h2>Dilek Defteri</h2></div>
+    <div class="liste" id="dilekListe"></div>
+  </div>
 </div>
 
 <script type="module">
-import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+import { getFirestore, doc, getDoc, deleteDoc, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 import { app as fbApp, anonSagla, googleGiris, authHataMetni } from "./firebase/auth.js";
 
 const $ = id => document.getElementById(id);
@@ -135,6 +140,31 @@ async function baslat(){
   }catch(e){ /* başlık kritik değil */ }
 
   dinle();
+  dilekDinle();
+}
+
+// Dilek defteri — canlı liste + sahip silebilir (moderasyon).
+function dilekDinle(){
+  const q = query(collection(_db,"invitations",id,"guestbook"), orderBy("createdAt","desc"), limit(100));
+  onSnapshot(q, snap=>{
+    const bolum = document.getElementById("dilekBolum"), liste = document.getElementById("dilekListe");
+    if(snap.empty){ bolum.style.display = "none"; return; }
+    bolum.style.display = ""; liste.innerHTML = "";
+    snap.forEach(docSnap=>{
+      const g = docSnap.data();
+      const sat = document.createElement("div"); sat.className = "satir";
+      sat.innerHTML = '<span class="ad">'+esc(g.ad)+'</span>'
+        + '<button class="btn" type="button" style="font-size:.7rem;padding:6px 10px">Sil</button>'
+        + '<span class="not">"'+esc(g.mesaj)+'"</span>'
+        + '<span class="zaman">'+tarih(g.createdAt)+'</span>';
+      sat.querySelector("button").addEventListener("click", async ()=>{
+        if(!confirm("Bu dilek silinsin mi?")) return;
+        try{ await deleteDoc(doc(_db,"invitations",id,"guestbook",docSnap.id)); }
+        catch(e){ alert("Silinemedi (yetkiniz yok olabilir). "+(e.code||"")); }
+      });
+      liste.append(sat);
+    });
+  }, err=> console.warn("guestbook mod:", err));
 }
 
 // Yanıtları canlı dinle (yalnız sahip okuyabilir — kurallar).
