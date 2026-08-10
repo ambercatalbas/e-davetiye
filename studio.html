@@ -1055,7 +1055,7 @@ $("btnGiris").addEventListener("click", async ()=>{
 });
 // Oturum durumunu dinle (sayfa açılışında hafif Firebase yüklemesi)
 (async () => {
-  try{ const authMod = await import("./firebase/auth.js"); authMod.kullaniciIzle(girisChip); }
+  try{ const authMod = await import("./firebase/auth.js"); authMod.kullaniciIzle(u=>{ girisChip(u); if(u && !u.isAnonymous && !$("davetlerim").hidden) firestoreMerge(); }); }
   catch(e){ /* çevrimdışı: chip 'Giriş' kalır */ }
 })();
 const idLinki = id => RENDER + "?id=" + id;
@@ -1083,7 +1083,10 @@ async function yayinla(){
     $("outIdLink").value = paylasLink;
     $("btnYanit").href = yanitLinki(id);
     $("yayinSonuc").style.display = "";
-    listeUpsert({ id, baslik: (val("inBaslik").trim() || "Adsız davetiye"), tur: val("selTur"), hero: _fotoHero || "", slug: slugKullanildi, guncelleme: Date.now() });
+    const ozet = { baslik: (val("inBaslik").trim() || "Adsız davetiye"), tur: val("selTur"), hero: _fotoHero || "", slug: slugKullanildi };
+    listeUpsert(Object.assign({ id, guncelleme: Date.now() }, ozet));
+    // Hesaba (uid) bağla — cihazlar arası "Davetiyelerim" için
+    try{ await setDoc(doc(_db,"users",_auth.currentUser.uid,"invitations",id), Object.assign({ guncelleme: serverTimestamp() }, ozet)); }catch(e){ console.warn("hesap dizini:", e); }
     $("yayinNot").innerHTML = "Yayında ✓ — bu linki paylaş; her düzenlemeden sonra <b>Güncelle</b>'ye bas.";
     b.textContent = "Güncellendi ✓";
     setTimeout(()=> b.textContent = "Güncelle & Yeniden Yayınla", 1600);
@@ -1226,7 +1229,31 @@ async function sayilariGuncelle(){
     }catch(e){ say.textContent = "yanıtlar için giriş gerekli"; }
   }
 }
-function davetlerimAc(){ $("davetlerim").hidden = false; davetlerimCiz(); $("davetlerimKapat").focus(); }
+// Hesaptaki davetiye dizinini Firestore'dan çek (giriş yapan uid — cihazlar arası).
+async function firestoreListAl(){
+  try{
+    await firebaseHazir();
+    const { collection, getDocs } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
+    const snap = await getDocs(collection(_db, "users", _auth.currentUser.uid, "invitations"));
+    return snap.docs.map(d=>{
+      const v = d.data();
+      const g = (v.guncelleme && v.guncelleme.toMillis) ? v.guncelleme.toMillis() : (v.guncelleme || 0);
+      return { id:d.id, baslik:v.baslik||"", tur:v.tur||"", hero:v.hero||"", slug:v.slug||"", guncelleme:g };
+    });
+  }catch(e){ console.warn("hesap listesi:", e); return null; }
+}
+// Firestore + localStorage'ı birleştir (uzak kazanır), yeniden çiz.
+async function firestoreMerge(){
+  const uzak = await firestoreListAl();
+  if(!uzak) return;
+  const harita = {};
+  listeAl().forEach(k=> harita[k.id] = k);
+  uzak.forEach(k=> harita[k.id] = Object.assign({}, harita[k.id], k));
+  const birlesik = Object.values(harita).sort((a,b)=> (b.guncelleme||0) - (a.guncelleme||0));
+  listeYaz(birlesik);
+  if(!$("davetlerim").hidden) davetlerimCiz();
+}
+function davetlerimAc(){ $("davetlerim").hidden = false; davetlerimCiz(); firestoreMerge(); $("davetlerimKapat").focus(); }
 function davetlerimKapat(){ $("davetlerim").hidden = true; $("btnDavetlerim").focus(); }
 document.addEventListener("keydown", e=>{ if(e.key === "Escape" && !$("davetlerim").hidden) davetlerimKapat(); });
 
@@ -1249,7 +1276,12 @@ async function davetiyeDuzenle(id, tur){
 async function davetiyeSil(id){
   if(!confirm("Bu davetiye silinsin mi? Yayın linki ve yanıtlar erişilemez olur.")) return;
   listeYaz(listeAl().filter(x=>x.id!==id));
-  try{ await firebaseHazir(); const { doc, deleteDoc } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js"); await deleteDoc(doc(_db,"invitations",id)); }catch(e){ /* yetki yoksa yalnız yerelden silindi */ }
+  try{
+    await firebaseHazir();
+    const { doc, deleteDoc } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
+    await deleteDoc(doc(_db,"invitations",id));
+    try{ await deleteDoc(doc(_db,"users",_auth.currentUser.uid,"invitations",id)); }catch(e){}
+  }catch(e){ /* yetki yoksa yalnız yerelden silindi */ }
   if(localStorage.getItem(YAYIN_ANAHTAR)===id){ localStorage.removeItem(YAYIN_ANAHTAR); $("yayinSonuc").style.display="none"; $("btnYayinla").textContent="Yayınla & LCV Topla"; }
   davetlerimCiz();
 }

@@ -61,6 +61,12 @@ service cloud.firestore {
       }
     }
 
+    // Kullanıcı hesabı: kişinin kendi davetiye dizini (cihazlar arası "Davetiyelerim").
+    // Yalnızca sahibi kendi alanını okur/yazar/listeler.
+    match /users/{uid}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
     // Özel kısa link: slug -> inviteId. Herkes çözebilir; yalnızca sahip oluşturur (benzersiz).
     match /slugs/{slug} {
       allow get: if true;
