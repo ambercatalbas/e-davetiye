@@ -1226,8 +1226,9 @@ async function sayilariGuncelle(){
     }catch(e){ say.textContent = "yanıtlar için giriş gerekli"; }
   }
 }
-function davetlerimAc(){ $("davetlerim").hidden = false; davetlerimCiz(); }
-function davetlerimKapat(){ $("davetlerim").hidden = true; }
+function davetlerimAc(){ $("davetlerim").hidden = false; davetlerimCiz(); $("davetlerimKapat").focus(); }
+function davetlerimKapat(){ $("davetlerim").hidden = true; $("btnDavetlerim").focus(); }
+document.addEventListener("keydown", e=>{ if(e.key === "Escape" && !$("davetlerim").hidden) davetlerimKapat(); });
 
 async function davetiyeDuzenle(id, tur){
   try{

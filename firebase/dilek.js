@@ -40,8 +40,8 @@ export async function dilekBaslat({ inviteId, firebaseConfig, mount, dil }){
   kok.append(el("p","ust kucuk",T.baslik));
 
   const form = el("div","dilek-form");
-  const ad = el("input","lcv-input"); ad.type="text"; ad.placeholder=T.ad; ad.maxLength=60;
-  const mesaj = el("textarea","lcv-input lcv-not"); mesaj.placeholder=T.mesaj; mesaj.maxLength=500;
+  const ad = el("input","lcv-input"); ad.type="text"; ad.placeholder=T.ad; ad.maxLength=60; ad.setAttribute("aria-label",T.ad);
+  const mesaj = el("textarea","lcv-input lcv-not"); mesaj.placeholder=T.mesaj; mesaj.maxLength=500; mesaj.setAttribute("aria-label",T.mesaj);
   const gonder = el("button","btn olumlu",T.gonder); gonder.type="button";
   const yanit = el("p","yanit"); yanit.setAttribute("aria-live","polite");
   form.append(ad, mesaj, gonder, yanit);

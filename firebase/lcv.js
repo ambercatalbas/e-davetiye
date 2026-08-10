@@ -70,7 +70,7 @@ export async function lcvBaslat({ inviteId, firebaseConfig, mount, dil }) {
   kok.append(el("p", "ust", T.baslik));
 
   const ad = el("input", "lcv-input");
-  ad.type = "text"; ad.placeholder = T.ad; ad.maxLength = 80;
+  ad.type = "text"; ad.placeholder = T.ad; ad.maxLength = 80; ad.setAttribute("aria-label", T.ad);
   kok.append(ad);
 
   const durumSatir = el("div", "rsvp");
@@ -84,12 +84,12 @@ export async function lcvBaslat({ inviteId, firebaseConfig, mount, dil }) {
   kisiSatir.style.display = "none";
   const kisiEtiket = el("span", "lcv-kisi-etiket", T.kisi);
   const kisiInput = el("input", "lcv-input lcv-kisi-input");
-  kisiInput.type = "number"; kisiInput.min = "1"; kisiInput.max = "20"; kisiInput.value = "1";
+  kisiInput.type = "number"; kisiInput.min = "1"; kisiInput.max = "20"; kisiInput.value = "1"; kisiInput.setAttribute("aria-label", T.kisi);
   kisiSatir.append(kisiEtiket, kisiInput);
   kok.append(kisiSatir);
 
   const not = el("textarea", "lcv-input lcv-not");
-  not.placeholder = T.not; not.maxLength = 300;
+  not.placeholder = T.not; not.maxLength = 300; not.setAttribute("aria-label", T.not);
   kok.append(not);
 
   // Aydınlatma + açık rıza (rıza değerleri sabit, dile bağlı değil)
