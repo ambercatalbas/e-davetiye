@@ -22,7 +22,7 @@
   /* Davetiye parametresi varsa "davetiye modu": landing gizlenir, kart gösterilir.
      Boya girmeden çalışır → flash olmaz, arama motoru boş root'ta landing'i görür. */
   (function(){ var s=location.search, h=location.hash;
-    if(/[?&](id|d)=/.test(s) || /(^#|&)i=/.test(h)) document.documentElement.className += " dav"; })();
+    if(/[?&](id|d|s)=/.test(s) || /(^#|&)i=/.test(h)) document.documentElement.className += " dav"; })();
   if ("serviceWorker" in navigator) addEventListener("load", function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
 </script>
 </head>
@@ -1196,7 +1196,9 @@
   }
 
   const mount = document.getElementById("davetiye");
-  const inviteId = new URLSearchParams(location.search).get("id");
+  const _p = new URLSearchParams(location.search);
+  const inviteId = _p.get("id");
+  const slug = _p.get("s");
 
   // Ortak render: tema uygula, kartı bas, kapağı göster. lcv:true ise sahte
   // RSVP butonlarını kaldırır (gerçek LCV formu ayrıca eklenecek).
@@ -1213,8 +1215,8 @@
     return kok;
   }
 
-  if (inviteId) {
-    // Yayınlanmış davetiye: Firestore'dan çek + gerçek LCV formu ekle.
+  if (inviteId || slug) {
+    // Yayınlanmış davetiye: Firestore'dan çek (?id= veya ?s=slug) + gerçek LCV formu ekle.
     (async () => {
       try {
         const [{ initializeApp, getApps, getApp }, { getFirestore, doc, getDoc }, { firebaseConfig }] = await Promise.all([
@@ -1224,7 +1226,17 @@
         ]);
         const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const snap = await getDoc(doc(db, "invitations", inviteId));
+        let realId = inviteId;
+        if (!realId && slug) {
+          const sSnap = await getDoc(doc(db, "slugs", slug));
+          if (sSnap.exists()) realId = sSnap.data().inviteId;
+        }
+        if (!realId) {
+          goster({ ustBaslik: "E-Davetiye", baslik: "Davetiye Bulunamadı",
+                   girisMetni: "Bu bağlantı geçersiz ya da davetiye kaldırılmış olabilir." });
+          return;
+        }
+        const snap = await getDoc(doc(db, "invitations", realId));
         if (!snap.exists()) {
           goster({ ustBaslik: "E-Davetiye", baslik: "Davetiye Bulunamadı",
                    girisMetni: "Bu davetiye kaldırılmış olabilir ya da bağlantı hatalı. Lütfen gönderen kişiyle iletişime geçin." });
@@ -1236,12 +1248,12 @@
         const { lcvBaslat } = await import("./firebase/lcv.js");
         const lcvMount = el("div", "lcv-mount");
         kok.append(lcvMount);
-        lcvBaslat({ inviteId, firebaseConfig, mount: lcvMount, dil: cfg.dil });
+        lcvBaslat({ inviteId: realId, firebaseConfig, mount: lcvMount, dil: cfg.dil });
         if (cfg.dilek) {
           const { dilekBaslat } = await import("./firebase/dilek.js");
           const dMount = el("div", "lcv-mount");
           kok.append(dMount);
-          dilekBaslat({ inviteId, firebaseConfig, mount: dMount, dil: cfg.dil });
+          dilekBaslat({ inviteId: realId, firebaseConfig, mount: dMount, dil: cfg.dil });
         }
       } catch (e) {
         console.error(e);

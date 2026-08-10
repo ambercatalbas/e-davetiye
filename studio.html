@@ -449,6 +449,10 @@
     <div class="card share">
       <h2><span class="no">✓</span> Yayınla &amp; Paylaş</h2>
 
+      <div class="field" style="margin-bottom:10px">
+        <label for="inSlug">Özel link <span class="hint">(isteğe bağlı — örn: ayse-mehmet)</span></label>
+        <input type="text" id="inSlug" maxlength="64" placeholder="ayse-mehmet">
+      </div>
       <button class="btn pri block" type="button" id="btnYayinla">Yayınla &amp; LCV Topla</button>
       <p class="note" id="yayinNot">Yayınlayınca kısa bir <b>?id=</b> linki oluşur; davetliler <b>gerçek LCV</b> gönderir, yanıtları panelden görürsün.</p>
 
@@ -905,7 +909,7 @@ const ALANLAR = ["selTur","selTema","selDil","inUst","inAlici","inBaslik","taGir
   "taIkram","inIkramNot","inSartBaslik","taSart","inRsvpOlEt","inRsvpHaEt","inRsvpOlCv","inRsvpHaCv",
   "inProgramBaslik","taProgram","inHaritaBaslik","inHaritaAdres","inHaritaUrl",
   "inHediyeBaslik","inHediyeMesaj","inHediyeIban","inHediyeAd","inHediyeNot",
-  "inKapakIsim","inKapakButon"];
+  "inKapakIsim","inKapakButon","inSlug"];
 const ANAHTAR = "studio.taslak.v1";
 function kaydet(){
   const d = {}; ALANLAR.forEach(a=> d[a]=val(a));
@@ -1061,10 +1065,19 @@ async function yayinla(){
     let id = localStorage.getItem(YAYIN_ANAHTAR);
     if(id){ await setDoc(doc(_db,"invitations",id), veri); }
     else { const ref = await addDoc(collection(_db,"invitations"), veri); id = ref.id; localStorage.setItem(YAYIN_ANAHTAR, id); }
-    $("outIdLink").value = idLinki(id);
+    // Özel link (slug) — verildiyse slugs/{slug} = {inviteId} (benzersiz; başkasınınki alınamaz)
+    let paylasLink = idLinki(id), slugKullanildi = "";
+    const slugHam = (val("inSlug") || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    if (slugHam && slugHam.length >= 3) {
+      try {
+        await setDoc(doc(_db, "slugs", slugHam), { inviteId: id, ownerUid: _auth.currentUser.uid, createdAt: serverTimestamp() });
+        paylasLink = RENDER + "?s=" + slugHam; slugKullanildi = slugHam;
+      } catch (e) { console.warn(e); alert("“" + slugHam + "” özel linki alınamadı (başkası kullanıyor olabilir). Kimlik linki kullanılıyor."); }
+    }
+    $("outIdLink").value = paylasLink;
     $("btnYanit").href = yanitLinki(id);
     $("yayinSonuc").style.display = "";
-    listeUpsert({ id, baslik: (val("inBaslik").trim() || "Adsız davetiye"), tur: val("selTur"), hero: _fotoHero || "", guncelleme: Date.now() });
+    listeUpsert({ id, baslik: (val("inBaslik").trim() || "Adsız davetiye"), tur: val("selTur"), hero: _fotoHero || "", slug: slugKullanildi, guncelleme: Date.now() });
     $("yayinNot").innerHTML = "Yayında ✓ — bu linki paylaş; her düzenlemeden sonra <b>Güncelle</b>'ye bas.";
     b.textContent = "Güncellendi ✓";
     setTimeout(()=> b.textContent = "Güncelle & Yeniden Yayınla", 1600);
@@ -1217,6 +1230,7 @@ async function davetiyeDuzenle(id, tur){
     if(!snap.exists()){ alert("Bu davetiye bulunamadı (silinmiş olabilir)."); return; }
     const cfg = snap.data().cfg || snap.data();
     formDoldur(cfg, tur);
+    const rec = listeAl().find(x=>x.id===id); setVal("inSlug", (rec && rec.slug) || "");
     localStorage.setItem(YAYIN_ANAHTAR, id);
     $("btnYayinla").textContent = "Güncelle & Yeniden Yayınla";
     $("outIdLink").value = idLinki(id); $("btnYanit").href = yanitLinki(id); $("yayinSonuc").style.display = "";
@@ -1250,7 +1264,7 @@ $("form").addEventListener("input", planla);
 $("btnSifirla").addEventListener("click", ()=>{
   if(!confirm("Yeni bir davetiye başlatılsın mı? Taslak temizlenir. (Yayınladıysan eski linkin çalışmaya devam eder.)")) return;
   try{ localStorage.removeItem(ANAHTAR); localStorage.removeItem(YAYIN_ANAHTAR); }catch(e){}
-  _fotoHero=""; _fotoGaleri=[]; heroCiz(); galeriCiz();
+  _fotoHero=""; _fotoGaleri=[]; heroCiz(); galeriCiz(); setVal("inSlug","");
   $("yayinSonuc").style.display="none"; $("btnYayinla").textContent="Yayınla & LCV Topla";
   $("yayinNot").innerHTML="Yayınlayınca kısa bir <b>?id=</b> linki oluşur; davetliler <b>gerçek LCV</b> gönderir, yanıtları panelden görürsün.";
   AKTIF_SABLON=null; metinVaryantlariniKur(null); setVal("selTur","dugun"); preseti_uygula("dugun"); onizle();
