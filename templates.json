@@ -2144,6 +2144,299 @@
           "muhur"
         ]
       }
+    },
+    {
+      "id": "kurumsal-acilis",
+      "name": "Açılışa Davet",
+      "type": "kurumsal",
+      "typeLabel": "Kurumsal",
+      "style": "Modern",
+      "color": "lacivert",
+      "colorLabel": "Lacivert",
+      "premium": false,
+      "theme": "modern",
+      "description": "İnci lacivert, sade kurumsal çizgi — açılış ve resmî davetler.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "program",
+        "harita",
+        "lcv"
+      ],
+      "copyOptions": [
+        {
+          "label": "Resmî",
+          "text": "Yeni şubemizin açılış törenine siz değerli iş ortaklarımızı davet etmekten onur duyarız."
+        },
+        {
+          "label": "Sıcak",
+          "text": "Birlikte büyüdüğümüz bu yolda yeni adresimizin açılışını sizlerle kutlamak isteriz."
+        }
+      ],
+      "preset": {
+        "tur": "kurumsal",
+        "tema": "modern",
+        "giris": "Yeni şubemizin açılış törenine siz değerli iş ortaklarımızı davet etmekten onur duyarız.",
+        "ust": "Açılış Daveti",
+        "alici": "Sayın Davetlimiz",
+        "baslik": "Açılışımıza Davetlisiniz",
+        "detaylar": "Saat: 18.00\nKıyafet: Kurumsal",
+        "geriBaslik": "Açılışa kalan süre",
+        "bitti": "Açılış başladı 🎉",
+        "saat": "18:00",
+        "gunSonra": 21,
+        "kurum": "[Şirket Adı]",
+        "program": "18.00 | Karşılama & Kokteyl | Giriş\n18.30 | Açılış Konuşması | Sahne\n19.00 | Kurdele Kesimi | Giriş",
+        "programBaslik": "Program",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "[Mekân adresi]",
+        "rsvpOlEt": "Katılacağım",
+        "rsvpHaEt": "Katılamayacağım",
+        "rsvpOlCv": "Teşekkürler, sizi aramızda görmekten memnuniyet duyacağız.",
+        "rsvpHaCv": "Bilgilendirme için teşekkür ederiz.",
+        "imza": "Saygılarımızla,",
+        "ac": [
+          "tarih",
+          "program",
+          "harita",
+          "rsvp"
+        ]
+      }
+    },
+    {
+      "id": "kurumsal-lansman",
+      "name": "Lansman",
+      "type": "kurumsal",
+      "typeLabel": "Kurumsal",
+      "style": "Lüks",
+      "color": "siyah",
+      "colorLabel": "Siyah",
+      "premium": true,
+      "theme": "luks",
+      "description": "Oniks & şampanya — ürün/hizmet lansmanı için şık kurumsal tema.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "program",
+        "harita",
+        "lcv",
+        "muhur"
+      ],
+      "copyOptions": [
+        {
+          "label": "Şık",
+          "text": "Yeni ürünümüzün tanıtım lansmanında sizleri de aramızda görmekten mutluluk duyarız."
+        },
+        {
+          "label": "Kısa",
+          "text": "Lansmanımıza özel davetlisiniz — yeniliği birlikte keşfedelim."
+        }
+      ],
+      "preset": {
+        "tur": "kurumsal",
+        "tema": "luks",
+        "giris": "Yeni ürünümüzün tanıtım lansmanında sizleri de aramızda görmekten mutluluk duyarız.",
+        "ust": "Lansman Daveti",
+        "alici": "Değerli Davetlimiz",
+        "baslik": "Lansmanımıza Davetlisiniz",
+        "detaylar": "Saat: 19.30\nKıyafet: Smart casual",
+        "geriBaslik": "Lansmana kalan süre",
+        "bitti": "Lansman başladı 🥂",
+        "saat": "19:30",
+        "gunSonra": 18,
+        "kurum": "[Şirket Adı]",
+        "muhur": "YENİLİĞE İLK BAKIŞ ·",
+        "program": "19.30 | Karşılama | Lobi\n20.00 | Tanıtım Sunumu | Sahne\n21.00 | Kokteyl & Networking | Teras",
+        "programBaslik": "Akış",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "[Mekân adresi]",
+        "rsvpOlEt": "Katılacağım",
+        "rsvpHaEt": "Katılamayacağım",
+        "rsvpOlCv": "Harika! Yerinizi ayırdık.",
+        "rsvpHaCv": "Teşekkür ederiz.",
+        "imza": "Saygılarımızla,",
+        "ac": [
+          "tarih",
+          "program",
+          "harita",
+          "rsvp",
+          "muhur"
+        ]
+      }
+    },
+    {
+      "id": "kurumsal-gala",
+      "name": "Gala Gecesi",
+      "type": "kurumsal",
+      "typeLabel": "Kurumsal",
+      "style": "Zarif",
+      "color": "lacivert",
+      "colorLabel": "Lacivert",
+      "premium": true,
+      "theme": "gece",
+      "description": "Safir ay ışığı — gala yemeği ve ödül geceleri.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "program",
+        "harita",
+        "lcv"
+      ],
+      "copyOptions": [
+        {
+          "label": "Zarif",
+          "text": "Geleneksel gala gecemizde birlikte kutlamak ve teşekkür etmek için sizleri bekliyoruz."
+        },
+        {
+          "label": "Resmî",
+          "text": "Yıllık gala yemeğimize onur konuğumuz olarak davetlisiniz."
+        }
+      ],
+      "preset": {
+        "tur": "kurumsal",
+        "tema": "gece",
+        "giris": "Geleneksel gala gecemizde birlikte kutlamak ve teşekkür etmek için sizleri bekliyoruz.",
+        "ust": "Gala Daveti",
+        "alici": "Sayın Davetlimiz",
+        "baslik": "Gala Gecemize Davetlisiniz",
+        "detaylar": "Saat: 20.00\nKıyafet: Gece kıyafeti",
+        "geriBaslik": "Galaya kalan süre",
+        "bitti": "Hoş geldiniz 🌙",
+        "saat": "20:00",
+        "gunSonra": 30,
+        "kurum": "[Şirket Adı]",
+        "program": "20.00 | Kokteyl | Lobi\n20.45 | Akşam Yemeği | Balo Salonu\n22.00 | Ödül Töreni | Sahne",
+        "programBaslik": "Gecenin Akışı",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "[Otel / Salon]",
+        "rsvpOlEt": "Katılacağım",
+        "rsvpHaEt": "Katılamayacağım",
+        "rsvpOlCv": "Teşekkürler, sizi bekliyoruz.",
+        "rsvpHaCv": "Anlayışınız için teşekkürler.",
+        "imza": "Saygılarımızla,",
+        "ac": [
+          "tarih",
+          "program",
+          "harita",
+          "rsvp"
+        ]
+      }
+    },
+    {
+      "id": "kurumsal-konferans",
+      "name": "Konferans",
+      "type": "kurumsal",
+      "typeLabel": "Kurumsal",
+      "style": "Minimal",
+      "color": "krem",
+      "colorLabel": "Krem",
+      "premium": false,
+      "theme": "minimal",
+      "description": "Fildişi & adaçayı — konferans, zirve ve seminerler.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "program",
+        "harita",
+        "lcv"
+      ],
+      "copyOptions": [
+        {
+          "label": "Bilgi",
+          "text": "Alanında öncü isimleri buluşturan konferansımıza katılımınızdan onur duyarız."
+        },
+        {
+          "label": "Kısa",
+          "text": "Zirvemize davetlisiniz — birlikte öğrenelim, birlikte büyüyelim."
+        }
+      ],
+      "preset": {
+        "tur": "kurumsal",
+        "tema": "minimal",
+        "giris": "Alanında öncü isimleri buluşturan konferansımıza katılımınızdan onur duyarız.",
+        "ust": "Konferans Daveti",
+        "alici": "Değerli Katılımcı",
+        "baslik": "Konferansımıza Davetlisiniz",
+        "detaylar": "Saat: 09.30\nKatılım: Ücretsiz · kayıt gerekli",
+        "geriBaslik": "Konferansa kalan süre",
+        "bitti": "Başladı 👏",
+        "saat": "09:30",
+        "gunSonra": 25,
+        "kurum": "[Kurum Adı]",
+        "program": "09.30 | Kayıt & Kahve | Fuaye\n10.00 | Açılış Oturumu | Ana Salon\n13.00 | Öğle Arası | Fuaye\n14.00 | Paneller | Salonlar",
+        "programBaslik": "Oturumlar",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "[Kongre Merkezi]",
+        "rsvpOlEt": "Kayıt oluyorum",
+        "rsvpHaEt": "Katılamayacağım",
+        "rsvpOlCv": "Kaydınız alındı, görüşmek üzere!",
+        "rsvpHaCv": "Teşekkür ederiz.",
+        "imza": "Saygılarımızla,",
+        "ac": [
+          "tarih",
+          "program",
+          "harita",
+          "rsvp"
+        ]
+      }
+    },
+    {
+      "id": "kurumsal-yilsonu",
+      "name": "Yıl Sonu",
+      "type": "kurumsal",
+      "typeLabel": "Kurumsal",
+      "style": "Modern",
+      "color": "mavi",
+      "colorLabel": "Mavi",
+      "premium": false,
+      "theme": "cocuk",
+      "description": "Canlı mavi — yıl sonu kutlaması ve şirket etkinlikleri.",
+      "blocks": [
+        "kapak",
+        "geri-sayim",
+        "program",
+        "harita",
+        "lcv"
+      ],
+      "copyOptions": [
+        {
+          "label": "Neşeli",
+          "text": "Birlikte geçirdiğimiz bir yılı kutlamak için yıl sonu etkinliğimize davetlisiniz."
+        },
+        {
+          "label": "Kısa",
+          "text": "Yıl sonu kutlamamızda buluşalım!"
+        }
+      ],
+      "preset": {
+        "tur": "kurumsal",
+        "tema": "cocuk",
+        "giris": "Birlikte geçirdiğimiz bir yılı kutlamak için yıl sonu etkinliğimize davetlisiniz.",
+        "ust": "Yıl Sonu Etkinliği",
+        "alici": "Değerli Ekip Arkadaşımız",
+        "baslik": "Yıl Sonu Kutlamamıza Davetlisiniz",
+        "detaylar": "Saat: 19.00\nKıyafet: Rahat şık",
+        "geriBaslik": "Etkinliğe kalan süre",
+        "bitti": "Kutlama başladı 🎉",
+        "saat": "19:00",
+        "gunSonra": 20,
+        "kurum": "[Şirket Adı]",
+        "program": "19.00 | Karşılama | Giriş\n19.30 | Yılın Değerlendirmesi | Sahne\n20.30 | Yemek & Müzik | Salon",
+        "programBaslik": "Program",
+        "haritaBaslik": "Konum & Yol Tarifi",
+        "haritaAdres": "[Mekân]",
+        "rsvpOlEt": "Geliyorum",
+        "rsvpHaEt": "Gelemeyeceğim",
+        "rsvpOlCv": "Harika, birlikte kutlayalım!",
+        "rsvpHaCv": "Özleyeceğiz!",
+        "imza": "Saygılarımızla,",
+        "ac": [
+          "tarih",
+          "program",
+          "harita",
+          "rsvp"
+        ]
+      }
     }
   ]
 }
