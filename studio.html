@@ -178,6 +178,25 @@
   .foto-mini .sil{position:absolute;top:3px;right:3px;width:20px;height:20px;border:0;border-radius:50%;
     background:rgba(15,17,30,.72);color:#fff;font-size:.82rem;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0;}
   .foto-mini.yukleniyor{display:grid;place-items:center;color:var(--soft);font-size:.62rem;background:var(--panel-2);}
+  /* Davetiyelerim modalı */
+  .modal[hidden]{display:none;}
+  .modal{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:20px;}
+  .modal-arka{position:absolute;inset:0;background:rgba(10,12,22,.55);backdrop-filter:blur(3px);}
+  .modal-kart{position:relative;z-index:1;width:min(560px,100%);max-height:85dvh;overflow:auto;
+    background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:20px;
+    box-shadow:0 40px 90px -40px var(--shadow);}
+  .modal-bas{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .modal-bas h2{font-family:var(--f-serif);font-weight:500;font-size:1.3rem;margin:0;}
+  .dv-item{display:flex;gap:12px;align-items:center;padding:12px;border:1px solid var(--edge);
+    border-radius:10px;margin-bottom:10px;background:var(--panel-2);}
+  .dv-thumb{width:52px;height:52px;border-radius:8px;object-fit:cover;flex:none;
+    background:var(--field);border:1px solid var(--edge);display:grid;place-items:center;color:var(--gold);font-size:1.1rem;}
+  .dv-orta{flex:1;min-width:0;}
+  .dv-ad{font-family:var(--f-serif);font-size:1.02rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dv-alt{font-size:.66rem;color:var(--faint);letter-spacing:.04em;margin-top:2px;}
+  .dv-eylem{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .dv-eylem a,.dv-eylem button{font-size:.7rem;padding:7px 10px;text-decoration:none;}
+  .dv-bos{text-align:center;color:var(--faint);font-size:.85rem;padding:26px 10px;line-height:1.6;}
   .foot{max-width:1180px;margin:0 auto;padding:8px clamp(16px,3vw,30px) 40px;
     font-size:.72rem;color:var(--faint);text-align:center;}
   .foot a{color:var(--gold);text-decoration:none;}
@@ -200,6 +219,7 @@
 
 <header class="bar">
   <div class="brand"><b>E-Davetiye</b><small>Studio</small></div>
+  <button class="btn" type="button" id="btnDavetlerim" title="Yayınladığın davetiyeler">Davetlerim</button>
   <button class="btn" type="button" id="btnGiris" title="Google ile giriş — yanıtları her cihazdan gör">☁︎ Giriş</button>
   <button class="btn" type="button" id="btnSifirla" title="Yeni davetiye">Sıfırla</button>
   <button class="theme-btn" type="button" id="btnTema" title="Açık / koyu" aria-label="Tema değiştir">◐</button>
@@ -438,6 +458,17 @@
 </div>
 
 <p class="foot">E-Davetiye · Studio — <a href="index.html">canlı motor</a> · <a href="https://github.com/ambercatalbas/e-davetiye">GitHub</a></p>
+
+<div class="modal" id="davetlerim" hidden>
+  <div class="modal-arka" id="davetlerimArka"></div>
+  <div class="modal-kart" role="dialog" aria-modal="true" aria-label="Davetiyelerim">
+    <div class="modal-bas">
+      <h2>Davetiyelerim</h2>
+      <button class="btn" type="button" id="davetlerimKapat">Kapat</button>
+    </div>
+    <div id="davetlerimListe"></div>
+  </div>
+</div>
 
 <script>
 /* ============================================================
@@ -996,6 +1027,7 @@ async function yayinla(){
     $("outIdLink").value = idLinki(id);
     $("btnYanit").href = yanitLinki(id);
     $("yayinSonuc").style.display = "";
+    listeUpsert({ id, baslik: (val("inBaslik").trim() || "Adsız davetiye"), tur: val("selTur"), hero: _fotoHero || "", guncelleme: Date.now() });
     $("yayinNot").innerHTML = "Yayında ✓ — bu linki paylaş; her düzenlemeden sonra <b>Güncelle</b>'ye bas.";
     b.textContent = "Güncellendi ✓";
     setTimeout(()=> b.textContent = "Güncelle & Yeniden Yayınla", 1600);
@@ -1027,6 +1059,108 @@ $("btnWaId").addEventListener("click", ()=>{
     $("yayinSonuc").style.display = "";
   }
 })();
+
+/* ---- cfg → form (mevcut davetiyeyi düzenlemek için ters eşleme) ---- */
+function formDoldur(cfg, tur){
+  cfg = cfg || {};
+  const two = n => String(n).padStart(2,"0");
+  if(tur) setVal("selTur", tur);
+  setVal("selTema", cfg.tema || "safak");
+  setVal("inUst", cfg.ustBaslik || ""); setVal("inAlici", cfg.alici || "");
+  setVal("inBaslik", cfg.baslik || ""); setVal("taGiris", cfg.girisMetni || "");
+  setVal("inImza", cfg.imza || ""); setVal("inKurum", cfg.imzaKurum || "");
+  const z = cfg.zaman;
+  setChk("chkTarih", !!(z && z.tarih));
+  if(z && z.tarih){ setVal("inTarih", z.tarih); setVal("inSaat", two(z.saat||0)+":"+two(z.dakika||0)); setVal("inBitti", z.bittiMetni||""); }
+  else setVal("inBitti","");
+  setVal("inGeriBaslik", cfg.geriSayimBaslik || "");
+  setVal("taDetaylar", (cfg.detaylar||[]).filter(d=>d.deger!=="{{tarih}}").map(d=>(d.etiket?d.etiket+": ":"")+d.deger).join("\n"));
+  const ik = cfg.ikramlar && cfg.ikramlar[0];
+  setChk("chkIkram", !!(cfg.ikramlar && cfg.ikramlar.length));
+  setVal("inIkramBaslik", cfg.ikramlarBaslik||""); setVal("inIkramGrup", ik?(ik.grup||""):"");
+  setVal("taIkram", ik?(ik.ogeler||[]).join("\n"):""); setVal("inIkramNot", cfg.ikramlarNot||"");
+  setChk("chkSart", !!(cfg.sartlar && cfg.sartlar.length));
+  setVal("inSartBaslik", cfg.sartlarBaslik||"İnce Yazı"); setVal("taSart", (cfg.sartlar||[]).join("\n"));
+  setChk("chkMuhur", !!cfg.muhurYazi); setVal("inMuhur", cfg.muhurYazi||"");
+  setChk("chkRsvp", !!cfg.rsvp);
+  if(cfg.rsvp){
+    setVal("inRsvpOlEt",(cfg.rsvp.olumlu&&cfg.rsvp.olumlu.etiket)||""); setVal("inRsvpHaEt",(cfg.rsvp.olumsuz&&cfg.rsvp.olumsuz.etiket)||"");
+    setVal("inRsvpOlCv",(cfg.rsvp.olumlu&&cfg.rsvp.olumlu.cevap)||""); setVal("inRsvpHaCv",(cfg.rsvp.olumsuz&&cfg.rsvp.olumsuz.cevap)||"");
+  }
+  setChk("chkProgram", !!(cfg.program && cfg.program.length));
+  setVal("inProgramBaslik", cfg.programBaslik||"Program");
+  setVal("taProgram", (cfg.program||[]).map(a=>[a.saat,a.baslik,a.yer,a.aciklama].filter(x=>x!=null&&x!=="").join(" | ")).join("\n"));
+  const h = cfg.harita||{};
+  setChk("chkHarita", !!(h.adres || h.mapsUrl));
+  setVal("inHaritaBaslik", h.baslik||"Konum & Yol Tarifi"); setVal("inHaritaAdres", h.adres||""); setVal("inHaritaUrl", h.mapsUrl||"");
+  const g = cfg.hediye||{};
+  setChk("chkHediye", !!cfg.hediye);
+  setVal("inHediyeBaslik", g.baslik||"Hediye"); setVal("inHediyeMesaj", g.mesaj||"");
+  setVal("inHediyeIban", g.iban||""); setVal("inHediyeAd", g.adSoyad||""); setVal("inHediyeNot", g.not||"");
+  setChk("chkKapak", !!cfg.kapak);
+  setVal("inKapakIsim", (cfg.kapak&&cfg.kapak.isim)||""); setVal("inKapakButon", (cfg.kapak&&cfg.kapak.buton)||"Davetiyeyi Aç");
+  _fotoHero = (cfg.foto&&cfg.foto.hero)||""; _fotoGaleri = (cfg.foto&&Array.isArray(cfg.foto.galeri))?cfg.foto.galeri.slice():[];
+  heroCiz(); galeriCiz();
+  syncBodies();
+}
+
+/* ---- Davetiyelerim (yayınlananların yerel listesi) ---- */
+const LISTE_ANAHTAR = "studio.davetiyelerim.v1";
+const TUR_ETIKET = {dugun:"Düğün",nisan:"Nişan",kina:"Kına",sunnet:"Sünnet",bebek:"Bebek",dogumgunu:"Doğum Günü",yaz:"Yaz Daveti","save-the-date":"Save the Date",tesekkur:"Teşekkür",bos:"Davetiye"};
+function listeAl(){ try{ return JSON.parse(localStorage.getItem(LISTE_ANAHTAR)||"[]"); }catch(e){ return []; } }
+function listeYaz(a){ try{ localStorage.setItem(LISTE_ANAHTAR, JSON.stringify(a)); }catch(e){} }
+function listeUpsert(k){ const a = listeAl().filter(x=>x.id!==k.id); a.unshift(k); listeYaz(a); }
+function tarihKisa(ms){ try{ return new Date(ms).toLocaleDateString("tr-TR",{day:"numeric",month:"short"}); }catch(e){ return ""; } }
+
+function davetlerimCiz(){
+  const kutu = $("davetlerimListe"); kutu.innerHTML = "";
+  const a = listeAl();
+  if(!a.length){ kutu.innerHTML = '<p class="dv-bos">Henüz yayınlanmış davetiyen yok.<br>Bir davetiye hazırlayıp <b>Yayınla</b>\'ya bastığında burada listelenir.</p>'; return; }
+  a.forEach(k=>{
+    const item = el2("div","dv-item");
+    let thumb;
+    if(k.hero){ thumb = document.createElement("img"); thumb.className="dv-thumb"; thumb.src=k.hero; thumb.alt=""; }
+    else { thumb = el2("div","dv-thumb","✦"); }
+    const orta = el2("div","dv-orta");
+    orta.append(el2("div","dv-ad", k.baslik||"Adsız davetiye"));
+    orta.append(el2("div","dv-alt", (TUR_ETIKET[k.tur]||"Davetiye") + (k.guncelleme?" · "+tarihKisa(k.guncelleme):"")));
+    const eylem = el2("div","dv-eylem");
+    const ac = document.createElement("a"); ac.className="btn"; ac.textContent="Aç"; ac.target="_blank"; ac.rel="noopener"; ac.href=idLinki(k.id);
+    const yan = document.createElement("a"); yan.className="btn"; yan.textContent="Yanıtlar"; yan.target="_blank"; yan.rel="noopener"; yan.href=yanitLinki(k.id);
+    const duz = el2("button","btn pri","Düzenle"); duz.type="button"; duz.addEventListener("click",()=>davetiyeDuzenle(k.id,k.tur));
+    const sil = el2("button","btn","Sil"); sil.type="button"; sil.addEventListener("click",()=>davetiyeSil(k.id));
+    eylem.append(ac,yan,duz,sil); orta.append(eylem);
+    item.append(thumb, orta); kutu.append(item);
+  });
+}
+function davetlerimAc(){ $("davetlerim").hidden = false; davetlerimCiz(); }
+function davetlerimKapat(){ $("davetlerim").hidden = true; }
+
+async function davetiyeDuzenle(id, tur){
+  try{
+    await firebaseHazir();
+    const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
+    const snap = await getDoc(doc(_db,"invitations",id));
+    if(!snap.exists()){ alert("Bu davetiye bulunamadı (silinmiş olabilir)."); return; }
+    const cfg = snap.data().cfg || snap.data();
+    formDoldur(cfg, tur);
+    localStorage.setItem(YAYIN_ANAHTAR, id);
+    $("btnYayinla").textContent = "Güncelle & Yeniden Yayınla";
+    $("outIdLink").value = idLinki(id); $("btnYanit").href = yanitLinki(id); $("yayinSonuc").style.display = "";
+    kaydet(); onizle(); davetlerimKapat();
+    window.scrollTo({top:0, behavior:"smooth"});
+  }catch(e){ console.error(e); alert("Yüklenemedi: "+(e.code||e.message||"")); }
+}
+async function davetiyeSil(id){
+  if(!confirm("Bu davetiye silinsin mi? Yayın linki ve yanıtlar erişilemez olur.")) return;
+  listeYaz(listeAl().filter(x=>x.id!==id));
+  try{ await firebaseHazir(); const { doc, deleteDoc } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js"); await deleteDoc(doc(_db,"invitations",id)); }catch(e){ /* yetki yoksa yalnız yerelden silindi */ }
+  if(localStorage.getItem(YAYIN_ANAHTAR)===id){ localStorage.removeItem(YAYIN_ANAHTAR); $("yayinSonuc").style.display="none"; $("btnYayinla").textContent="Yayınla & LCV Topla"; }
+  davetlerimCiz();
+}
+$("btnDavetlerim").addEventListener("click", davetlerimAc);
+$("davetlerimKapat").addEventListener("click", davetlerimKapat);
+$("davetlerimArka").addEventListener("click", davetlerimKapat);
 
 /* ---- Tema düğmesi ---- */
 $("btnTema").addEventListener("click", ()=>{
