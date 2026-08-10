@@ -4,8 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<meta name="description" content="Sevdiklerinize özel, zarif ve yeniden kullanılabilir e-davetiye.">
-<title>E-Davetiye</title>
+<meta name="description" content="Düğün, nişan, kına, sünnet, doğum günü ve kurumsal davetiyelerinizi dakikalar içinde oluşturun. Zarif tasarım, gerçek LCV (katılım) toplama, WhatsApp'ta paylaşım — ücretsiz başlayın.">
+<meta name="keywords" content="dijital davetiye, e-davetiye, online davetiye, düğün davetiyesi, sünnet davetiyesi, kına davetiyesi, nişan davetiyesi, doğum günü davetiyesi, bebek mevlüdü davetiyesi, kurumsal davetiye, LCV, katılım formu">
+<link rel="canonical" href="https://ambercatalbas.github.io/e-davetiye/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="E-Davetiye — Zarif Dijital Davetiye">
+<meta property="og:description" content="Düğün, nişan, kına, sünnet ve daha fazlası için dakikalar içinde zarif dijital davetiye. Gerçek LCV toplayın, WhatsApp'ta paylaşın.">
+<meta property="og:locale" content="tr_TR">
+<meta name="twitter:card" content="summary_large_image">
+<title>E-Davetiye — Zarif Dijital Davetiye · Düğün, Sünnet, Kına, Nişan</title>
+<script>
+  /* Davetiye parametresi varsa "davetiye modu": landing gizlenir, kart gösterilir.
+     Boya girmeden çalışır → flash olmaz, arama motoru boş root'ta landing'i görür. */
+  (function(){ var s=location.search, h=location.hash;
+    if(/[?&](id|d)=/.test(s) || /(^#|&)i=/.test(h)) document.documentElement.className += " dav"; })();
+</script>
 </head>
 <body>
 <!-- ICERIK-BASLANGIC -->
@@ -479,6 +492,73 @@
     .kart { box-shadow:none; border:1px solid #ccc; }
     .rsvp { display:none; }
   }
+
+  /* ===================== LANDING (tanıtım) ===================== */
+  /* Davetiye parametresi yoksa landing; varsa (html.dav) kart görünür. */
+  html:not(.dav) .sahne { display:none !important; }
+  html.dav #landing { display:none !important; }
+  html:not(.dav) body > footer { display:none !important; }
+
+  #landing { color:var(--ink); font-family:var(--f-serif); min-height:100dvh;
+    background:
+      radial-gradient(120% 80% at 50% -10%, var(--glow) 0%, transparent 55%),
+      linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 60%); }
+  .lp-wrap { max-width:1080px; margin:0 auto; padding:0 clamp(18px,4vw,32px); }
+  .lp-nav { display:flex; align-items:center; gap:12px; max-width:1080px; margin:0 auto;
+            padding:18px clamp(18px,4vw,32px); }
+  .lp-logo { font-family:var(--f-serif); font-weight:500; font-size:1.3rem; color:var(--ink); margin-right:auto; line-height:1; }
+  .lp-logo small { display:block; font-family:var(--f-sans); font-size:.54rem; letter-spacing:.3em;
+                   text-transform:uppercase; color:var(--gold); margin-top:4px; }
+  .lp-btn { font-family:var(--f-sans); font-size:.82rem; font-weight:700; letter-spacing:.04em; text-decoration:none;
+            padding:.8em 1.4em; border-radius:6px; border:1px solid var(--hairline); color:var(--ink);
+            display:inline-block; transition:transform .15s ease, box-shadow .15s ease, filter .15s ease; }
+  .lp-btn:hover { transform:translateY(-2px); box-shadow:0 14px 28px -18px var(--shadow); }
+  .lp-btn:focus-visible { outline:2px solid var(--coral); outline-offset:3px; }
+  .lp-btn.pri { background:var(--gold); color:var(--on-gold); border-color:transparent; }
+  .lp-btn.pri:hover { filter:brightness(1.06); }
+  .lp-hero { text-align:center; padding:clamp(38px,8vw,88px) 0 clamp(28px,5vw,48px); }
+  .lp-eyebrow { font-family:var(--f-sans); font-size:.72rem; letter-spacing:.3em; text-transform:uppercase; color:var(--gold); margin:0 0 18px; }
+  .lp-hero h1 { font-family:var(--f-serif); font-weight:500; font-size:clamp(2.3rem,6.5vw,4rem);
+                line-height:1.06; letter-spacing:.005em; text-wrap:balance; margin:0 auto; max-width:17ch; }
+  .lp-hero .sub { font-family:var(--f-serif); font-size:clamp(1.05rem,2.6vw,1.24rem); line-height:1.6;
+                  color:var(--ink-soft); max-width:56ch; margin:20px auto 0; }
+  .lp-cta { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:30px; }
+  .lp-cta .lp-btn { padding:1em 1.7em; font-size:.9rem; }
+  .lp-sec { padding:clamp(32px,6vw,58px) 0; }
+  .lp-sec h2 { font-family:var(--f-serif); font-weight:500; font-size:clamp(1.6rem,4vw,2.3rem);
+               text-align:center; text-wrap:balance; margin:0 0 8px; }
+  .lp-sec .lead { font-family:var(--f-serif); text-align:center; color:var(--ink-soft); max-width:56ch;
+                  margin:0 auto 30px; line-height:1.6; }
+  .lp-turler { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
+  .lp-tur { display:flex; flex-direction:column; gap:5px; padding:20px 18px; text-decoration:none;
+            background:var(--card); border:1px solid var(--card-edge); border-radius:12px; color:var(--ink);
+            box-shadow:0 18px 40px -36px var(--shadow); transition:transform .15s ease, border-color .15s ease; }
+  .lp-tur:hover { transform:translateY(-3px); border-color:var(--hairline); }
+  .lp-tur .em { font-size:1.5rem; line-height:1; }
+  .lp-tur b { font-family:var(--f-serif); font-weight:500; font-size:1.1rem; }
+  .lp-tur span { font-family:var(--f-sans); font-size:.72rem; color:var(--ink-soft); line-height:1.35; }
+  .lp-adimlar { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .lp-ozellikler { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:16px; }
+  .lp-kart { background:var(--card); border:1px solid var(--card-edge); border-radius:12px; padding:24px 20px;
+             box-shadow:0 18px 40px -36px var(--shadow); }
+  .lp-kart .no { font-family:var(--f-sans); font-size:.7rem; letter-spacing:.2em; color:var(--gold); }
+  .lp-kart h3 { font-family:var(--f-serif); font-weight:500; font-size:1.16rem; margin:8px 0 6px; }
+  .lp-kart p { font-family:var(--f-sans); font-size:.86rem; line-height:1.5; color:var(--ink-soft); margin:0; }
+  .lp-oz { display:flex; gap:12px; align-items:flex-start; }
+  .lp-oz .em { font-size:1.3rem; flex:none; line-height:1.2; }
+  .lp-oz b { font-family:var(--f-serif); font-weight:500; font-size:1rem; display:block; }
+  .lp-oz span { font-family:var(--f-sans); font-size:.82rem; color:var(--ink-soft); line-height:1.45; }
+  .lp-fiyat { text-align:center; background:var(--card); border:1px solid var(--card-edge); border-radius:16px;
+              padding:clamp(28px,5vw,44px); box-shadow:0 24px 50px -38px var(--shadow); }
+  .lp-fiyat .big { font-family:var(--f-serif); font-size:clamp(1.7rem,4vw,2.3rem); margin:6px 0; }
+  .lp-sss { max-width:760px; margin:0 auto; }
+  .lp-sss details { border-bottom:1px solid var(--hairline); padding:16px 4px; }
+  .lp-sss summary { font-family:var(--f-serif); font-size:1.08rem; cursor:pointer; color:var(--ink); }
+  .lp-sss p { font-family:var(--f-sans); font-size:.9rem; line-height:1.6; color:var(--ink-soft); margin:10px 0 0; }
+  .lp-foot { text-align:center; padding:36px 0 50px; border-top:1px solid var(--hairline); margin-top:26px; }
+  .lp-foot a { color:var(--gold); text-decoration:none; margin:0 9px; font-family:var(--f-sans); font-size:.82rem; }
+  .lp-foot .telif { font-family:var(--f-sans); font-size:.7rem; color:var(--ink-soft); margin-top:14px; }
+  @media (max-width:640px){ .lp-adimlar { grid-template-columns:1fr; } }
 </style>
 
 <div class="sahne">
@@ -493,6 +573,85 @@
       </div>
     </noscript>
   </main>
+</div>
+
+<div id="landing">
+  <nav class="lp-nav">
+    <div class="lp-logo">E-Davetiye<small>Dijital Davetiye</small></div>
+    <a class="lp-btn" href="pricing.html">Paketler</a>
+    <a class="lp-btn pri" href="studio.html">Oluştur</a>
+  </nav>
+  <div class="lp-wrap">
+    <header class="lp-hero">
+      <p class="lp-eyebrow">Zarif · Hızlı · WhatsApp'a hazır</p>
+      <h1>Dakikalar içinde zarif dijital davetiye</h1>
+      <p class="sub">Düğün, nişan, kına, sünnet, bebek, doğum günü ve kurumsal etkinlikler için; gerçek LCV toplayan, fotoğraflı, haritalı, geri sayımlı davetiyeler. Uygulama gerekmez — link ya da QR ile paylaşın.</p>
+      <div class="lp-cta">
+        <a class="lp-btn pri" href="studio.html">Ücretsiz Davetiye Oluştur</a>
+        <a class="lp-btn" href="?d=eren">Örnek Davetiyeyi Gör</a>
+      </div>
+    </header>
+
+    <section class="lp-sec" id="turler">
+      <h2>Her özel gün için</h2>
+      <p class="lead">Türk geleneklerine uygun, zengin şablonlarla — sünnetten kınaya, düğünden kurumsala.</p>
+      <div class="lp-turler">
+        <a class="lp-tur" href="studio.html"><span class="em">💍</span><b>Düğün</b><span>Program, harita, hediye, LCV</span></a>
+        <a class="lp-tur" href="studio.html"><span class="em">💐</span><b>Nişan &amp; Söz</b><span>Romantik, zarif</span></a>
+        <a class="lp-tur" href="studio.html"><span class="em">🌙</span><b>Kına Gecesi</b><span>Geleneksel motifler</span></a>
+        <a class="lp-tur" href="studio.html"><span class="em">⭐</span><b>Sünnet &amp; Mevlüt</b><span>Tören + mevlüt akışı</span></a>
+        <a class="lp-tur" href="studio.html"><span class="em">🍼</span><b>Bebek &amp; Mevlüt</b><span>Kız · erkek · nötr</span></a>
+        <a class="lp-tur" href="studio.html"><span class="em">🎂</span><b>Doğum Günü</b><span>Çocuk &amp; yetişkin</span></a>
+        <a class="lp-tur" href="studio.html"><span class="em">🏢</span><b>Kurumsal</b><span>Açılış, lansman, gala</span></a>
+        <a class="lp-tur" href="studio.html"><span class="em">📅</span><b>Save the Date</b><span>+ Teşekkür kartı</span></a>
+      </div>
+    </section>
+
+    <section class="lp-sec">
+      <h2>Üç adımda hazır</h2>
+      <div class="lp-adimlar">
+        <div class="lp-kart"><span class="no">01</span><h3>Şablon seç</h3><p>40+ zarif tasarımdan birini seç; renk ve temayı beğenine göre ayarla.</p></div>
+        <div class="lp-kart"><span class="no">02</span><h3>Düzenle</h3><p>İsim, tarih, yer, fotoğraf, program ve hediye bilgilerini gir — canlı önizle.</p></div>
+        <div class="lp-kart"><span class="no">03</span><h3>Paylaş &amp; topla</h3><p>Linki WhatsApp'ta paylaş; kimlerin geleceğini panelden canlı gör.</p></div>
+      </div>
+    </section>
+
+    <section class="lp-sec">
+      <h2>İçinde neler var?</h2>
+      <div class="lp-ozellikler">
+        <div class="lp-oz"><span class="em">✅</span><div><b>Gerçek LCV</b><span>Katılım, kişi sayısı, not — canlı panel + CSV.</span></div></div>
+        <div class="lp-oz"><span class="em">📸</span><div><b>Fotoğraf &amp; galeri</b><span>Kapak görseli ve kare galeri.</span></div></div>
+        <div class="lp-oz"><span class="em">🗺️</span><div><b>Harita &amp; yol tarifi</b><span>Google &amp; Apple Maps tek dokunuş.</span></div></div>
+        <div class="lp-oz"><span class="em">🕰️</span><div><b>Canlı geri sayım</b><span>Etkinliğe kalan süre.</span></div></div>
+        <div class="lp-oz"><span class="em">📋</span><div><b>Program akışı</b><span>Kına → nikah → düğün.</span></div></div>
+        <div class="lp-oz"><span class="em">🎁</span><div><b>Hediye / IBAN</b><span>Tek dokunuşla kopyalanır.</span></div></div>
+        <div class="lp-oz"><span class="em">✉️</span><div><b>Zarf açılışı</b><span>Dokununca açılan kapak.</span></div></div>
+        <div class="lp-oz"><span class="em">🌗</span><div><b>10 tema · açık/koyu</b><span>Her telefonda kusursuz.</span></div></div>
+      </div>
+    </section>
+
+    <section class="lp-sec">
+      <div class="lp-fiyat">
+        <p class="lp-eyebrow">Fiyatlandırma</p>
+        <p class="big">Ücretsiz başla, hazır olunca yükselt</p>
+        <p class="lead" style="margin:10px auto 0">Temel davetiye ve LCV ücretsiz. Premium şablonlar, sınırsız davetli, fotoğraf ve filigransız paylaşım için paketlere göz at.</p>
+        <div class="lp-cta"><a class="lp-btn pri" href="studio.html">Hemen Oluştur</a><a class="lp-btn" href="pricing.html">Paketleri Gör</a></div>
+      </div>
+    </section>
+
+    <section class="lp-sec lp-sss">
+      <h2>Sık sorulanlar</h2>
+      <details><summary>Davetlilerim uygulama indirmek zorunda mı?</summary><p>Hayır. Davetiye linkini açan herkes tarayıcıda görür ve LCV gönderir — uygulama ya da kayıt gerekmez.</p></details>
+      <details><summary>Katılım (LCV) yanıtlarını nasıl görürüm?</summary><p>Davetiyeni yayınladığında bir "Yanıtlar" panosu oluşur; kimlerin geleceğini, kişi sayısını ve notları canlı görür, CSV olarak indirirsin.</p></details>
+      <details><summary>Hangi özel günler için var?</summary><p>Düğün, nişan, söz, kına, sünnet, mevlüt, bebek, doğum günü, kurumsal etkinlikler, Save the Date ve teşekkür kartları.</p></details>
+      <details><summary>Ücretsiz mi?</summary><p>Temel davetiye ve LCV ücretsiz. Premium tasarımlar ve ek özellikler için paketlere bakabilirsin.</p></details>
+    </section>
+  </div>
+
+  <footer class="lp-foot">
+    <div><a href="studio.html">Oluştur</a><a href="pricing.html">Paketler</a><a href="legal.html">Gizlilik · KVKK</a><a href="https://github.com/ambercatalbas/e-davetiye">GitHub</a></div>
+    <p class="telif">© 2026 E-Davetiye · Sevgiyle yapıldı</p>
+  </footer>
 </div>
 
 <script>
@@ -1053,10 +1212,12 @@
       }
     })();
   } else {
-    // Klasik: #i= (mobil/Studio hızlı link) ya da ?d= (yerleşik) ya da varsayılan.
+    // #i= (mobil/Studio hızlı link) ya da ?d= (yerleşik örnek). Hiçbiri yoksa landing.
     const ozel = cozHash();
-    const slug = new URLSearchParams(location.search).get("d") || "kahvalti";
-    goster(ozel || DAVETIYELER[slug] || DAVETIYELER.kahvalti);
+    const dParam = new URLSearchParams(location.search).get("d");
+    const cfg = ozel || (dParam && DAVETIYELER[dParam]);
+    if (cfg) goster(cfg);
+    else document.documentElement.classList.remove("dav"); // geçersiz/eksik → landing'e dön
     window.addEventListener("hashchange", () => location.reload());
   }
 </script>
