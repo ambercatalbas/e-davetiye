@@ -286,7 +286,16 @@
           </select>
         </div>
       </div>
-      <p class="note" style="margin-top:4px">Tür seçince örnek metinler otomatik dolar — hepsini serbestçe düzenleyebilirsin.</p>
+      <div class="field" style="margin-top:2px">
+        <label for="selDil">Davetiye dili <span class="hint">— sabit metinler (geri sayım, LCV formu, kapak)</span></label>
+        <select id="selDil">
+          <option value="tr">Türkçe</option>
+          <option value="en">English</option>
+          <option value="ru">Русский</option>
+          <option value="de">Deutsch</option>
+        </select>
+      </div>
+      <p class="note" style="margin-top:4px">Tür seçince örnek metinler otomatik dolar — hepsini serbestçe düzenleyebilirsin. İçeriği seçtiğin dilde yazarsın; çerçeve metinleri otomatik çevrilir.</p>
     </section>
 
     <section class="card">
@@ -752,6 +761,7 @@ function cfgKur(){
     tepeSusu: deniz ? "deniz" : "gunes",
     sayacSusu: deniz ? "bardak" : "cup"
   };
+  if(val("selDil") && val("selDil") !== "tr") cfg.dil = val("selDil");
   const s = id => val(id).trim();
   if(s("inUst")) cfg.ustBaslik = s("inUst");
   if(s("inAlici")) cfg.alici = s("inAlici");
@@ -882,7 +892,7 @@ let zaman=null;
 function planla(){ clearTimeout(zaman); zaman=setTimeout(()=>{ onizle(); kaydet(); }, 320); }
 
 /* ---- Taslak (localStorage) ---- */
-const ALANLAR = ["selTur","selTema","inUst","inAlici","inBaslik","taGiris","inImza","inKurum",
+const ALANLAR = ["selTur","selTema","selDil","inUst","inAlici","inBaslik","taGiris","inImza","inKurum",
   "inTarih","inSaat","inGeriBaslik","inBitti","taDetaylar","inMuhur","inIkramBaslik","inIkramGrup",
   "taIkram","inIkramNot","inSartBaslik","taSart","inRsvpOlEt","inRsvpHaEt","inRsvpOlCv","inRsvpHaCv",
   "inProgramBaslik","taProgram","inHaritaBaslik","inHaritaAdres","inHaritaUrl",
@@ -1085,6 +1095,7 @@ function formDoldur(cfg, tur){
   const two = n => String(n).padStart(2,"0");
   if(tur) setVal("selTur", tur);
   setVal("selTema", cfg.tema || "safak");
+  setVal("selDil", cfg.dil || "tr");
   setVal("inUst", cfg.ustBaslik || ""); setVal("inAlici", cfg.alici || "");
   setVal("inBaslik", cfg.baslik || ""); setVal("taGiris", cfg.girisMetni || "");
   setVal("inImza", cfg.imza || ""); setVal("inKurum", cfg.imzaKurum || "");

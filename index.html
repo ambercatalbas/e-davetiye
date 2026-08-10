@@ -879,7 +879,21 @@
     }
   }
 
+  // Sabit "çerçeve" metinleri — çoklu dil (içerik kullanıcıya ait, çerçeve çevrilir)
+  const SOZLUK = {
+    tr: { gun:"Gün", saat:"Saat", dakika:"Dakika", saniye:"Saniye", zamaniGeldi:"Zamanı geldi!",
+          dokunun:"dokunun", ac:"Davetiyeyi Aç", ibanKopyala:"IBAN'ı kopyala", ibanKopyalandi:"Kopyalandı ✓" },
+    en: { gun:"Days", saat:"Hours", dakika:"Minutes", saniye:"Seconds", zamaniGeldi:"It's time!",
+          dokunun:"tap", ac:"Open Invitation", ibanKopyala:"Copy IBAN", ibanKopyalandi:"Copied ✓" },
+    ru: { gun:"Дней", saat:"Часов", dakika:"Минут", saniye:"Секунд", zamaniGeldi:"Время пришло!",
+          dokunun:"нажмите", ac:"Открыть приглашение", ibanKopyala:"Копировать IBAN", ibanKopyalandi:"Скопировано ✓" },
+    de: { gun:"Tage", saat:"Std.", dakika:"Min.", saniye:"Sek.", zamaniGeldi:"Es ist soweit!",
+          dokunun:"tippen", ac:"Einladung öffnen", ibanKopyala:"IBAN kopieren", ibanKopyalandi:"Kopiert ✓" }
+  };
+  const dilSoz = cfg => SOZLUK[cfg && cfg.dil] || SOZLUK.tr;
+
   function olustur(cfg) {
+    const D = dilSoz(cfg);
     const kok = el("div", "icerik");
     const tekSeferlik = !!(cfg.zaman && cfg.zaman.tarih);
     const tepe = cfg.tepeSusu || "gunes";
@@ -932,7 +946,7 @@
       if (cfg.geriSayimBaslik) blok.append(el("p", "ust kucuk", cfg.geriSayimBaslik));
       blok.append(el("div", "orn " + say, ORN[say] || ORN.cup));
       const sayac = el("div", "gerisayim");
-      const birimler = [["gun", "Gün"], ["saat", "Saat"], ["dakika", "Dakika"], ["saniye", "Saniye"]];
+      const birimler = [["gun", D.gun], ["saat", D.saat], ["dakika", D.dakika], ["saniye", D.saniye]];
       const ref = {};
       birimler.forEach(([k, etiket]) => {
         const b = el("div", "birimBlok");
@@ -954,7 +968,7 @@
         if (fark <= 0) {
           if (tekSeferlik) {
             sayac.style.display = "none";
-            bittiMsj.textContent = (cfg.zaman.bittiMetni) || "Zamanı geldi!";
+            bittiMsj.textContent = (cfg.zaman.bittiMetni) || D.zamaniGeldi;
             bittiMsj.style.display = "";
             return true;
           }
@@ -1049,11 +1063,11 @@
         const satir = el("div", "hediye-iban");
         satir.append(el("span", "hediye-iban-no", hd.iban));
         if (hd.adSoyad) satir.append(el("span", "hediye-iban-ad", hd.adSoyad));
-        const kopya = el("button", "btn hediye-kopya", "IBAN'ı kopyala");
+        const kopya = el("button", "btn hediye-kopya", D.ibanKopyala);
         kopya.type = "button";
         kopya.addEventListener("click", () => {
           const metin = String(hd.iban).replace(/\s+/g, "");
-          const bitir = () => { kopya.textContent = "Kopyalandı ✓"; setTimeout(() => kopya.textContent = "IBAN'ı kopyala", 1600); };
+          const bitir = () => { kopya.textContent = D.ibanKopyalandi; setTimeout(() => kopya.textContent = D.ibanKopyala, 1600); };
           const yedek = () => {
             try {
               const ta = document.createElement("textarea");
@@ -1120,6 +1134,7 @@
   // Kapak / zarf açılışı — dokununca perde gibi açılır. cfg.kapak (obje/true) varsa gösterilir.
   function kapakGoster(cfg) {
     const k = (cfg.kapak && typeof cfg.kapak === "object") ? cfg.kapak : {};
+    const D = dilSoz(cfg);
     const kapak = el("div", "kapak");
     kapak.setAttribute("role", "button");
     kapak.setAttribute("tabindex", "0");
@@ -1132,10 +1147,10 @@
     const isim = k.isim || cfg.imzaKurum || cfg.alici;
     if (isim) ic.append(el("p", "kapak-isim", isim));
     ic.append(el("div", "kapak-cizgi"));
-    const btn = el("button", "kapak-buton", k.buton || "Davetiyeyi Aç");
+    const btn = el("button", "kapak-buton", k.buton || D.ac);
     btn.type = "button";
     ic.append(btn);
-    ic.append(el("p", "kapak-ipucu", "dokunun"));
+    ic.append(el("p", "kapak-ipucu", D.dokunun));
     kapak.append(ic);
 
     // Studio önizlemesi: ?ac=1 ise kapağı hiç gösterme (kartı göster)
@@ -1179,6 +1194,7 @@
     opts = opts || {};
     if (opts.lcv) delete cfg.rsvp;
     if (cfg.tema) document.documentElement.dataset.tema = cfg.tema;
+    document.documentElement.lang = cfg.dil || "tr";
     mount.innerHTML = "";
     const kok = olustur(cfg);
     mount.append(kok);
@@ -1210,7 +1226,7 @@
         const { lcvBaslat } = await import("./firebase/lcv.js");
         const lcvMount = el("div", "lcv-mount");
         kok.append(lcvMount);
-        lcvBaslat({ inviteId, firebaseConfig, mount: lcvMount });
+        lcvBaslat({ inviteId, firebaseConfig, mount: lcvMount, dil: cfg.dil });
       } catch (e) {
         console.error(e);
         goster({ ustBaslik: "E-Davetiye", baslik: "Bir Sorun Oluştu",

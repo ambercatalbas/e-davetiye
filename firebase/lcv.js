@@ -1,27 +1,50 @@
 // ============================================================
-//  LCV (RSVP) web modülü — TASLAK
-//  Davetiye sayfasına "Geliyorum / Gelemiyorum" formu ekler,
-//  yanıtı Firestore'a yazar. Davetli anonim olarak giriş yapar.
-//
-//  Firebase config kullanıcının projesinden gelecek; index.html'e
-//  şöyle bağlanır:
+//  LCV (RSVP) web modülü — Firestore'a yazar, davetli anonim giriş yapar.
+//  Çoklu dil: lcvBaslat({..., dil}) ile form metinleri TR/EN/RU/DE gösterilir.
+//  KVKK rıza DEĞERLERİ (consentVersion vb.) dile bakılmaz — kurallarla sabittir.
 //    <script type="module">
 //      import { lcvBaslat } from "./firebase/lcv.js";
-//      lcvBaslat({
-//        inviteId,                 // ?id= ile gelen Firestore davetiye kimliği
-//        firebaseConfig: {...},    // Firebase web config
-//        mount: document.getElementById("lcv")
-//      });
+//      lcvBaslat({ inviteId, firebaseConfig, mount, dil });
 //    </script>
 // ============================================================
-
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 import {
   getFirestore, collection, addDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-// Küçük DOM yardımcıları
+// Görünen metinler (yalnız arayüz; saklanan rıza değerleri sabit kalır)
+const LCV_SOZ = {
+  tr: { baslik:"Katılım Bildir", ad:"Adınız", geliyorum:"Geliyorum", gelemiyorum:"Gelemiyorum",
+        kisi:"Kişi sayısı", not:"Not (isteğe bağlı)", gonder:"Yanıtı Gönder", gonderiliyor:"Gönderiliyor…",
+        adUyari:"Lütfen adınızı yazın.", rizaUyari:"Yanıtı iletmek için açık rıza seçimini yapın.",
+        tesekkur:"Teşekkürler", gel:"Yanıtınız alındı — sizi görmek için sabırsızız! 🎉",
+        yok:"Yanıtınız alındı. Bir dahaki sefere mutlaka. 🤍", hata:"Bir sorun oldu, tekrar deneyin.",
+        aydinlatma:'Adınız ve katılım yanıtınız, etkinliği planlayabilmesi için davetiye sahibine iletilir. Ayrıntılar için <a href="./legal.html#lcv" target="_blank" rel="noopener">LCV Aydınlatma Metni</a>.',
+        riza:" LCV yanıtımın davetiye sahibine iletilmesine açık rıza veriyorum." },
+  en: { baslik:"RSVP", ad:"Your name", geliyorum:"I'm coming", gelemiyorum:"Can't make it",
+        kisi:"Guests", not:"Note (optional)", gonder:"Send Response", gonderiliyor:"Sending…",
+        adUyari:"Please enter your name.", rizaUyari:"Please consent to send your response.",
+        tesekkur:"Thank you", gel:"Your response is received — we can't wait to see you! 🎉",
+        yok:"Your response is received. Next time for sure. 🤍", hata:"Something went wrong, please try again.",
+        aydinlatma:'Your name and RSVP are shared with the host to help plan the event. Details: <a href="./legal.html#lcv" target="_blank" rel="noopener">privacy notice</a>.',
+        riza:" I consent to my RSVP being shared with the host." },
+  ru: { baslik:"Подтвердить участие", ad:"Ваше имя", geliyorum:"Приду", gelemiyorum:"Не смогу",
+        kisi:"Кол-во гостей", not:"Примечание (необязательно)", gonder:"Отправить", gonderiliyor:"Отправка…",
+        adUyari:"Пожалуйста, введите имя.", rizaUyari:"Дайте согласие на отправку ответа.",
+        tesekkur:"Спасибо", gel:"Ваш ответ получен — ждём встречи с вами! 🎉",
+        yok:"Ваш ответ получен. В следующий раз обязательно. 🤍", hata:"Произошла ошибка, попробуйте снова.",
+        aydinlatma:'Ваше имя и ответ будут переданы организатору для планирования события. Подробнее: <a href="./legal.html#lcv" target="_blank" rel="noopener">уведомление о конфиденциальности</a>.',
+        riza:" Я согласен(на) на передачу моего ответа организатору." },
+  de: { baslik:"Zusagen", ad:"Ihr Name", geliyorum:"Ich komme", gelemiyorum:"Kann nicht",
+        kisi:"Personenzahl", not:"Notiz (optional)", gonder:"Antwort senden", gonderiliyor:"Senden…",
+        adUyari:"Bitte geben Sie Ihren Namen ein.", rizaUyari:"Bitte stimmen Sie dem Senden zu.",
+        tesekkur:"Danke", gel:"Ihre Antwort ist eingegangen — wir freuen uns auf Sie! 🎉",
+        yok:"Ihre Antwort ist eingegangen. Beim nächsten Mal bestimmt. 🤍", hata:"Etwas ist schiefgelaufen, bitte erneut versuchen.",
+        aydinlatma:'Ihr Name und Ihre Zusage werden zur Planung an die gastgebende Person weitergegeben. Details: <a href="./legal.html#lcv" target="_blank" rel="noopener">Datenschutzhinweis</a>.',
+        riza:" Ich stimme zu, dass meine Antwort an die gastgebende Person weitergegeben wird." }
+};
+
 function el(tag, cls, html) {
   const n = document.createElement(tag);
   if (cls) n.className = cls;
@@ -29,70 +52,59 @@ function el(tag, cls, html) {
   return n;
 }
 
-export async function lcvBaslat({ inviteId, firebaseConfig, mount }) {
+export async function lcvBaslat({ inviteId, firebaseConfig, mount, dil }) {
   if (!inviteId || !firebaseConfig || !mount) {
     console.warn("lcvBaslat: inviteId / firebaseConfig / mount gerekli");
     return;
   }
+  const T = LCV_SOZ[dil] || LCV_SOZ.tr;
 
   const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-  // Davetli anonim giriş yapar (kurallar auth ister). Kapalıysa form yine görünür.
   try { await signInAnonymously(auth); } catch (e) { console.warn("Anonim giriş yok:", e); }
 
   let durum = null; // "geliyorum" | "gelemiyorum"
 
   const kok = el("div", "lcv-blok");
-  kok.append(el("p", "ust", "Katılım Bildir"));
+  kok.append(el("p", "ust", T.baslik));
 
-  // Ad
   const ad = el("input", "lcv-input");
-  ad.type = "text";
-  ad.placeholder = "Adınız";
-  ad.maxLength = 80;
+  ad.type = "text"; ad.placeholder = T.ad; ad.maxLength = 80;
   kok.append(ad);
 
-  // Durum butonları
   const durumSatir = el("div", "rsvp");
-  const btnGel = el("button", "btn", "Geliyorum");
-  const btnYok = el("button", "btn", "Gelemiyorum");
+  const btnGel = el("button", "btn", T.geliyorum);
+  const btnYok = el("button", "btn", T.gelemiyorum);
   btnGel.type = btnYok.type = "button";
   durumSatir.append(btnGel, btnYok);
   kok.append(durumSatir);
 
-  // Kişi sayısı (yalnız "geliyorum")
   const kisiSatir = el("div", "lcv-kisi");
   kisiSatir.style.display = "none";
-  const kisiEtiket = el("span", "lcv-kisi-etiket", "Kişi sayısı");
+  const kisiEtiket = el("span", "lcv-kisi-etiket", T.kisi);
   const kisiInput = el("input", "lcv-input lcv-kisi-input");
   kisiInput.type = "number"; kisiInput.min = "1"; kisiInput.max = "20"; kisiInput.value = "1";
   kisiSatir.append(kisiEtiket, kisiInput);
   kok.append(kisiSatir);
 
-  // Not
   const not = el("textarea", "lcv-input lcv-not");
-  not.placeholder = "Not (isteğe bağlı)";
-  not.maxLength = 300;
+  not.placeholder = T.not; not.maxLength = 300;
   kok.append(not);
 
-  // Aydınlatma ve açık rıza birbirinden ayrı sunulur. Pazarlama izni bu
-  // akışın parçası değildir; LCV göndermek için yalnızca iletim rızası alınır.
+  // Aydınlatma + açık rıza (rıza değerleri sabit, dile bağlı değil)
   const aydinlatma = el("p", "lcv-aydinlatma");
-  aydinlatma.innerHTML = 'Adınız ve katılım yanıtınız, etkinliği planlayabilmesi için davetiye sahibine iletilir. Ayrıntılar için <a href="./legal.html#lcv" target="_blank" rel="noopener">LCV Aydınlatma Metni</a>.';
+  aydinlatma.innerHTML = T.aydinlatma;
   kok.append(aydinlatma);
 
   const rizaEtiket = el("label", "lcv-riza");
   const riza = el("input", "lcv-riza-input");
-  riza.type = "checkbox";
-  riza.required = true;
-  rizaEtiket.append(riza, document.createTextNode(" LCV yanıtımın davetiye sahibine iletilmesine açık rıza veriyorum."));
+  riza.type = "checkbox"; riza.required = true;
+  rizaEtiket.append(riza, document.createTextNode(T.riza));
   kok.append(rizaEtiket);
 
-  // Gönder
-  const gonder = el("button", "btn olumlu", "Yanıtı Gönder");
-  gonder.type = "button";
-  gonder.disabled = true;
+  const gonder = el("button", "btn olumlu", T.gonder);
+  gonder.type = "button"; gonder.disabled = true;
   kok.append(gonder);
 
   const yanit = el("p", "yanit");
@@ -112,10 +124,10 @@ export async function lcvBaslat({ inviteId, firebaseConfig, mount }) {
 
   gonder.addEventListener("click", async () => {
     if (!durum) return;
-    if (!ad.value.trim()) { yanit.textContent = "Lütfen adınızı yazın."; yanit.classList.add("gorunur"); return; }
-    if (!riza.checked) { yanit.textContent = "Yanıtı iletmek için açık rıza seçimini yapın."; yanit.classList.add("gorunur"); return; }
+    if (!ad.value.trim()) { yanit.textContent = T.adUyari; yanit.classList.add("gorunur"); return; }
+    if (!riza.checked) { yanit.textContent = T.rizaUyari; yanit.classList.add("gorunur"); return; }
     gonder.disabled = true;
-    gonder.textContent = "Gönderiliyor…";
+    gonder.textContent = T.gonderiliyor;
     try {
       await addDoc(collection(db, "invitations", inviteId, "rsvps"), {
         ad: ad.value.trim().slice(0, 80),
@@ -127,18 +139,14 @@ export async function lcvBaslat({ inviteId, firebaseConfig, mount }) {
         privacyNoticeVersion: "privacy-2026-08-06-v1",
         createdAt: serverTimestamp()
       });
-      // Teşekkür durumu
       kok.innerHTML = "";
-      kok.append(el("p", "ust", "Teşekkürler"));
-      kok.append(el("p", "giris",
-        durum === "geliyorum"
-          ? "Yanıtınız alındı — sizi görmek için sabırsızız! 🎉"
-          : "Yanıtınız alındı. Bir dahaki sefere mutlaka. 🤍"));
+      kok.append(el("p", "ust", T.tesekkur));
+      kok.append(el("p", "giris", durum === "geliyorum" ? T.gel : T.yok));
     } catch (e) {
       console.error(e);
       gonder.disabled = false;
-      gonder.textContent = "Yanıtı Gönder";
-      yanit.textContent = "Bir sorun oldu, tekrar deneyin.";
+      gonder.textContent = T.gonder;
+      yanit.textContent = T.hata;
       yanit.classList.add("gorunur");
     }
   });
