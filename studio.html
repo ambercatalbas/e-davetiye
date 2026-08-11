@@ -150,6 +150,10 @@
   .phone{background:var(--panel);border:1px solid var(--edge);border-radius:24px;padding:10px;
     box-shadow:0 30px 70px -40px var(--shadow);}
   .phone iframe{width:100%;height:min(74dvh,720px);border:0;border-radius:16px;background:var(--bg);display:block;}
+  .phone.telefon{max-width:400px;margin-left:auto;margin-right:auto;}
+  .pv-cihaz{display:flex;gap:4px;}
+  .pv-cbtn{background:none;border:1px solid var(--hair);border-radius:6px;color:var(--soft);width:34px;height:30px;font-size:.95rem;cursor:pointer;padding:0;line-height:1;}
+  .pv-cbtn.aktif{background:var(--gold);color:var(--on-gold);border-color:transparent;}
 
   /* Paylaş kutusu */
   .share{margin-top:16px;}
@@ -447,9 +451,13 @@
   <aside class="preview">
     <div class="pv-head">
       <span class="t">Canlı önizleme</span>
-      <span class="live"><span class="dot"></span> gerçek görünüm</span>
+      <div class="pv-cihaz">
+        <button class="pv-cbtn aktif" type="button" id="cihazMasaustu" title="Masaüstü görünüm" aria-label="Masaüstü görünüm">🖥</button>
+        <button class="pv-cbtn" type="button" id="cihazTelefon" title="Telefon görünümü" aria-label="Telefon görünümü">📱</button>
+        <button class="pv-cbtn" type="button" id="btnPdf" title="PDF olarak kaydet / yazdır" aria-label="PDF / Yazdır">⤓</button>
+      </div>
     </div>
-    <div class="phone"><iframe id="onizleme" title="Davetiye önizleme" loading="lazy"></iframe></div>
+    <div class="phone" id="phone"><iframe id="onizleme" title="Davetiye önizleme" loading="lazy"></iframe></div>
 
     <div class="card share">
       <h2><span class="no">✓</span> Yayınla &amp; Paylaş</h2>
@@ -1365,6 +1373,12 @@ $("btnTema").addEventListener("click", ()=>{
   const karanlik = simdi ? simdi==="dark" : matchMedia("(prefers-color-scheme: dark)").matches;
   kok.setAttribute("data-theme", karanlik ? "light" : "dark");
 });
+
+/* ---- Önizleme cihaz modu (masaüstü / telefon) ---- */
+$("cihazTelefon").addEventListener("click", ()=>{ $("phone").classList.add("telefon"); $("cihazTelefon").classList.add("aktif"); $("cihazMasaustu").classList.remove("aktif"); });
+$("cihazMasaustu").addEventListener("click", ()=>{ $("phone").classList.remove("telefon"); $("cihazMasaustu").classList.add("aktif"); $("cihazTelefon").classList.remove("aktif"); });
+/* ---- PDF / Yazdır: davetiyeyi yeni sekmede yazdırma modunda aç ---- */
+$("btnPdf").addEventListener("click", ()=>{ const b64 = link().split("#i=")[1] || ""; window.open(RENDER + "?ac=1&print=1#i=" + b64, "_blank", "noopener"); });
 
 /* ---- Olaylar ---- */
 $("selTur").addEventListener("change", ()=>{ AKTIF_SABLON=null; metinVaryantlariniKur(null); preseti_uygula(val("selTur")); planla(); });

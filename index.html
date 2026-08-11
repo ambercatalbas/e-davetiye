@@ -1205,6 +1205,7 @@
   const _p = new URLSearchParams(location.search);
   const inviteId = _p.get("id");
   const slug = _p.get("s");
+  const yazdir = _p.get("print") === "1";   // PDF/yazdır modu
 
   // Ortak render: tema uygula, kartı bas, kapağı göster. lcv:true ise sahte
   // RSVP butonlarını kaldırır (gerçek LCV formu ayrıca eklenecek).
@@ -1218,6 +1219,7 @@
     mount.append(kok);
     if (cfg.kapak) kapakGoster(cfg);
     document.title = cfg.belgeBaslik || cfg.baslik || "Davetiye";
+    if (yazdir) setTimeout(() => { try { window.print(); } catch (e) {} }, 900);
     return kok;
   }
 
