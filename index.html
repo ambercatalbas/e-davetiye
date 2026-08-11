@@ -369,6 +369,10 @@
 
   /* Harita / yol tarifi */
   .harita-blok { width:100%; display:flex; flex-direction:column; align-items:center; gap:12px; }
+  .harita-mekan { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .harita-mekan + .harita-mekan { margin-top:4px; padding-top:18px; border-top:1px solid rgba(127,127,127,.22); }
+  .harita-mekan-ad { font-family:var(--f-sans); font-size:.72rem; letter-spacing:.16em;
+                     text-transform:uppercase; color:var(--gold); margin:0; }
   .harita-adres { font-family:var(--f-serif); font-size:1rem; color:var(--ink);
                   text-align:center; max-width:44ch; margin:0; line-height:1.5; }
   .harita-butonlar { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
@@ -1026,21 +1030,35 @@
       kok.append(blok);
     }
 
-    // Harita / yol tarifi — Google & Apple Maps derin bağlantısı
-    if (cfg.harita && (cfg.harita.adres || cfg.harita.mapsUrl || (cfg.harita.enlem && cfg.harita.boylam))) {
+    // Harita / yol tarifi — Google & Apple Maps derin bağlantısı (çoklu mekân)
+    if (cfg.harita) {
       const hrt = cfg.harita;
-      const blok = el("div", "harita-blok");
-      if (hrt.baslik) blok.append(el("p", "ust kucuk", hrt.baslik));
-      if (hrt.adres) blok.append(el("p", "harita-adres", hrt.adres));
-      const hedef = (hrt.enlem && hrt.boylam) ? (hrt.enlem + "," + hrt.boylam) : (hrt.adres || "");
-      const gUrl = hrt.mapsUrl || ("https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(hedef));
-      const aUrl = "https://maps.apple.com/?daddr=" + encodeURIComponent(hedef);
-      const box = el("div", "harita-butonlar");
-      const bg = el("a", "btn", "Google Maps"); bg.href = gUrl; bg.target = "_blank"; bg.rel = "noopener";
-      const ba = el("a", "btn", "Apple Maps"); ba.href = aUrl; ba.target = "_blank"; ba.rel = "noopener";
-      box.append(bg, ba);
-      blok.append(box);
-      kok.append(blok);
+      // Normalize: yeni mekanlar[] veya eski tek-mekân {adres,mapsUrl,enlem,boylam}
+      let mekanlar = Array.isArray(hrt.mekanlar) ? hrt.mekanlar.slice() : [];
+      if (!mekanlar.length && (hrt.adres || hrt.mapsUrl || (hrt.enlem && hrt.boylam))) {
+        mekanlar = [{ ad:"", adres:hrt.adres||"", mapsUrl:hrt.mapsUrl||"", enlem:hrt.enlem, boylam:hrt.boylam }];
+      }
+      mekanlar = mekanlar.filter(m => m && (m.adres || m.mapsUrl || (m.enlem && m.boylam)));
+      if (mekanlar.length) {
+        const blok = el("div", "harita-blok");
+        if (hrt.baslik) blok.append(el("p", "ust kucuk", hrt.baslik));
+        const coklu = mekanlar.length > 1;
+        mekanlar.forEach(m => {
+          const yer = el("div", "harita-mekan");
+          if (coklu && m.ad) yer.append(el("p", "harita-mekan-ad", m.ad));
+          if (m.adres) yer.append(el("p", "harita-adres", m.adres));
+          const hedef = (m.enlem && m.boylam) ? (m.enlem + "," + m.boylam) : (m.adres || "");
+          const gUrl = m.mapsUrl || ("https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(hedef));
+          const aUrl = "https://maps.apple.com/?daddr=" + encodeURIComponent(hedef);
+          const box = el("div", "harita-butonlar");
+          const bg = el("a", "btn", "Google Maps"); bg.href = gUrl; bg.target = "_blank"; bg.rel = "noopener";
+          const ba = el("a", "btn", "Apple Maps"); ba.href = aUrl; ba.target = "_blank"; ba.rel = "noopener";
+          box.append(bg, ba);
+          yer.append(box);
+          blok.append(yer);
+        });
+        kok.append(blok);
+      }
     }
 
     if (cfg.sartlar && cfg.sartlar.length) {

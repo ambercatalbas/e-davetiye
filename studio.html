@@ -189,6 +189,15 @@
     min-width:96px;height:72px;padding:8px;border:1px dashed var(--field-edge);border-radius:8px;
     color:var(--soft);font-size:.75rem;font-weight:600;cursor:pointer;background:var(--field);transition:border-color .15s,color .15s;}
   .foto-ekle:hover{border-color:var(--gold);color:var(--ink);}
+  /* Harita — çoklu mekân */
+  .mekan-liste{display:flex;flex-direction:column;gap:12px;}
+  .mekan-kart{position:relative;border:1px solid var(--edge);border-radius:10px;padding:12px;background:var(--panel-2);}
+  .mekan-kart .field:last-child{margin-bottom:0;}
+  .mekan-no{font-size:.64rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:0 0 9px;}
+  .mekan-sil{position:absolute;top:9px;right:9px;width:24px;height:24px;line-height:22px;text-align:center;border:1px solid var(--edge);border-radius:50%;background:var(--field);color:var(--soft);cursor:pointer;font-size:1rem;padding:0;}
+  .mekan-sil:hover{border-color:var(--coral);color:var(--coral);}
+  .btn.ekle-btn{width:100%;justify-content:center;border-style:dashed;color:var(--soft);margin-top:10px;}
+  .btn.ekle-btn:hover{border-color:var(--gold);color:var(--ink);}
   .foto-mini{position:relative;width:72px;height:72px;border-radius:8px;overflow:hidden;border:1px solid var(--edge);flex:none;}
   .foto-mini img{width:100%;height:100%;object-fit:cover;display:block;}
   .foto-mini .sil{position:absolute;top:3px;right:3px;width:20px;height:20px;border:0;border-radius:50%;
@@ -422,8 +431,9 @@
       <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkHarita"><span class="sw"></span><span class="tlabel">Harita &amp; yol tarifi</span></label>
       <div class="togglebody" id="bodyHarita">
         <div class="field"><label for="inHaritaBaslik">Bölüm başlığı</label><input type="text" id="inHaritaBaslik" maxlength="60" placeholder="Konum & Yol Tarifi"></div>
-        <div class="field"><label for="inHaritaAdres">Adres</label><input type="text" id="inHaritaAdres" maxlength="200" placeholder="Kristal Balo Salonu, Muratpaşa / Antalya"></div>
-        <div class="field"><label for="inHaritaUrl">Harita linki <span class="hint">(isteğe bağlı — boşsa adresten oluşur)</span></label><input type="text" id="inHaritaUrl" maxlength="500" placeholder="https://maps.app.goo.gl/…"></div>
+        <div id="haritaMekanlar" class="mekan-liste"></div>
+        <button type="button" id="mekanEkle" class="btn ekle-btn">＋ Mekân ekle</button>
+        <p class="hint" style="margin:8px 2px 0">Kına ve düğün gibi birden çok mekân ekleyebilirsiniz. Her mekân için Google &amp; Apple Maps yol tarifi butonu otomatik oluşur. Adres yalnız davetiyede görünür; bağlantıda konum paylaşılmaz.</p>
       </div>
 
       <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkHediye"><span class="sw"></span><span class="tlabel">Hediye / IBAN</span></label>
@@ -710,7 +720,9 @@ function preseti_uygula(tur){
   setVal("inRsvpOlEt", p.rsvpOlEt || "Geliyorum"); setVal("inRsvpHaEt", p.rsvpHaEt || "Gelemiyorum");
   setVal("inRsvpOlCv", p.rsvpOlCv || "Harika, sizi bekliyoruz! 🎉"); setVal("inRsvpHaCv", p.rsvpHaCv || "Çok üzüldük. 🤍");
   setVal("inProgramBaslik", p.programBaslik || "Program"); setVal("taProgram", p.program || "");
-  setVal("inHaritaBaslik", p.haritaBaslik || "Konum & Yol Tarifi"); setVal("inHaritaAdres", p.haritaAdres || ""); setVal("inHaritaUrl", p.haritaUrl || "");
+  setVal("inHaritaBaslik", p.haritaBaslik || "Konum & Yol Tarifi");
+  _haritaMekanlar = p.haritaAdres ? [{ad:"",adres:p.haritaAdres,url:p.haritaUrl||""}] : [];
+  haritaMekanCiz();
   setVal("inHediyeBaslik", p.hediyeBaslik || "Hediye"); setVal("inHediyeMesaj", p.hediyeMesaj || "");
   setVal("inHediyeIban", p.hediyeIban || ""); setVal("inHediyeAd", p.hediyeAd || ""); setVal("inHediyeNot", p.hediyeNot || "");
   setVal("inKapakIsim", p.kapakIsim || ""); setVal("inKapakButon", p.kapakButon || "Davetiyeyi Aç");
@@ -882,13 +894,15 @@ function cfgKur(){
     if(adimlar.length){ cfg.program = adimlar; if(s("inProgramBaslik")) cfg.programBaslik = s("inProgramBaslik"); }
   }
 
-  // Harita / yol tarifi
+  // Harita / yol tarifi (çoklu mekân)
   if(chk("chkHarita")){
     const h = {};
     if(s("inHaritaBaslik")) h.baslik = s("inHaritaBaslik");
-    if(s("inHaritaAdres")) h.adres = s("inHaritaAdres");
-    if(s("inHaritaUrl")) h.mapsUrl = s("inHaritaUrl");
-    if(h.adres || h.mapsUrl) cfg.harita = h;
+    const mekanlar = _haritaMekanlar
+      .map(m => { const o={}; const ad=(m.ad||"").trim(), adres=(m.adres||"").trim(), url=(m.url||"").trim();
+        if(ad)o.ad=ad; if(adres)o.adres=adres; if(url)o.mapsUrl=url; return o; })
+      .filter(m => m.adres || m.mapsUrl);
+    if(mekanlar.length){ h.mekanlar = mekanlar; cfg.harita = h; }
   }
 
   // Hediye / IBAN
@@ -963,7 +977,7 @@ function planla(){ clearTimeout(zaman); zaman=setTimeout(()=>{ onizle(); kaydet(
 const ALANLAR = ["selTur","selTema","selDil","inUst","inAlici","inBaslik","taGiris","inImza","inKurum",
   "inTarih","inSaat","inGeriBaslik","inBitti","taDetaylar","inMuhur","inIkramBaslik","inIkramGrup",
   "taIkram","inIkramNot","inSartBaslik","taSart","inRsvpOlEt","inRsvpHaEt","inRsvpOlCv","inRsvpHaCv",
-  "inProgramBaslik","taProgram","inHaritaBaslik","inHaritaAdres","inHaritaUrl",
+  "inProgramBaslik","taProgram","inHaritaBaslik",
   "inHediyeBaslik","inHediyeMesaj","inHediyeIban","inHediyeAd","inHediyeNot",
   "inKapakIsim","inKapakButon","inSlug"];
 const ANAHTAR = "studio.taslak.v1";
@@ -971,6 +985,7 @@ function kaydet(){
   const d = {}; ALANLAR.forEach(a=> d[a]=val(a));
   for(const k in CHKS) d[CHKS[k]] = chk(CHKS[k]);
   d._fotoHero = _fotoHero; d._fotoGaleri = _fotoGaleri;
+  d._haritaMekanlar = _haritaMekanlar;
   try{ localStorage.setItem(ANAHTAR, JSON.stringify(d)); }catch(e){}
 }
 function yukle(){
@@ -979,7 +994,11 @@ function yukle(){
   ALANLAR.forEach(a=> { if(d[a]!=null) setVal(a,d[a]); });
   for(const k in CHKS) setChk(CHKS[k], !!d[CHKS[k]]);
   _fotoHero = d._fotoHero || ""; _fotoGaleri = Array.isArray(d._fotoGaleri) ? d._fotoGaleri : [];
-  heroCiz(); galeriCiz();
+  _haritaMekanlar = Array.isArray(d._haritaMekanlar) ? d._haritaMekanlar : [];
+  // Eski taslak göçü: tek-alan harita → mekân satırı
+  if(!_haritaMekanlar.length && (d.inHaritaAdres || d.inHaritaUrl))
+    _haritaMekanlar = [{ ad:"", adres:d.inHaritaAdres||"", url:d.inHaritaUrl||"" }];
+  heroCiz(); galeriCiz(); haritaMekanCiz();
   syncBodies();
   return true;
 }
@@ -1020,6 +1039,43 @@ async function firebaseHazir(){
 /* ---- Fotoğraf: istemcide küçült + Storage'a yükle ---- */
 let _fotoHero = "", _fotoGaleri = [];
 function el2(tag, cls, txt){ const n = document.createElement(tag); if(cls) n.className = cls; if(txt != null) n.textContent = txt; return n; }
+
+/* ---- Harita: çoklu mekân editörü ---- */
+let _haritaMekanlar = [];
+function mekanKarti(m, i){
+  const kart = el2("div","mekan-kart");
+  kart.append(el2("p","mekan-no","Mekân " + (i+1)));
+  if(_haritaMekanlar.length > 1){
+    const sil = el2("button","mekan-sil","×"); sil.type = "button"; sil.title = "Mekânı kaldır"; sil.setAttribute("aria-label","Mekânı kaldır");
+    sil.addEventListener("click", ()=>{ _haritaMekanlar.splice(i,1); haritaMekanCiz(); planla(); });
+    kart.append(sil);
+  }
+  const alan = (etiket, anahtar, ph, max, ipucu)=>{
+    const f = el2("div","field");
+    const lab = el2("label", null, etiket);
+    if(ipucu) lab.append(el2("span","hint"," " + ipucu));
+    const inp = document.createElement("input"); inp.type = "text"; inp.maxLength = max; inp.placeholder = ph; inp.value = m[anahtar] || "";
+    inp.addEventListener("input", ()=>{ _haritaMekanlar[i][anahtar] = inp.value; planla(); });
+    f.append(lab, inp); return f;
+  };
+  kart.append(alan("Mekân adı", "ad", "Kına / Düğün / Salon adı", 60, "(çoklu mekânda görünür)"));
+  kart.append(alan("Adres", "adres", "Kristal Balo Salonu, Muratpaşa / Antalya", 200));
+  kart.append(alan("Harita linki", "url", "https://maps.app.goo.gl/…", 500, "(isteğe bağlı — boşsa adresten oluşur)"));
+  return kart;
+}
+function haritaMekanCiz(){
+  const kutu = $("haritaMekanlar"); if(!kutu) return;
+  kutu.innerHTML = "";
+  _haritaMekanlar.forEach((m,i)=> kutu.append(mekanKarti(m,i)));
+}
+$("mekanEkle").addEventListener("click", ()=>{
+  if(_haritaMekanlar.length >= 6) return;
+  _haritaMekanlar.push({ ad:"", adres:"", url:"" });
+  haritaMekanCiz();
+  const kart = $("haritaMekanlar").lastElementChild;
+  const inp = kart && kart.querySelectorAll("input")[1]; if(inp) inp.focus();
+  planla();
+});
 
 function kucult(file, maxBoyut, kalite){
   return new Promise((res, rej)=>{
@@ -1198,8 +1254,13 @@ function formDoldur(cfg, tur){
   setVal("inProgramBaslik", cfg.programBaslik||"Program");
   setVal("taProgram", (cfg.program||[]).map(a=>[a.saat,a.baslik,a.yer,a.aciklama].filter(x=>x!=null&&x!=="").join(" | ")).join("\n"));
   const h = cfg.harita||{};
-  setChk("chkHarita", !!(h.adres || h.mapsUrl));
-  setVal("inHaritaBaslik", h.baslik||"Konum & Yol Tarifi"); setVal("inHaritaAdres", h.adres||""); setVal("inHaritaUrl", h.mapsUrl||"");
+  // Yeni mekanlar[] veya eski tek-mekân {adres,mapsUrl} → editör satırları
+  let mkn = Array.isArray(h.mekanlar) ? h.mekanlar.map(m=>({ad:m.ad||"",adres:m.adres||"",url:m.mapsUrl||""})) : [];
+  if(!mkn.length && (h.adres || h.mapsUrl)) mkn = [{ad:"",adres:h.adres||"",url:h.mapsUrl||""}];
+  _haritaMekanlar = mkn;
+  setChk("chkHarita", !!mkn.length);
+  setVal("inHaritaBaslik", h.baslik||"Konum & Yol Tarifi");
+  haritaMekanCiz();
   const g = cfg.hediye||{};
   setChk("chkHediye", !!cfg.hediye);
   setVal("inHediyeBaslik", g.baslik||"Hediye"); setVal("inHediyeMesaj", g.mesaj||"");
