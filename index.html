@@ -393,6 +393,17 @@
                   text-align:center; max-width:44ch; margin:0; line-height:1.5; }
   .harita-butonlar { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
   .harita-butonlar .btn { text-decoration:none; }
+  /* Canlı yayın */
+  .yayin-blok { width:100%; display:flex; flex-direction:column; align-items:center; gap:12px; }
+  .yayin-zaman { font-family:var(--f-serif); font-size:1rem; color:var(--ink); margin:0; text-align:center; }
+  .yayin-platform { font-family:var(--f-sans); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); margin:0; }
+  .yayin-rozet { font-family:var(--f-sans); font-size:.72rem; font-weight:700; letter-spacing:.14em;
+                 color:#fff; background:#C62828; padding:4px 13px; border-radius:20px; margin:0;
+                 animation:yayinNabiz 1.6s ease-in-out infinite; }
+  .yayin-btn { text-decoration:none; }
+  .yayin-btn.canli { background:#C62828; color:#fff; border-color:transparent; }
+  @keyframes yayinNabiz { 0%,100%{opacity:1} 50%{opacity:.55} }
+  @media (prefers-reduced-motion: reduce){ .yayin-rozet{ animation:none } }
 
   /* Hediye / dilek listesi (IBAN, liste, not) */
   .hediye-blok { width:100%; display:flex; flex-direction:column; align-items:center; gap:14px; }
@@ -918,13 +929,17 @@
   // Sabit "çerçeve" metinleri — çoklu dil (içerik kullanıcıya ait, çerçeve çevrilir)
   const SOZLUK = {
     tr: { gun:"Gün", saat:"Saat", dakika:"Dakika", saniye:"Saniye", zamaniGeldi:"Zamanı geldi!",
-          dokunun:"dokunun", ac:"Davetiyeyi Aç", ibanKopyala:"IBAN'ı kopyala", ibanKopyalandi:"Kopyalandı ✓" },
+          dokunun:"dokunun", ac:"Davetiyeyi Aç", ibanKopyala:"IBAN'ı kopyala", ibanKopyalandi:"Kopyalandı ✓",
+          canliIzle:"Canlı İzle", canli:"CANLI YAYIN", yayinBasliyor:"Canlı yayın", locale:"tr-TR" },
     en: { gun:"Days", saat:"Hours", dakika:"Minutes", saniye:"Seconds", zamaniGeldi:"It's time!",
-          dokunun:"tap", ac:"Open Invitation", ibanKopyala:"Copy IBAN", ibanKopyalandi:"Copied ✓" },
+          dokunun:"tap", ac:"Open Invitation", ibanKopyala:"Copy IBAN", ibanKopyalandi:"Copied ✓",
+          canliIzle:"Watch Live", canli:"LIVE", yayinBasliyor:"Live stream", locale:"en-US" },
     ru: { gun:"Дней", saat:"Часов", dakika:"Минут", saniye:"Секунд", zamaniGeldi:"Время пришло!",
-          dokunun:"нажмите", ac:"Открыть приглашение", ibanKopyala:"Копировать IBAN", ibanKopyalandi:"Скопировано ✓" },
+          dokunun:"нажмите", ac:"Открыть приглашение", ibanKopyala:"Копировать IBAN", ibanKopyalandi:"Скопировано ✓",
+          canliIzle:"Смотреть", canli:"ПРЯМОЙ ЭФИР", yayinBasliyor:"Трансляция", locale:"ru-RU" },
     de: { gun:"Tage", saat:"Std.", dakika:"Min.", saniye:"Sek.", zamaniGeldi:"Es ist soweit!",
-          dokunun:"tippen", ac:"Einladung öffnen", ibanKopyala:"IBAN kopieren", ibanKopyalandi:"Kopiert ✓" }
+          dokunun:"tippen", ac:"Einladung öffnen", ibanKopyala:"IBAN kopieren", ibanKopyalandi:"Kopiert ✓",
+          canliIzle:"Live ansehen", canli:"LIVE", yayinBasliyor:"Livestream", locale:"de-DE" }
   };
   const dilSoz = cfg => SOZLUK[cfg && cfg.dil] || SOZLUK.tr;
 
@@ -1076,6 +1091,30 @@
         });
         kok.append(blok);
       }
+    }
+
+    // Canlı yayın — uzaktan katılım (yayın saatinde belirginleşir)
+    if (cfg.yayin && cfg.yayin.url) {
+      const y = cfg.yayin;
+      const blok = el("div", "yayin-blok");
+      blok.append(el("p", "ust kucuk", y.baslik || D.yayinBasliyor));
+      let canli = false, zamanMetni = "";
+      if (y.tarih) {
+        try {
+          const [sa, dk] = String(y.saat || "00:00").split(":").map(n => parseInt(n, 10) || 0);
+          const golive = new Date(y.tarih + "T00:00"); golive.setHours(sa, dk, 0, 0);
+          const simdi = new Date();
+          canli = simdi >= golive && simdi <= new Date(golive.getTime() + 8 * 3600 * 1000);
+          zamanMetni = golive.toLocaleString(D.locale || "tr-TR", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
+        } catch (e) {}
+      }
+      if (canli) blok.append(el("p", "yayin-rozet", "● " + D.canli));
+      else if (zamanMetni) blok.append(el("p", "yayin-zaman", zamanMetni));
+      const btn = el("a", "btn yayin-btn" + (canli ? " canli" : ""), (canli ? "● " : "") + D.canliIzle);
+      btn.href = y.url; btn.target = "_blank"; btn.rel = "noopener";
+      blok.append(btn);
+      if (y.platform) blok.append(el("p", "yayin-platform", y.platform));
+      kok.append(blok);
     }
 
     if (cfg.sartlar && cfg.sartlar.length) {

@@ -463,6 +463,28 @@
         <p class="hint" style="margin:8px 2px 0">Kına ve düğün gibi birden çok mekân ekleyebilirsiniz. Her mekân için Google &amp; Apple Maps yol tarifi butonu otomatik oluşur. Adres yalnız davetiyede görünür; bağlantıda konum paylaşılmaz.</p>
       </div>
 
+      <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkYayin"><span class="sw"></span><span class="tlabel">Canlı yayın (uzaktan katılım)</span></label>
+      <div class="togglebody" id="bodyYayin">
+        <div class="row2">
+          <div class="field"><label for="selYayinPlatform">Platform</label>
+            <select id="selYayinPlatform">
+              <option value="YouTube">YouTube</option>
+              <option value="Zoom">Zoom</option>
+              <option value="Instagram">Instagram</option>
+              <option value="Google Meet">Google Meet</option>
+              <option value="Diğer">Diğer</option>
+            </select>
+          </div>
+          <div class="field"><label for="inYayinBaslik">Bölüm başlığı</label><input type="text" id="inYayinBaslik" maxlength="60" placeholder="Canlı Yayın"></div>
+        </div>
+        <div class="field"><label for="inYayinUrl">Yayın linki</label><input type="url" id="inYayinUrl" maxlength="500" placeholder="https://youtube.com/live/…"></div>
+        <div class="row2">
+          <div class="field"><label for="inYayinTarih">Yayın tarihi <span class="hint">(isteğe bağlı)</span></label><input type="date" id="inYayinTarih"></div>
+          <div class="field"><label for="inYayinSaat">Yayın saati</label><input type="time" id="inYayinSaat"></div>
+        </div>
+        <p class="hint" style="margin:4px 2px 0">Tarih/saat verilirse davetiye, yayın saatinde “● CANLI” rozetiyle öne çıkar. Boşsa buton hep görünür.</p>
+      </div>
+
       <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkHediye"><span class="sw"></span><span class="tlabel">Hediye / IBAN</span></label>
       <div class="togglebody" id="bodyHediye">
         <div class="field"><label for="inHediyeBaslik">Bölüm başlığı</label><input type="text" id="inHediyeBaslik" maxlength="60" placeholder="Hediye"></div>
@@ -786,9 +808,9 @@ function isoSonra(n){
 
 // Bölüm aç/kapa gövdesini eşitle
 const BODIES = { kapak:"bodyKapak", tarih:"bodyTarih", rsvp:"bodyRsvp", dilek:"bodyDilek", albom:"bodyAlbom", muhur:"bodyMuhur", ikram:"bodyIkram", sart:"bodySart",
-                 program:"bodyProgram", harita:"bodyHarita", hediye:"bodyHediye" };
+                 program:"bodyProgram", harita:"bodyHarita", yayin:"bodyYayin", hediye:"bodyHediye" };
 const CHKS   = { kapak:"chkKapak", tarih:"chkTarih", rsvp:"chkRsvp", dilek:"chkDilek", albom:"chkAlbom", muhur:"chkMuhur", ikram:"chkIkram", sart:"chkSart",
-                 program:"chkProgram", harita:"chkHarita", hediye:"chkHediye" };
+                 program:"chkProgram", harita:"chkHarita", yayin:"chkYayin", hediye:"chkHediye" };
 function syncBodies(){
   for(const k in BODIES){ $(BODIES[k]).classList.toggle("open", chk(CHKS[k])); }
 }
@@ -994,6 +1016,16 @@ function cfgKur(){
     if(mekanlar.length){ h.mekanlar = mekanlar; cfg.harita = h; }
   }
 
+  // Canlı yayın
+  if(chk("chkYayin") && s("inYayinUrl")){
+    const y = { url: s("inYayinUrl") };
+    if(s("inYayinBaslik")) y.baslik = s("inYayinBaslik");
+    if(val("selYayinPlatform")) y.platform = val("selYayinPlatform");
+    if(s("inYayinTarih")) y.tarih = s("inYayinTarih");
+    if(s("inYayinSaat")) y.saat = s("inYayinSaat");
+    cfg.yayin = y;
+  }
+
   // Hediye / IBAN
   if(chk("chkHediye")){
     const g = {};
@@ -1067,6 +1099,7 @@ const ALANLAR = ["selTur","selTema","selDil","inUst","inAlici","inBaslik","taGir
   "inTarih","inSaat","inGeriBaslik","inBitti","taDetaylar","inMuhur","inIkramBaslik","inIkramGrup",
   "taIkram","inIkramNot","inSartBaslik","taSart","inRsvpOlEt","inRsvpHaEt","inRsvpOlCv","inRsvpHaCv",
   "inProgramBaslik","taProgram","inHaritaBaslik",
+  "selYayinPlatform","inYayinBaslik","inYayinUrl","inYayinTarih","inYayinSaat",
   "inHediyeBaslik","inHediyeMesaj","inHediyeIban","inHediyeAd","inHediyeNot",
   "inKapakIsim","inKapakButon","inSlug"];
 const ANAHTAR = "studio.taslak.v1";
@@ -1351,6 +1384,10 @@ function formDoldur(cfg, tur){
   setChk("chkHarita", !!mkn.length);
   setVal("inHaritaBaslik", h.baslik||"Konum & Yol Tarifi");
   haritaMekanCiz();
+  const y = cfg.yayin||{};
+  setChk("chkYayin", !!y.url);
+  setVal("selYayinPlatform", y.platform||"YouTube"); setVal("inYayinBaslik", y.baslik||"");
+  setVal("inYayinUrl", y.url||""); setVal("inYayinTarih", y.tarih||""); setVal("inYayinSaat", y.saat||"");
   const g = cfg.hediye||{};
   setChk("chkHediye", !!cfg.hediye);
   setVal("inHediyeBaslik", g.baslik||"Hediye"); setVal("inHediyeMesaj", g.mesaj||"");
