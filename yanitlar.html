@@ -222,7 +222,8 @@ function ciz(){
     const sat = document.createElement("div"); sat.className="satir";
     const geliyor = y.durum==="geliyorum";
     sat.innerHTML =
-      '<span class="ad">'+esc(y.ad)+(geliyor && y.kisiSayisi>1 ? ' <span style="color:var(--soft);font-size:.85rem">· '+y.kisiSayisi+' kişi</span>' : '')+'</span>'+
+      '<span class="ad">'+esc(y.ad)+(geliyor && y.kisiSayisi>1 ? ' <span style="color:var(--soft);font-size:.85rem">· '+y.kisiSayisi+' kişi</span>' : '')+
+        (y.konukAnahtari ? ' <span style="color:var(--faint);font-size:.72rem" title="Kişiye özel davet">🎟 '+esc(y.konukAnahtari)+'</span>' : '')+'</span>'+
       '<span class="rozet '+(geliyor?'gel':'yok')+'">'+(geliyor?'Geliyor':'Gelemiyor')+'</span>'+
       (y.not ? '<span class="not">“'+esc(y.not)+'”</span>' : '')+
       '<span class="zaman">'+tarih(y.createdAt)+'</span>';
@@ -231,9 +232,9 @@ function ciz(){
 }
 
 $("btnCsv").addEventListener("click", ()=>{
-  const bas = ["Ad","Durum","Kisi","Not","Tarih"];
+  const bas = ["Ad","Davetli","Durum","Kisi","Not","Tarih"];
   const sat = yanitlar.map(y=>[
-    y.ad, y.durum, y.kisiSayisi, (y.not||"").replace(/\n/g," "), tarih(y.createdAt)
+    y.ad, y.konukAnahtari||"", y.durum, y.kisiSayisi, (y.not||"").replace(/\n/g," "), tarih(y.createdAt)
   ].map(x=>'"'+String(x==null?"":x).replace(/"/g,'""')+'"').join(","));
   const csv = "﻿" + [bas.join(","), ...sat].join("\n");
   const a = document.createElement("a");

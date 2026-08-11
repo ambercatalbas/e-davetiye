@@ -1236,6 +1236,18 @@
   const slug = _p.get("s");
   const yazdir = _p.get("print") === "1";   // PDF/yazdır modu
 
+  // Kişiye özel davet (#31): ?k= davetlinin ismi/hitabı. Yoksa genel karşılama.
+  let konuk = "";
+  const konukHam = _p.get("k");
+  if (konukHam) { try { konuk = decodeURIComponent(konukHam).trim().slice(0, 80); } catch (e) { konuk = String(konukHam).trim().slice(0, 80); } }
+  function kisisellestir(cfg) {
+    if (cfg && konuk) {
+      const zatenHitap = /^(sevgili|değerli|sayın|kıymetli|dear|уважаем|liebe)/i.test(konuk);
+      cfg.alici = zatenHitap ? konuk : ("Sevgili " + konuk);
+    }
+    return cfg;
+  }
+
   // Ortak render: tema uygula, kartı bas, kapağı göster. lcv:true ise sahte
   // RSVP butonlarını kaldırır (gerçek LCV formu ayrıca eklenecek).
   function goster(cfg, opts) {
@@ -1280,12 +1292,12 @@
           return;
         }
         const data = snap.data();
-        const cfg = data.cfg || data;
+        const cfg = kisisellestir(data.cfg || data);
         const kok = goster(cfg, { lcv: true });
         const { lcvBaslat } = await import("./firebase/lcv.js");
         const lcvMount = el("div", "lcv-mount");
         kok.append(lcvMount);
-        lcvBaslat({ inviteId: realId, firebaseConfig, mount: lcvMount, dil: cfg.dil });
+        lcvBaslat({ inviteId: realId, firebaseConfig, mount: lcvMount, dil: cfg.dil, konuk });
         if (cfg.dilek) {
           const { dilekBaslat } = await import("./firebase/dilek.js");
           const dMount = el("div", "lcv-mount");
@@ -1308,7 +1320,7 @@
     // #i= (mobil/Studio hızlı link) ya da ?d= (yerleşik örnek). Hiçbiri yoksa landing.
     const ozel = cozHash();
     const dParam = new URLSearchParams(location.search).get("d");
-    const cfg = ozel || (dParam && DAVETIYELER[dParam]);
+    const cfg = kisisellestir(ozel || (dParam && DAVETIYELER[dParam]));
     if (cfg) goster(cfg);
     else document.documentElement.classList.remove("dav"); // geçersiz/eksik → landing'e dön
     window.addEventListener("hashchange", () => location.reload());

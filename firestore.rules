@@ -22,7 +22,7 @@ service cloud.firestore {
 
       match /rsvps/{rsvpId} {
         allow create: if request.auth != null
-          && request.resource.data.keys().hasOnly(['ad', 'durum', 'kisiSayisi', 'not', 'consentVersion', 'consentGranted', 'privacyNoticeVersion', 'createdAt'])
+          && request.resource.data.keys().hasOnly(['ad', 'durum', 'kisiSayisi', 'not', 'consentVersion', 'consentGranted', 'privacyNoticeVersion', 'createdAt', 'konukAnahtari'])
           && request.resource.data.ad is string
           && request.resource.data.ad.size() > 0
           && request.resource.data.ad.size() <= 80
@@ -32,6 +32,8 @@ service cloud.firestore {
           && request.resource.data.kisiSayisi <= 20
           && request.resource.data.not is string
           && request.resource.data.not.size() <= 300
+          && (!('konukAnahtari' in request.resource.data)
+              || (request.resource.data.konukAnahtari is string && request.resource.data.konukAnahtari.size() <= 80))
           && request.resource.data.consentGranted == true
           && request.resource.data.consentVersion == 'lcv-tr-2026-08-06-v1'
           && request.resource.data.privacyNoticeVersion == 'privacy-2026-08-06-v1'

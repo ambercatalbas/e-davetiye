@@ -491,6 +491,19 @@
           <a class="btn" id="btnYanit" target="_blank" rel="noopener">Yanıtları Gör →</a>
         </div>
         <button class="btn block" type="button" id="btnPaket" style="margin-top:8px">🎁 Paylaşım Paketi — QR · Story · Baskı</button>
+        <details class="share-quick" id="kisiselBox">
+          <summary>Kişiye özel davet linki</summary>
+          <p class="note" style="margin-top:10px">Her davetliye ismiyle hitap eden ayrı bir link üretin — davetiye <b>“Sevgili …”</b> diye açılır, LCV adı hazır gelir, yanıt kişiyle eşleşir.</p>
+          <div class="field" style="margin-bottom:8px">
+            <label for="inKonuk">Davetlinin adı / hitabı</label>
+            <input type="text" id="inKonuk" maxlength="80" placeholder="Ahmet Bey / Yılmaz Ailesi">
+          </div>
+          <div class="linkbox">
+            <input type="text" id="outKonukLink" readonly aria-label="Kişiye özel link" placeholder="İsim yazın → link oluşsun">
+            <button class="btn pri" type="button" id="btnKonukKopya">Kopyala</button>
+          </div>
+          <button class="btn wa block" type="button" id="btnKonukWa" style="margin-top:8px">WhatsApp ile gönder</button>
+        </details>
       </div>
 
       <details class="share-quick">
@@ -1615,6 +1628,27 @@ $("btnBaskiKart").addEventListener("click", baskiKart);
 $("btnStory").addEventListener("click", storyGorsel);
 $("btnPaketWa").addEventListener("click", ()=> window.open("https://wa.me/?text=" + encodeURIComponent(paylasMesaji()), "_blank", "noopener"));
 document.addEventListener("keydown", e=>{ if(e.key==="Escape" && !$("paketModal").hidden) paketKapatFn(); });
+
+/* ---- Kişiye özel davet linki (#31) ---- */
+function konukLinkYap(){
+  const isim = val("inKonuk").trim();
+  const taban = (($("outIdLink") && $("outIdLink").value) || "").trim();
+  if(!isim || !taban){ setVal("outKonukLink",""); return ""; }
+  const url = taban + (taban.includes("?") ? "&" : "?") + "k=" + encodeURIComponent(isim);
+  setVal("outKonukLink", url);
+  return url;
+}
+$("inKonuk").addEventListener("input", konukLinkYap);
+$("btnKonukKopya").addEventListener("click", async ()=>{
+  const url = konukLinkYap(); if(!url){ $("inKonuk").focus(); return; }
+  try{ await navigator.clipboard.writeText(url); $("btnKonukKopya").textContent="Kopyalandı ✓"; setTimeout(()=> $("btnKonukKopya").textContent="Kopyala",1600); }
+  catch(e){ $("outKonukLink").select(); document.execCommand && document.execCommand("copy"); }
+});
+$("btnKonukWa").addEventListener("click", ()=>{
+  const url = konukLinkYap(); if(!url){ $("inKonuk").focus(); return; }
+  const mesaj = "Sevgili " + val("inKonuk").trim() + ", sizi özel davetimize bekliyoruz 🤍\n" + url;
+  window.open("https://wa.me/?text=" + encodeURIComponent(mesaj), "_blank", "noopener");
+});
 
 /* ---- Başlat ---- */
 temaCiz();

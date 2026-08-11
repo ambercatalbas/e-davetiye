@@ -52,12 +52,13 @@ function el(tag, cls, html) {
   return n;
 }
 
-export async function lcvBaslat({ inviteId, firebaseConfig, mount, dil }) {
+export async function lcvBaslat({ inviteId, firebaseConfig, mount, dil, konuk }) {
   if (!inviteId || !firebaseConfig || !mount) {
     console.warn("lcvBaslat: inviteId / firebaseConfig / mount gerekli");
     return;
   }
   const T = LCV_SOZ[dil] || LCV_SOZ.tr;
+  const konukAd = (konuk || "").trim().slice(0, 80); // kişiye özel davet: ismi/hitabı
 
   const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
   const auth = getAuth(app);
@@ -71,6 +72,7 @@ export async function lcvBaslat({ inviteId, firebaseConfig, mount, dil }) {
 
   const ad = el("input", "lcv-input");
   ad.type = "text"; ad.placeholder = T.ad; ad.maxLength = 80; ad.setAttribute("aria-label", T.ad);
+  if (konukAd) ad.value = konukAd; // kişiye özel link: ad önceden dolu
   kok.append(ad);
 
   const durumSatir = el("div", "rsvp");
@@ -129,7 +131,7 @@ export async function lcvBaslat({ inviteId, firebaseConfig, mount, dil }) {
     gonder.disabled = true;
     gonder.textContent = T.gonderiliyor;
     try {
-      await addDoc(collection(db, "invitations", inviteId, "rsvps"), {
+      const kayit = {
         ad: ad.value.trim().slice(0, 80),
         durum,
         kisiSayisi: durum === "geliyorum" ? Math.min(20, Math.max(1, parseInt(kisiInput.value || "1", 10))) : 0,
@@ -138,7 +140,9 @@ export async function lcvBaslat({ inviteId, firebaseConfig, mount, dil }) {
         consentGranted: true,
         privacyNoticeVersion: "privacy-2026-08-06-v1",
         createdAt: serverTimestamp()
-      });
+      };
+      if (konukAd) kayit.konukAnahtari = konukAd; // kişi bazlı takip (davetli tokenı)
+      await addDoc(collection(db, "invitations", inviteId, "rsvps"), kayit);
       kok.innerHTML = "";
       kok.append(el("p", "ust", T.tesekkur));
       kok.append(el("p", "giris", durum === "geliyorum" ? T.gel : T.yok));
