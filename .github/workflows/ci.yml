@@ -1,0 +1,32 @@
+name: CI — doğrulama ve testler
+
+on:
+  pull_request:
+  push:
+    branches-ignore: []
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node kur
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Bağımlılık yok — statik site; Node yerleşik test koşucusu kullanılır.
+      - name: Statik doğrulama (JSON, varlıklar, modül export'ları)
+        run: node scripts/validate.mjs
+
+      - name: Birim testler (qr.js)
+        run: node --test

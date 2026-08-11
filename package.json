@@ -1,0 +1,13 @@
+{
+  "name": "e-davetiye",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Zarif dijital davetiye — serverless web motoru (statik site).",
+  "scripts": {
+    "validate": "node scripts/validate.mjs",
+    "test": "node --test",
+    "ci": "npm run validate && npm test"
+  },
+  "license": "UNLICENSED"
+}
