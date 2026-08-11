@@ -67,8 +67,36 @@ for (const varlik of ["og-kapak.jpg", "icons/icon-192.png", "icons/icon-512.png"
   if (!existsSync(join(KOK, varlik))) uyari(`Eksik varlık: ${varlik}`);
 }
 
+// 5) Statik erişilebilirlik (a11y) kontrolleri — WCAG 2.1 AA yapısal alt kümesi.
+//    Tarayıcı gerektirmez; yanlış-pozitif riskini düşürmek için yalnız yüksek
+//    güvenli kurallar (dinamik/sarmalı-label alanlar bilinçle kapsam dışı).
+const etiketlenebilir = /^(text|email|tel|url|number|date|time|search|password|)$/;
+for (const h of htmlDosyalar) {
+  if (!existsSync(join(KOK, h))) continue;
+  const src = oku(h);
+  if (!/<html[^>]*\blang=/i.test(src)) uyari(`a11y ${h}: <html lang> yok (WCAG 3.1.1)`);
+  const vp = src.match(/<meta[^>]*name=["']viewport["'][^>]*>/i);
+  if (vp && /user-scalable\s*=\s*no|maximum-scale\s*=\s*["']?1(?!\d)/i.test(vp[0]))
+    uyari(`a11y ${h}: viewport yakınlaştırmayı engelliyor (WCAG 1.4.4)`);
+  const posTab = src.match(/tabindex=["']([1-9]\d*)["']/i);
+  if (posTab) uyari(`a11y ${h}: pozitif tabindex (${posTab[1]}) odak sırasını bozar (WCAG 2.4.3)`);
+  for (const img of src.match(/<img\b[^>]*>/gi) || [])
+    if (!/\balt=/i.test(img)) uyari(`a11y ${h}: <img> alt eksik (WCAG 1.1.1) → ${img.slice(0, 60)}`);
+  const alanRe = /<(input|textarea|select)\b([^>]*)>/gi;
+  let a;
+  while ((a = alanRe.exec(src))) {
+    const tag = a[1].toLowerCase(), attrs = a[2];
+    const type = (attrs.match(/\btype=["']([^"']*)["']/i) || [, ""])[1].toLowerCase();
+    if (tag === "input" && !etiketlenebilir.test(type)) continue; // hidden/checkbox/radio/file/button: kapsam dışı
+    if (/\baria-label(?:ledby)?=/i.test(attrs)) continue;
+    const id = (attrs.match(/\bid=["']([^"']+)["']/) || [, ""])[1];
+    if (id && new RegExp('for=["\']' + id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + '["\']').test(src)) continue;
+    uyari(`a11y ${h}: ${tag}${id ? " #" + id : ""} için erişilebilir ad yok — label[for]/aria-label (WCAG 3.3.2/4.1.2)`);
+  }
+}
+
 if (hatalar.length) {
   console.error("✗ Doğrulama başarısız:\n" + hatalar.map((h) => "  - " + h).join("\n"));
   process.exit(1);
 }
-console.log("✓ Doğrulama geçti: JSON, yerel varlıklar, modül export'ları ve PWA varlıkları tamam.");
+console.log("✓ Doğrulama geçti: JSON, yerel varlıklar, modül export'ları, PWA varlıkları ve statik a11y (lang, viewport, tabindex, img alt, form etiketleri) tamam.");

@@ -23,7 +23,7 @@
   /* ---- Tema token'ları (şafak kimliği) ---- */
   :root{
     --bg:#EDE6EC; --bg-2:#E9E3EE; --panel:#FFFFFF; --panel-2:#FBF9FB;
-    --edge:rgba(35,40,63,.12); --ink:#23283F; --soft:#565C77; --faint:#8A8FA8;
+    --edge:rgba(35,40,63,.12); --ink:#23283F; --soft:#565C77; --faint:#5F6578;
     --gold:#8C6A25; --gold-bright:#B98F38; --teal:#0E6E78; --coral:#BE5540;
     --hair:rgba(140,106,37,.34); --on-gold:#FFFFFF; --shadow:rgba(60,50,90,.20);
     --field:#FFFFFF; --field-edge:rgba(35,40,63,.16);
@@ -34,7 +34,7 @@
   @media (prefers-color-scheme:dark){
     :root{
       --bg:#0D111E; --bg-2:#141833; --panel:#161B30; --panel-2:#1B2138;
-      --edge:rgba(233,203,140,.12); --ink:#ECE6D8; --soft:#A7ABC6; --faint:#7C819B;
+      --edge:rgba(233,203,140,.12); --ink:#ECE6D8; --soft:#A7ABC6; --faint:#8A90AC;
       --gold:#E7BE68; --gold-bright:#F2D48A; --teal:#3FC9D2; --coral:#EA8E71;
       --hair:rgba(231,190,104,.30); --on-gold:#20160A; --shadow:rgba(0,0,0,.5);
       --field:#0F1426; --field-edge:rgba(231,190,104,.22);
@@ -42,20 +42,20 @@
   }
   :root[data-theme="light"]{
     --bg:#EDE6EC; --bg-2:#E9E3EE; --panel:#FFFFFF; --panel-2:#FBF9FB;
-    --edge:rgba(35,40,63,.12); --ink:#23283F; --soft:#565C77; --faint:#8A8FA8;
+    --edge:rgba(35,40,63,.12); --ink:#23283F; --soft:#565C77; --faint:#5F6578;
     --gold:#8C6A25; --gold-bright:#B98F38; --teal:#0E6E78; --coral:#BE5540;
     --hair:rgba(140,106,37,.34); --on-gold:#FFFFFF; --shadow:rgba(60,50,90,.20);
     --field:#FFFFFF; --field-edge:rgba(35,40,63,.16);
   }
   :root[data-theme="dark"]{
     --bg:#0D111E; --bg-2:#141833; --panel:#161B30; --panel-2:#1B2138;
-    --edge:rgba(233,203,140,.12); --ink:#ECE6D8; --soft:#A7ABC6; --faint:#7C819B;
+    --edge:rgba(233,203,140,.12); --ink:#ECE6D8; --soft:#A7ABC6; --faint:#8A90AC;
     --gold:#E7BE68; --gold-bright:#F2D48A; --teal:#3FC9D2; --coral:#EA8E71;
     --hair:rgba(231,190,104,.30); --on-gold:#20160A; --shadow:rgba(0,0,0,.5);
     --field:#0F1426; --field-edge:rgba(231,190,104,.22);
   }
 
-  body{background:linear-gradient(180deg,var(--bg-2),var(--bg));color:var(--ink);
+  body{background-color:var(--bg);background-image:linear-gradient(180deg,var(--bg-2),var(--bg));color:var(--ink);
     font-family:var(--f-sans);-webkit-font-smoothing:antialiased;min-height:100dvh;}
 
   /* ---- Üst bar ---- */
@@ -250,7 +250,7 @@
     background:var(--coral);border-radius:20px;padding:2px 7px;margin-left:6px;white-space:nowrap;}
   .foot{max-width:1180px;margin:0 auto;padding:8px clamp(16px,3vw,30px) 40px;
     font-size:.72rem;color:var(--faint);text-align:center;}
-  .foot a{color:var(--gold);text-decoration:none;}
+  .foot a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;}
 
   @media (max-width:880px){
     .layout{grid-template-columns:1fr;}
@@ -412,11 +412,11 @@
       <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkRsvp"><span class="sw"></span><span class="tlabel">Katılım (LCV) butonları</span></label>
       <div class="togglebody" id="bodyRsvp">
         <div class="row2">
-          <div class="field"><label>“Geliyorum” yazısı</label><input type="text" id="inRsvpOlEt" maxlength="40"></div>
-          <div class="field"><label>“Gelemem” yazısı</label><input type="text" id="inRsvpHaEt" maxlength="40"></div>
+          <div class="field"><label for="inRsvpOlEt">“Geliyorum” yazısı</label><input type="text" id="inRsvpOlEt" maxlength="40"></div>
+          <div class="field"><label for="inRsvpHaEt">“Gelemem” yazısı</label><input type="text" id="inRsvpHaEt" maxlength="40"></div>
         </div>
-        <div class="field"><label>Olumlu yanıt</label><input type="text" id="inRsvpOlCv" maxlength="120"></div>
-        <div class="field"><label>Olumsuz yanıt</label><input type="text" id="inRsvpHaCv" maxlength="120"></div>
+        <div class="field"><label for="inRsvpOlCv">Olumlu yanıt</label><input type="text" id="inRsvpOlCv" maxlength="120"></div>
+        <div class="field"><label for="inRsvpHaCv">Olumsuz yanıt</label><input type="text" id="inRsvpHaCv" maxlength="120"></div>
         <p class="note">Önizlemede çalışır. <b>Yayınla</b> ile gerçek LCV toplama (Firestore) aktif olur; yanıtları panelden görürsün.</p>
       </div>
 
@@ -432,17 +432,17 @@
 
       <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkMuhur"><span class="sw"></span><span class="tlabel">Yuvarlak mühür yazısı</span></label>
       <div class="togglebody" id="bodyMuhur">
-        <div class="field"><input type="text" id="inMuhur" maxlength="60" placeholder="MUTLULUĞA İLK ADIM"></div>
+        <div class="field"><label for="inMuhur">Mühür yazısı</label><input type="text" id="inMuhur" maxlength="60" placeholder="MUTLULUĞA İLK ADIM"></div>
       </div>
 
       <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkIkram"><span class="sw"></span><span class="tlabel">İkram / sofra menüsü</span></label>
       <div class="togglebody" id="bodyIkram">
         <div class="row2">
-          <div class="field"><label>Bölüm başlığı</label><input type="text" id="inIkramBaslik" maxlength="60" placeholder="Sizi Bekleyen Sofra"></div>
-          <div class="field"><label>Grup adı</label><input type="text" id="inIkramGrup" maxlength="60" placeholder="İkramlar"></div>
+          <div class="field"><label for="inIkramBaslik">Bölüm başlığı</label><input type="text" id="inIkramBaslik" maxlength="60" placeholder="Sizi Bekleyen Sofra"></div>
+          <div class="field"><label for="inIkramGrup">Grup adı</label><input type="text" id="inIkramGrup" maxlength="60" placeholder="İkramlar"></div>
         </div>
-        <div class="field"><label>Öğeler <span class="hint">— her satır bir öğe</span></label><textarea id="taIkram" placeholder="Çupra&#10;Levrek&#10;Karpuz"></textarea></div>
-        <div class="field"><label>Alt not</label><input type="text" id="inIkramNot" maxlength="100" placeholder="…ve nice lezzet."></div>
+        <div class="field"><label for="taIkram">Öğeler <span class="hint">— her satır bir öğe</span></label><textarea id="taIkram" placeholder="Çupra&#10;Levrek&#10;Karpuz"></textarea></div>
+        <div class="field"><label for="inIkramNot">Alt not</label><input type="text" id="inIkramNot" maxlength="100" placeholder="…ve nice lezzet."></div>
       </div>
 
       <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkProgram"><span class="sw"></span><span class="tlabel">Program / etkinlik akışı</span></label>
@@ -472,8 +472,8 @@
 
       <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkSart"><span class="sw"></span><span class="tlabel">İnce yazı / notlar</span></label>
       <div class="togglebody" id="bodySart">
-        <div class="field"><label>Başlık</label><input type="text" id="inSartBaslik" maxlength="60" placeholder="İnce Yazı"></div>
-        <div class="field"><label>Maddeler <span class="hint">— her satır bir madde</span></label><textarea id="taSart" placeholder="Lütfen zamanında teşrif ediniz."></textarea></div>
+        <div class="field"><label for="inSartBaslik">Başlık</label><input type="text" id="inSartBaslik" maxlength="60" placeholder="İnce Yazı"></div>
+        <div class="field"><label for="taSart">Maddeler <span class="hint">— her satır bir madde</span></label><textarea id="taSart" placeholder="Lütfen zamanında teşrif ediniz."></textarea></div>
       </div>
     </section>
   </form>
@@ -592,14 +592,14 @@
     <div class="modal-bas"><h2>Davetli Listesi</h2><button class="btn" type="button" id="davetliKapat">Kapat</button></div>
     <p class="note" id="davetliUyari" style="margin-top:0;display:none;color:var(--coral)">Önce davetiyeyi yayınlayın — kişiye özel linkler yayın bağlantısından üretilir.</p>
     <div class="dv-ekle">
-      <input type="text" id="inDavetliAd" maxlength="80" placeholder="Ad Soyad">
-      <input type="text" id="inDavetliGrup" maxlength="40" placeholder="Grup (aile, iş…)">
+      <input type="text" id="inDavetliAd" maxlength="80" placeholder="Ad Soyad" aria-label="Davetli adı soyadı">
+      <input type="text" id="inDavetliGrup" maxlength="40" placeholder="Grup (aile, iş…)" aria-label="Davetli grubu">
       <button class="btn pri" type="button" id="btnDavetliEkle">Ekle</button>
     </div>
     <details class="share-quick" id="csvBox">
       <summary>Toplu içe aktar (CSV / liste)</summary>
       <p class="note" style="margin-top:8px">Her satıra bir kişi: <code>Ad Soyad, Grup</code> (grup isteğe bağlı).</p>
-      <textarea id="taCsv" style="width:100%;min-height:90px;resize:vertical" placeholder="Ahmet Yılmaz, Aile&#10;Ayşe Demir, İş&#10;Mehmet Kaya"></textarea>
+      <textarea id="taCsv" style="width:100%;min-height:90px;resize:vertical" placeholder="Ahmet Yılmaz, Aile&#10;Ayşe Demir, İş&#10;Mehmet Kaya" aria-label="Toplu davetli listesi (her satır: Ad, Grup)"></textarea>
       <div class="dv-araclar" style="margin-top:8px">
         <label class="btn" style="cursor:pointer">Dosyadan (.csv)<input type="file" id="csvDosya" accept=".csv,text/csv,text/plain" hidden></label>
         <button class="btn pri" type="button" id="btnCsvAktar">İçe aktar</button>
@@ -1140,6 +1140,7 @@ function mekanKarti(m, i){
     const lab = el2("label", null, etiket);
     if(ipucu) lab.append(el2("span","hint"," " + ipucu));
     const inp = document.createElement("input"); inp.type = "text"; inp.maxLength = max; inp.placeholder = ph; inp.value = m[anahtar] || "";
+    inp.id = "mekan-" + i + "-" + anahtar; lab.setAttribute("for", inp.id);
     inp.addEventListener("input", ()=>{ _haritaMekanlar[i][anahtar] = inp.value; planla(); });
     f.append(lab, inp); return f;
   };
@@ -1836,8 +1837,8 @@ temaAktifGuncelle();
 onizle();
 galeriYukle();
 </script>
-<footer style="padding:24px 16px;text-align:center;font:12px/1.5 system-ui;color:#64748b">
-  <a href="./pricing.html" style="color:inherit">Paketler</a> · <a href="./legal.html" style="color:inherit">Gizlilik · KVKK · Kullanım Şartları</a>
+<footer style="padding:24px 16px;text-align:center;font:13px/1.6 var(--f-sans,system-ui);color:var(--soft,#565C77)">
+  <a href="./pricing.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px">Paketler</a> · <a href="./legal.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px">Gizlilik · KVKK · Kullanım Şartları</a>
 </footer>
 </body>
 </html>

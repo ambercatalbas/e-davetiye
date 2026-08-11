@@ -1180,10 +1180,9 @@
   function kapakGoster(cfg) {
     const k = (cfg.kapak && typeof cfg.kapak === "object") ? cfg.kapak : {};
     const D = dilSoz(cfg);
+    // Dış katman yalnız fare kolaylığı için tıklanabilir; erişilebilir kontrol iç butondur
+    // (iç içe interaktif öğe olmaması için dış div'e role/tabindex verilmez).
     const kapak = el("div", "kapak");
-    kapak.setAttribute("role", "button");
-    kapak.setAttribute("tabindex", "0");
-    kapak.setAttribute("aria-label", "Davetiyeyi aç");
     const ic = el("div", "kapak-ic");
     const tepe = cfg.tepeSusu || "gunes";
     ic.append(el("div", "orn " + tepe, ORN[tepe] || ORN.gunes));
@@ -1210,10 +1209,8 @@
       kapak.classList.add("acildi");
       setTimeout(() => kapak.remove(), azHareket() ? 0 : 1000);
     }
-    kapak.addEventListener("click", ac);
-    kapak.addEventListener("keydown", e => {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); ac(); }
-    });
+    kapak.addEventListener("click", ac);       // fare: kapağın herhangi yerine tıkla
+    btn.addEventListener("click", ac);          // klavye/SR: iç buton (Enter/Space) → aç
   }
 
   // Mobil uygulamadan gelen özel davetiye: #i=<base64url(JSON)>
@@ -1341,8 +1338,8 @@
   }
 </script>
 <!-- ICERIK-SONU -->
-<footer style="padding:24px 16px;text-align:center;font:12px/1.5 system-ui;color:var(--muted,#6b7280)">
-  <a href="./pricing.html" style="color:inherit">Paketler</a> · <a href="./legal.html" style="color:inherit">Gizlilik · KVKK · Kullanım Şartları</a>
+<footer style="padding:24px 16px;text-align:center;font:13px/1.6 var(--f-sans,system-ui);color:var(--ink-soft,#4a4f5e)">
+  <a href="./pricing.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px">Paketler</a> · <a href="./legal.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px">Gizlilik · KVKK · Kullanım Şartları</a>
 </footer>
 </body>
 </html>
