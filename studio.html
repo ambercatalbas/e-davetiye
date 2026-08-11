@@ -212,6 +212,10 @@
     box-shadow:0 40px 90px -40px var(--shadow);}
   .modal-bas{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
   .modal-bas h2{font-family:var(--f-serif);font-weight:500;font-size:1.3rem;margin:0;}
+  .paket-qr{display:flex;justify-content:center;margin:16px 0;}
+  .paket-qr canvas{width:200px;height:200px;image-rendering:pixelated;border-radius:10px;
+    box-shadow:0 10px 28px -18px var(--shadow);background:#fff;padding:10px;}
+  .paket-btnlar{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
   .dv-item{display:flex;gap:12px;align-items:center;padding:12px;border:1px solid var(--edge);
     border-radius:10px;margin-bottom:10px;background:var(--panel-2);}
   .dv-thumb{width:52px;height:52px;border-radius:8px;object-fit:cover;flex:none;
@@ -486,6 +490,7 @@
           <button class="btn wa" type="button" id="btnWaId">WhatsApp</button>
           <a class="btn" id="btnYanit" target="_blank" rel="noopener">Yanıtları Gör →</a>
         </div>
+        <button class="btn block" type="button" id="btnPaket" style="margin-top:8px">🎁 Paylaşım Paketi — QR · Story · Baskı</button>
       </div>
 
       <details class="share-quick">
@@ -528,6 +533,23 @@
       <button class="btn" type="button" id="btnHesapSil" style="color:var(--coral);border-color:var(--coral)">Hesabımı ve tüm verilerimi sil</button>
       <p class="note" id="hesapDurum" aria-live="polite"></p>
     </div>
+  </div>
+</div>
+
+<div class="modal" id="paketModal" hidden>
+  <div class="modal-arka" id="paketArka"></div>
+  <div class="modal-kart" role="dialog" aria-modal="true" aria-label="Paylaşım Paketi" style="max-width:480px">
+    <div class="modal-bas"><h2>Paylaşım Paketi</h2><button class="btn" type="button" id="paketKapat">Kapat</button></div>
+    <p class="note" style="margin-top:0">Salon girişi, masa kartı ve düğün panosu için baskı QR; Instagram story için hazır görsel.</p>
+    <div class="paket-qr" id="paketQrKutu" aria-hidden="true"></div>
+    <div class="paket-btnlar">
+      <button class="btn" type="button" id="btnQrIndir">⤓ QR indir (PNG)</button>
+      <button class="btn" type="button" id="btnBaskiKart">🖨 Baskı kartı</button>
+      <button class="btn" type="button" id="btnStory">◳ Story görseli</button>
+      <button class="btn wa" type="button" id="btnPaketWa">WhatsApp</button>
+    </div>
+    <p class="note" id="paketDurum" aria-live="polite" style="min-height:1.1em"></p>
+    <p class="note"><b>Instagram story:</b> "Story görseli" ile 1080×1920 kapak inip telefona kaydolur; Instagram'da story olarak paylaşıp linki "bağlantı" etiketiyle ekleyebilirsin.</p>
   </div>
 </div>
 
@@ -1481,6 +1503,118 @@ $("btnSifirla").addEventListener("click", ()=>{
   $("yayinNot").innerHTML="Yayınlayınca kısa bir <b>?id=</b> linki oluşur; davetliler <b>gerçek LCV</b> gönderir, yanıtları panelden görürsün.";
   AKTIF_SABLON=null; metinVaryantlariniKur(null); setVal("selTur","dugun"); preseti_uygula("dugun"); onizle();
 });
+
+/* ---- Paylaşım Paketi: baskı QR · Instagram story · WhatsApp ---- */
+let _qrModul = null;
+async function qrYukle(){ if(!_qrModul) _qrModul = await import("./firebase/qr.js"); return _qrModul; }
+function paketLink(){ return (($("outIdLink") && $("outIdLink").value) || link()).trim(); }
+function paketDurum(msg){ $("paketDurum").textContent = msg || ""; }
+function indirURL(url, ad){ const a=document.createElement("a"); a.href=url; a.download=ad; document.body.append(a); a.click(); a.remove(); }
+function slugla(s){ return (s||"davetiye").toLowerCase()
+  .replace(/ı/g,"i").replace(/ğ/g,"g").replace(/ü/g,"u").replace(/ş/g,"s").replace(/ö/g,"o").replace(/ç/g,"c")
+  .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40) || "davetiye"; }
+function dosyaTaban(){ return slugla(val("inBaslik").trim()); }
+function tarihUzun(iso){ try{ return new Date(iso+"T00:00").toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric",weekday:"long"}); }catch(e){ return ""; } }
+function yuvarlakDikdortgen(g,x,y,w,h,r){ g.beginPath(); g.moveTo(x+r,y); g.arcTo(x+w,y,x+w,y+h,r); g.arcTo(x+w,y+h,x,y+h,r); g.arcTo(x,y+h,x,y,r); g.arcTo(x,y,x+w,y,r); g.closePath(); }
+function metniSigdir(g, metin, maxGen, ilkPuntoPx, fontYap){
+  let px = ilkPuntoPx;
+  while(px > 40){ g.font = fontYap(px); if(g.measureText(metin).width <= maxGen) break; px -= 4; }
+  return px;
+}
+
+async function paketAc(){
+  $("paketModal").hidden = false; $("paketKapat").focus(); paketDurum("");
+  const kutu = $("paketQrKutu"); kutu.textContent = "yükleniyor…";
+  try{
+    const { qrCanvas } = await qrYukle();
+    const c = qrCanvas(paketLink(), { scale: 8, kenar: 4, ecl: "M" });
+    kutu.innerHTML = ""; kutu.append(c);
+  }catch(e){ kutu.textContent = "QR oluşturulamadı."; console.error(e); }
+}
+function paketKapatFn(){ $("paketModal").hidden = true; $("btnPaket").focus(); }
+
+async function qrIndir(){
+  try{ const { qrDataURL } = await qrYukle();
+    indirURL(qrDataURL(paketLink(), { scale: 20, kenar: 4, ecl: "M" }), dosyaTaban()+"-qr.png");
+    paketDurum("QR indirildi (baskıya uygun).");
+  }catch(e){ paketDurum("QR indirilemedi."); console.error(e); }
+}
+
+async function baskiKart(){
+  try{
+    const { qrDataURL } = await qrYukle();
+    const url = qrDataURL(paketLink(), { scale: 16, kenar: 4, ecl: "M" });
+    const baslik = (val("inBaslik").trim() || "Davetiye");
+    const ust = (val("inUst").trim() || "");
+    const tr = val("inTarih") ? tarihUzun(val("inTarih")) : "";
+    const w = window.open("", "_blank");
+    if(!w){ paketDurum("Açılır pencere engellendi — izin verip tekrar deneyin."); return; }
+    const esc = s => String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+    w.document.write('<!doctype html><html lang="tr"><head><meta charset="utf-8"><title>'+esc(baslik)+' — QR</title>'
+      +'<style>@page{margin:0}*{box-sizing:border-box}body{margin:0;font-family:Georgia,"Times New Roman",serif;'
+      +'min-height:100vh;display:flex;align-items:center;justify-content:center;background:#fff;color:#0b1020}'
+      +'.kart{text-align:center;padding:56px;border:2px solid #c8a24a;border-radius:20px;margin:40px}'
+      +'.ust{font-size:16px;letter-spacing:.28em;text-transform:uppercase;color:#a07d2e;margin-bottom:20px}'
+      +'.qr{width:360px;height:360px;image-rendering:pixelated}'
+      +'.ad{font-size:34px;margin:26px 0 6px}.tr{font-size:17px;color:#555;letter-spacing:.04em}'
+      +'.ip{margin-top:22px;font-size:15px;color:#888}</style></head>'
+      +'<body><div class="kart">'+(ust?'<div class="ust">'+esc(ust)+'</div>':'')
+      +'<img class="qr" src="'+url+'" alt="QR"><div class="ad">'+esc(baslik)+'</div>'
+      +(tr?'<div class="tr">'+esc(tr)+'</div>':'')+'<div class="ip">Davetiye ve LCV için QR kodu okutun</div>'
+      +'</div><scr'+'ipt>onload=function(){setTimeout(function(){print()},250)}</scr'+'ipt></body></html>');
+    w.document.close();
+    paketDurum("Baskı kartı yeni sekmede açıldı.");
+  }catch(e){ paketDurum("Baskı kartı oluşturulamadı."); console.error(e); }
+}
+
+async function storyGorsel(){
+  try{
+    const { qrCanvas } = await qrYukle();
+    const W=1080, H=1920;
+    const c = document.createElement("canvas"); c.width=W; c.height=H;
+    const g = c.getContext("2d");
+    const paletler = { safak:["#2a3566","#0b1020"], gece:["#0A1230","#05070f"], luks:["#241c15","#000000"],
+      yaz:["#0E6E78","#0a2f36"], botanik:["#1c4d34","#08160e"], pudra:["#3a1e2b","#120a0f"],
+      modern:["#16294a","#070d16"], bohem:["#4a2f1f","#160d07"], cocuk:["#12384c","#06131b"], minimal:["#4a4a3d","#1a1a15"] };
+    const pal = paletler[val("selTema")] || paletler.safak;
+    const grad = g.createLinearGradient(0,0,0,H); grad.addColorStop(0,pal[0]); grad.addColorStop(1,pal[1]);
+    g.fillStyle = grad; g.fillRect(0,0,W,H);
+    // ince çerçeve
+    g.strokeStyle = "rgba(200,162,74,.55)"; g.lineWidth = 3;
+    yuvarlakDikdortgen(g, 54, 54, W-108, H-108, 26); g.stroke();
+    g.textAlign = "center";
+    // üst etiket
+    g.fillStyle = "rgba(255,255,255,.72)"; g.font = "600 36px Georgia, serif";
+    g.fillText((val("inUst").trim()||"DAVETLİSİNİZ").toUpperCase(), W/2, 340);
+    // isim (tek satır, sığdır)
+    const baslik = val("inBaslik").trim() || "Davetiye";
+    metniSigdir(g, baslik, W-200, 104, px=>"italic "+px+"px Georgia, serif");
+    g.fillStyle = "#fff"; g.fillText(baslik, W/2, 500);
+    // tarih
+    if(val("inTarih")){ g.fillStyle="rgba(255,255,255,.86)"; g.font="42px Georgia, serif"; g.fillText(tarihUzun(val("inTarih")), W/2, 620); }
+    // QR beyaz kutuda
+    const qBoy=520, qx=(W-qBoy)/2, qy=880;
+    g.fillStyle="#fff"; yuvarlakDikdortgen(g, qx-34, qy-34, qBoy+68, qBoy+68, 30); g.fill();
+    const qc = qrCanvas(paketLink(), { scale:10, kenar:2, ecl:"M" });
+    g.imageSmoothingEnabled=false; g.drawImage(qc, qx, qy, qBoy, qBoy);
+    // alt yazı
+    g.fillStyle="rgba(255,255,255,.92)"; g.font="600 42px Georgia, serif";
+    g.fillText("QR'ı okutun — davetiye & LCV", W/2, qy+qBoy+130);
+    g.fillStyle="rgba(255,255,255,.55)"; g.font="30px Georgia, serif";
+    g.fillText("e-davetiye ile hazırlandı", W/2, H-120);
+    indirURL(c.toDataURL("image/png"), dosyaTaban()+"-story.png");
+    paketDurum("Story görseli indirildi (1080×1920).");
+  }catch(e){ paketDurum("Story görseli oluşturulamadı."); console.error(e); }
+}
+
+$("btnPaket").addEventListener("click", paketAc);
+$("paketKapat").addEventListener("click", paketKapatFn);
+$("paketArka").addEventListener("click", paketKapatFn);
+$("btnQrIndir").addEventListener("click", qrIndir);
+$("btnBaskiKart").addEventListener("click", baskiKart);
+$("btnStory").addEventListener("click", storyGorsel);
+$("btnPaketWa").addEventListener("click", ()=> window.open("https://wa.me/?text=" + encodeURIComponent(paylasMesaji()), "_blank", "noopener"));
+document.addEventListener("keydown", e=>{ if(e.key==="Escape" && !$("paketModal").hidden) paketKapatFn(); });
 
 /* ---- Başlat ---- */
 temaCiz();
