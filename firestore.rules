@@ -45,6 +45,20 @@ service cloud.firestore {
         allow update, delete: if false;
       }
 
+      // Açılış izleri: kişiye özel link (?k=/?t=) açıldığında davetli tokenı loglanır.
+      // Davetli (anonim) yazar; yalnız sahip okur (kişi bazlı "açıldı" takibi). Güncelleme/silme yok.
+      match /opens/{oid} {
+        allow create: if request.auth != null
+          && request.resource.data.keys().hasOnly(['konukAnahtari', 'createdAt'])
+          && request.resource.data.konukAnahtari is string
+          && request.resource.data.konukAnahtari.size() > 0
+          && request.resource.data.konukAnahtari.size() <= 80
+          && request.resource.data.createdAt == request.time;
+        allow read: if request.auth != null
+          && get(/databases/$(database)/documents/invitations/$(inviteId)).data.ownerUid == request.auth.uid;
+        allow update, delete: if false;
+      }
+
       // Dilek defteri: davetli (anonim dahil) mesaj bırakır; herkes okur; sahip siler (moderasyon).
       match /guestbook/{gid} {
         allow read: if true;

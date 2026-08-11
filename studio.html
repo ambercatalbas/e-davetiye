@@ -216,6 +216,25 @@
   .paket-qr canvas{width:200px;height:200px;image-rendering:pixelated;border-radius:10px;
     box-shadow:0 10px 28px -18px var(--shadow);background:#fff;padding:10px;}
   .paket-btnlar{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  /* Davetli listesi */
+  .dv-ekle{display:grid;grid-template-columns:1.4fr 1fr auto;gap:8px;margin-bottom:10px;}
+  .dv-ekle input{min-width:0;}
+  .dv-araclar{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;}
+  .dv-ozet{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px;}
+  .dv-ozet .chip{font-size:.74rem;padding:4px 10px;border-radius:20px;background:var(--panel-2);border:1px solid var(--edge);color:var(--soft);}
+  .dv-ozet .chip b{color:var(--ink);}
+  .dv-liste{display:flex;flex-direction:column;gap:8px;max-height:44dvh;overflow:auto;}
+  .dv-grup-bas{font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:8px 2px 2px;}
+  .dv-kart{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;padding:10px 12px;border:1px solid var(--edge);border-radius:10px;background:var(--panel-2);}
+  .dv-kart .dv-ad{font-family:var(--f-serif);font-size:1rem;color:var(--ink);}
+  .dv-kart .dv-eylem{display:flex;gap:6px;}
+  .dv-kart .mini{font-size:.72rem;padding:5px 9px;}
+  .dv-rozet{font-size:.68rem;padding:3px 9px;border-radius:20px;font-weight:600;white-space:nowrap;}
+  .dv-rozet.yanit{background:rgba(56,142,90,.16);color:#3f9d68;}
+  .dv-rozet.acik{background:rgba(184,140,56,.16);color:var(--gold);}
+  .dv-rozet.bekle{background:var(--panel);color:var(--faint);}
+  .dv-sil{border:0;background:none;color:var(--faint);cursor:pointer;font-size:1rem;padding:0 4px;}
+  .dv-sil:hover{color:var(--coral);}
   .dv-item{display:flex;gap:12px;align-items:center;padding:12px;border:1px solid var(--edge);
     border-radius:10px;margin-bottom:10px;background:var(--panel-2);}
   .dv-thumb{width:52px;height:52px;border-radius:8px;object-fit:cover;flex:none;
@@ -491,6 +510,7 @@
           <a class="btn" id="btnYanit" target="_blank" rel="noopener">Yanıtları Gör →</a>
         </div>
         <button class="btn block" type="button" id="btnPaket" style="margin-top:8px">🎁 Paylaşım Paketi — QR · Story · Baskı</button>
+        <button class="btn block" type="button" id="btnDavetliListe" style="margin-top:8px">👥 Davetli Listesi — kişiye özel link &amp; takip</button>
         <details class="share-quick" id="kisiselBox">
           <summary>Kişiye özel davet linki</summary>
           <p class="note" style="margin-top:10px">Her davetliye ismiyle hitap eden ayrı bir link üretin — davetiye <b>“Sevgili …”</b> diye açılır, LCV adı hazır gelir, yanıt kişiyle eşleşir.</p>
@@ -563,6 +583,36 @@
     </div>
     <p class="note" id="paketDurum" aria-live="polite" style="min-height:1.1em"></p>
     <p class="note"><b>Instagram story:</b> "Story görseli" ile 1080×1920 kapak inip telefona kaydolur; Instagram'da story olarak paylaşıp linki "bağlantı" etiketiyle ekleyebilirsin.</p>
+  </div>
+</div>
+
+<div class="modal" id="davetliModal" hidden>
+  <div class="modal-arka" id="davetliArka"></div>
+  <div class="modal-kart" role="dialog" aria-modal="true" aria-label="Davetli Listesi" style="max-width:560px">
+    <div class="modal-bas"><h2>Davetli Listesi</h2><button class="btn" type="button" id="davetliKapat">Kapat</button></div>
+    <p class="note" id="davetliUyari" style="margin-top:0;display:none;color:var(--coral)">Önce davetiyeyi yayınlayın — kişiye özel linkler yayın bağlantısından üretilir.</p>
+    <div class="dv-ekle">
+      <input type="text" id="inDavetliAd" maxlength="80" placeholder="Ad Soyad">
+      <input type="text" id="inDavetliGrup" maxlength="40" placeholder="Grup (aile, iş…)">
+      <button class="btn pri" type="button" id="btnDavetliEkle">Ekle</button>
+    </div>
+    <details class="share-quick" id="csvBox">
+      <summary>Toplu içe aktar (CSV / liste)</summary>
+      <p class="note" style="margin-top:8px">Her satıra bir kişi: <code>Ad Soyad, Grup</code> (grup isteğe bağlı).</p>
+      <textarea id="taCsv" style="width:100%;min-height:90px;resize:vertical" placeholder="Ahmet Yılmaz, Aile&#10;Ayşe Demir, İş&#10;Mehmet Kaya"></textarea>
+      <div class="dv-araclar" style="margin-top:8px">
+        <label class="btn" style="cursor:pointer">Dosyadan (.csv)<input type="file" id="csvDosya" accept=".csv,text/csv,text/plain" hidden></label>
+        <button class="btn pri" type="button" id="btnCsvAktar">İçe aktar</button>
+      </div>
+    </details>
+    <div class="dv-ozet" id="davetliOzet"></div>
+    <div class="dv-araclar">
+      <button class="btn" type="button" id="btnDurumYenile">↻ Durumu yenile</button>
+      <button class="btn" type="button" id="btnTumLink">Tüm linkleri kopyala</button>
+    </div>
+    <div class="dv-liste" id="davetliListe"></div>
+    <p class="note" id="davetliDurum" aria-live="polite" style="min-height:1.1em"></p>
+    <p class="note"><b>Gizlilik:</b> davetli listesi yalnız sizin hesabınızda saklanır. Durum: <b>Yanıtladı</b> (LCV geldi) · <b>Açıldı</b> (link açıldı) · <b>Bekliyor</b>.</p>
   </div>
 </div>
 
@@ -1649,6 +1699,135 @@ $("btnKonukWa").addEventListener("click", ()=>{
   const mesaj = "Sevgili " + val("inKonuk").trim() + ", sizi özel davetimize bekliyoruz 🤍\n" + url;
   window.open("https://wa.me/?text=" + encodeURIComponent(mesaj), "_blank", "noopener");
 });
+
+/* ---- Davetli Listesi (#30) ---- */
+let _davetliler = [];            // [{ad, grup}]
+let _davetliDurum = {};          // ad -> "yanit" | "acik" | "bekle"
+function davetliId(){ return localStorage.getItem(YAYIN_ANAHTAR) || ""; }
+function davetliMsg(m){ $("davetliDurum").textContent = m || ""; }
+function davetliTaban(){ return (($("outIdLink") && $("outIdLink").value) || "").trim(); }
+function davetliLink(ad){ const t = davetliTaban(); if(!t) return ""; return t + (t.includes("?") ? "&" : "?") + "k=" + encodeURIComponent(ad); }
+
+async function davetliAc(){
+  $("davetliModal").hidden = false; $("davetliKapat").focus(); davetliMsg("");
+  const id = davetliId();
+  $("davetliUyari").style.display = id ? "none" : "";
+  if(!id){ _davetliler = []; davetliCiz(); return; }
+  davetliMsg("Yükleniyor…");
+  try{
+    await firebaseHazir();
+    const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
+    const s = await getDoc(doc(_db,"users",_auth.currentUser.uid,"guestLists",id));
+    _davetliler = (s.exists() && Array.isArray(s.data().guests)) ? s.data().guests : [];
+  }catch(e){ console.warn("davetli yükle:", e); _davetliler = []; }
+  davetliMsg(""); davetliCiz();
+  durumYenile();
+}
+function davetliKapatFn(){ $("davetliModal").hidden = true; $("btnDavetliListe").focus(); }
+
+async function davetliKaydet(){
+  const id = davetliId(); if(!id) return;
+  try{
+    await firebaseHazir();
+    const { doc, setDoc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
+    await setDoc(doc(_db,"users",_auth.currentUser.uid,"guestLists",id), { guests: _davetliler, updatedAt: serverTimestamp() });
+  }catch(e){ console.warn("davetli kaydet:", e); davetliMsg("Kaydedilemedi — giriş yapıp tekrar deneyin."); }
+}
+
+function davetliCiz(){
+  const liste = $("davetliListe"); liste.innerHTML = "";
+  // özet
+  let yanit=0, acik=0;
+  _davetliler.forEach(d=>{ const s=_davetliDurum[d.ad]; if(s==="yanit")yanit++; else if(s==="acik")acik++; });
+  const bekle = _davetliler.length - yanit - acik;
+  $("davetliOzet").innerHTML =
+    '<span class="chip">Toplam <b>'+_davetliler.length+'</b></span>'+
+    '<span class="chip">Yanıtladı <b>'+yanit+'</b></span>'+
+    '<span class="chip">Açıldı <b>'+acik+'</b></span>'+
+    '<span class="chip">Bekliyor <b>'+bekle+'</b></span>';
+  if(!_davetliler.length){ liste.innerHTML = '<p class="note" style="text-align:center;padding:16px 0">Henüz davetli yok. Yukarıdan ekleyin ya da toplu içe aktarın.</p>'; return; }
+  // gruplara göre
+  const gruplar = {};
+  _davetliler.forEach((d,i)=>{ const g = (d.grup||"").trim() || "Diğer"; (gruplar[g] = gruplar[g] || []).push(i); });
+  Object.keys(gruplar).sort((a,b)=>a.localeCompare(b,"tr")).forEach(g=>{
+    liste.append(el2("p","dv-grup-bas", g));
+    gruplar[g].forEach(i=>{
+      const d = _davetliler[i];
+      const durum = _davetliDurum[d.ad] || "bekle";
+      const etiket = durum==="yanit" ? "Yanıtladı" : durum==="acik" ? "Açıldı" : "Bekliyor";
+      const kart = el2("div","dv-kart");
+      const sol = el2("div"); sol.style.display="flex"; sol.style.alignItems="center"; sol.style.gap="8px"; sol.style.flexWrap="wrap";
+      sol.append(el2("span","dv-ad", d.ad));
+      sol.append(el2("span","dv-rozet "+(durum==="yanit"?"yanit":durum==="acik"?"acik":"bekle"), etiket));
+      const eylem = el2("div","dv-eylem");
+      const bKopya = el2("button","btn mini","Link"); bKopya.type="button"; bKopya.title="Kişiye özel linki kopyala";
+      bKopya.addEventListener("click", async ()=>{ const u=davetliLink(d.ad); if(!u){davetliMsg("Önce yayınlayın.");return;} try{ await navigator.clipboard.writeText(u); bKopya.textContent="✓"; setTimeout(()=>bKopya.textContent="Link",1200);}catch(e){} });
+      const bWa = el2("button","btn wa mini","WA"); bWa.type="button"; bWa.title="WhatsApp ile gönder";
+      bWa.addEventListener("click", ()=>{ const u=davetliLink(d.ad); if(!u){davetliMsg("Önce yayınlayın.");return;} const m="Sevgili "+d.ad+", sizi özel davetimize bekliyoruz 🤍\n"+u; window.open("https://wa.me/?text="+encodeURIComponent(m),"_blank","noopener"); });
+      const bSil = el2("button","dv-sil","×"); bSil.type="button"; bSil.title="Sil"; bSil.setAttribute("aria-label","Davetliyi sil");
+      bSil.addEventListener("click", ()=>{ _davetliler.splice(i,1); davetliCiz(); davetliKaydet(); });
+      eylem.append(bKopya, bWa, bSil);
+      kart.append(sol, eylem);
+      liste.append(kart);
+    });
+  });
+}
+
+function davetliVarMi(ad){ const n=ad.trim().toLowerCase(); return _davetliler.some(d=>d.ad.trim().toLowerCase()===n); }
+function davetliEkleTek(ad, grup){
+  ad = (ad||"").trim().slice(0,80); if(!ad || davetliVarMi(ad)) return false;
+  _davetliler.push({ ad, grup: (grup||"").trim().slice(0,40) }); return true;
+}
+$("btnDavetliEkle").addEventListener("click", ()=>{
+  if(davetliEkleTek(val("inDavetliAd"), val("inDavetliGrup"))){ setVal("inDavetliAd",""); setVal("inDavetliGrup",""); $("inDavetliAd").focus(); davetliCiz(); davetliKaydet(); }
+  else davetliMsg("Geçersiz ya da zaten var olan ad.");
+});
+$("inDavetliAd").addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); $("btnDavetliEkle").click(); } });
+
+function csvAktar(metin){
+  const satirlar = (metin||"").split(/\r?\n/); let eklendi=0;
+  satirlar.forEach(s=>{ if(!s.trim()) return; const p = s.split(/[,;\t]/); if(davetliEkleTek(p[0], p[1])) eklendi++; });
+  return eklendi;
+}
+$("btnCsvAktar").addEventListener("click", ()=>{
+  const n = csvAktar(val("taCsv")); setVal("taCsv","");
+  davetliCiz(); if(n){ davetliKaydet(); durumYenile(); } davetliMsg(n?(n+" davetli eklendi."):"Yeni davetli bulunamadı.");
+});
+$("csvDosya").addEventListener("change", async e=>{
+  const f = e.target.files && e.target.files[0]; e.target.value=""; if(!f) return;
+  try{ const t = await f.text(); const n = csvAktar(t); davetliCiz(); if(n){ davetliKaydet(); durumYenile(); } davetliMsg(n?(n+" davetli içe aktarıldı."):"Yeni davetli bulunamadı."); }
+  catch(err){ davetliMsg("Dosya okunamadı."); }
+});
+
+async function durumYenile(){
+  const id = davetliId(); if(!id || !_davetliler.length) return;
+  try{
+    await firebaseHazir();
+    const { collection, getDocs } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
+    const [rSnap, oSnap] = await Promise.all([
+      getDocs(collection(_db,"invitations",id,"rsvps")),
+      getDocs(collection(_db,"invitations",id,"opens")).catch(()=>({forEach:()=>{}}))
+    ]);
+    const yanitlayan = new Set(), acan = new Set();
+    rSnap.forEach(d=>{ const r=d.data(); if(r.konukAnahtari) yanitlayan.add(r.konukAnahtari.trim().toLowerCase()); if(r.ad) yanitlayan.add(r.ad.trim().toLowerCase()); });
+    oSnap.forEach(d=>{ const o=d.data(); if(o.konukAnahtari) acan.add(o.konukAnahtari.trim().toLowerCase()); });
+    _davetliDurum = {};
+    _davetliler.forEach(d=>{ const n=d.ad.trim().toLowerCase(); _davetliDurum[d.ad] = yanitlayan.has(n) ? "yanit" : (acan.has(n) ? "acik" : "bekle"); });
+    davetliCiz();
+  }catch(e){ console.warn("durum yenile:", e); }
+}
+$("btnDurumYenile").addEventListener("click", ()=>{ davetliMsg("Yenileniyor…"); durumYenile().then(()=>davetliMsg("Durum güncellendi.")); });
+
+$("btnTumLink").addEventListener("click", async ()=>{
+  if(!_davetliler.length) return; const t = davetliTaban(); if(!t){ davetliMsg("Önce yayınlayın."); return; }
+  const metin = _davetliler.map(d=> d.ad + ": " + davetliLink(d.ad)).join("\n");
+  try{ await navigator.clipboard.writeText(metin); davetliMsg(_davetliler.length+" link kopyalandı."); }catch(e){ davetliMsg("Kopyalanamadı."); }
+});
+
+$("btnDavetliListe").addEventListener("click", davetliAc);
+$("davetliKapat").addEventListener("click", davetliKapatFn);
+$("davetliArka").addEventListener("click", davetliKapatFn);
+document.addEventListener("keydown", e=>{ if(e.key==="Escape" && !$("davetliModal").hidden) davetliKapatFn(); });
 
 /* ---- Başlat ---- */
 temaCiz();

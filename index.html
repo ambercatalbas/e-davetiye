@@ -1268,7 +1268,7 @@
     // Yayınlanmış davetiye: Firestore'dan çek (?id= veya ?s=slug) + gerçek LCV formu ekle.
     (async () => {
       try {
-        const [{ initializeApp, getApps, getApp }, { getFirestore, doc, getDoc }, { firebaseConfig }] = await Promise.all([
+        const [{ initializeApp, getApps, getApp }, { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp }, { firebaseConfig }] = await Promise.all([
           import("https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js"),
           import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js"),
           import("./firebase/config.js")
@@ -1298,6 +1298,20 @@
         const lcvMount = el("div", "lcv-mount");
         kok.append(lcvMount);
         lcvBaslat({ inviteId: realId, firebaseConfig, mount: lcvMount, dil: cfg.dil, konuk });
+        // Kişiye özel açılış izi (#30): davetli tokenı varsa oturumda bir kez logla.
+        if (konuk) {
+          const izAnahtar = "acildi:" + realId + ":" + konuk;
+          if (!sessionStorage.getItem(izAnahtar)) {
+            (async () => {
+              try {
+                const { getAuth, signInAnonymously } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js");
+                const a = getAuth(app); if (!a.currentUser) await signInAnonymously(a);
+                await addDoc(collection(db, "invitations", realId, "opens"), { konukAnahtari: konuk, createdAt: serverTimestamp() });
+                sessionStorage.setItem(izAnahtar, "1");
+              } catch (e) { /* açılış izi opsiyonel */ }
+            })();
+          }
+        }
         if (cfg.dilek) {
           const { dilekBaslat } = await import("./firebase/dilek.js");
           const dMount = el("div", "lcv-mount");
