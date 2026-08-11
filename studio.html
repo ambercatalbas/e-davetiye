@@ -154,6 +154,14 @@
   .pv-cihaz{display:flex;gap:4px;}
   .pv-cbtn{background:none;border:1px solid var(--hair);border-radius:6px;color:var(--soft);width:34px;height:30px;font-size:.95rem;cursor:pointer;padding:0;line-height:1;}
   .pv-cbtn.aktif{background:var(--gold);color:var(--on-gold);border-color:transparent;}
+  /* Görsel tema seçici */
+  .tema-secici{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;}
+  .tema-chip{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;border:0;background:none;padding:2px;font-family:inherit;}
+  .tema-sw{width:100%;height:32px;border-radius:7px;border:1px solid var(--field-edge);}
+  .tema-chip.aktif .tema-sw{outline:2px solid var(--gold);outline-offset:2px;border-color:transparent;}
+  .tema-chip:focus-visible .tema-sw{outline:2px solid var(--coral);outline-offset:2px;}
+  .tema-chip .tema-ad{font-family:var(--f-sans);font-size:.58rem;color:var(--soft);}
+  .tema-chip.aktif .tema-ad{color:var(--ink);font-weight:600;}
 
   /* Paylaş kutusu */
   .share{margin-top:16px;}
@@ -275,19 +283,9 @@
           </select>
         </div>
         <div class="field">
-          <label for="selTema">Tema</label>
-          <select id="selTema">
-            <option value="safak">Şafak · klasik altın</option>
-            <option value="yaz">Yaz · Akdeniz turkuaz</option>
-            <option value="minimal">Minimal · fildişi adaçayı</option>
-            <option value="botanik">Botanik · orman gülü</option>
-            <option value="modern">Modern · inci lacivert</option>
-            <option value="bohem">Bohem · kum terakota</option>
-            <option value="gece">Gece · safir ay ışığı</option>
-            <option value="luks">Lüks · oniks şampanya</option>
-            <option value="cocuk">Çocuk · gökyüzü mavisi</option>
-            <option value="pudra">Pudra · gül altını</option>
-          </select>
+          <label for="temaSecici">Tema</label>
+          <input type="hidden" id="selTema" value="safak">
+          <div class="tema-secici" id="temaSecici" role="radiogroup" aria-label="Tema"></div>
         </div>
       </div>
       <div class="field" style="margin-top:2px">
@@ -650,6 +648,36 @@ const setVal = (id,v) => { if($(id)) $(id).value = v == null ? "" : v; };
 const chk = id => $(id) && $(id).checked;
 const setChk = (id,v) => { if($(id)) $(id).checked = !!v; };
 
+/* ---- Görsel tema seçici (renk kartları) ---- */
+const TEMALAR_STUDIO = [
+  {id:"safak",ad:"Şafak",grad:"linear-gradient(135deg,#202747,#B98F38)"},
+  {id:"yaz",ad:"Yaz",grad:"linear-gradient(135deg,#0E6E78,#17A2AD 60%,#E4633B)"},
+  {id:"minimal",ad:"Minimal",grad:"linear-gradient(135deg,#A8AD9E,#EEE7D8)"},
+  {id:"botanik",ad:"Botanik",grad:"linear-gradient(135deg,#143A27,#54785B)"},
+  {id:"modern",ad:"Modern",grad:"linear-gradient(135deg,#101F35,#79A5D5)"},
+  {id:"bohem",ad:"Bohem",grad:"linear-gradient(135deg,#3A2418,#D99870)"},
+  {id:"gece",ad:"Gece",grad:"linear-gradient(135deg,#0A1230,#AAB9E5)"},
+  {id:"luks",ad:"Lüks",grad:"linear-gradient(135deg,#17120F,#D8B47F)"},
+  {id:"cocuk",ad:"Çocuk",grad:"linear-gradient(135deg,#0E2B3A,#78BED7)"},
+  {id:"pudra",ad:"Pudra",grad:"linear-gradient(135deg,#2A1620,#E4A9BD)"}
+];
+function temaCiz(){
+  const kutu = $("temaSecici"); if(!kutu || kutu.children.length) return;
+  TEMALAR_STUDIO.forEach(t=>{
+    const b = document.createElement("button"); b.type="button"; b.className="tema-chip";
+    b.dataset.tema = t.id; b.setAttribute("role","radio"); b.setAttribute("aria-label", t.ad);
+    const sw = document.createElement("span"); sw.className="tema-sw"; sw.style.background = t.grad;
+    const ad = document.createElement("span"); ad.className="tema-ad"; ad.textContent = t.ad;
+    b.append(sw, ad);
+    b.addEventListener("click", ()=>{ setVal("selTema", t.id); temaAktifGuncelle(); $("selTema").dispatchEvent(new Event("input",{bubbles:true})); });
+    kutu.append(b);
+  });
+}
+function temaAktifGuncelle(){
+  const v = val("selTema"), kutu = $("temaSecici"); if(!kutu) return;
+  kutu.querySelectorAll(".tema-chip").forEach(c=>{ const on = c.dataset.tema === v; c.classList.toggle("aktif", on); c.setAttribute("aria-checked", on ? "true" : "false"); });
+}
+
 // YYYY-MM-DD (yerel), n gün sonrası
 function isoSonra(n){
   const d = new Date(); d.setDate(d.getDate()+ (n||0));
@@ -669,7 +697,7 @@ function syncBodies(){
 /* ---- Ön ayar uygula ---- */
 function preseti_uygula(tur){
   const p = PRESETS[tur] || PRESETS.bos;
-  setVal("selTema", p.tema);
+  setVal("selTema", p.tema); temaAktifGuncelle();
   setVal("inUst", p.ust); setVal("inAlici", p.alici); setVal("inBaslik", p.baslik);
   setVal("taGiris", p.giris); setVal("inImza", p.imza); setVal("inKurum", p.kurum);
   setVal("taDetaylar", p.detaylar || ""); setVal("inGeriBaslik", p.geriBaslik || "");
@@ -1143,7 +1171,7 @@ function formDoldur(cfg, tur){
   cfg = cfg || {};
   const two = n => String(n).padStart(2,"0");
   if(tur) setVal("selTur", tur);
-  setVal("selTema", cfg.tema || "safak");
+  setVal("selTema", cfg.tema || "safak"); temaAktifGuncelle();
   setVal("selDil", cfg.dil || "tr");
   setVal("inUst", cfg.ustBaslik || ""); setVal("inAlici", cfg.alici || "");
   setVal("inBaslik", cfg.baslik || ""); setVal("taGiris", cfg.girisMetni || "");
@@ -1394,7 +1422,9 @@ $("btnSifirla").addEventListener("click", ()=>{
 });
 
 /* ---- Başlat ---- */
+temaCiz();
 if(!yukle()){ preseti_uygula("dugun"); }
+temaAktifGuncelle();
 onizle();
 galeriYukle();
 </script>
