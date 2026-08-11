@@ -10,7 +10,7 @@
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import {
   getAuth, signInAnonymously, onAuthStateChanged, signOut,
-  GoogleAuthProvider, signInWithPopup, linkWithPopup
+  GoogleAuthProvider, signInWithPopup, linkWithPopup, deleteUser, reauthenticateWithPopup
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 import { firebaseConfig } from "./config.js";
 
@@ -51,6 +51,19 @@ export async function googleGiris(){
 }
 
 export async function cikis(){ await signOut(auth()); }
+
+// KVKK "unutulma hakkı": kimlik hesabını sil (gerekirse yeniden doğrula).
+// Not: Firestore/Storage verisini çağıran taraf ayrıca siler; bu yalnız Auth hesabı.
+export async function hesabiSil(){
+  const a = auth(); const u = a.currentUser; if(!u) return;
+  try { await deleteUser(u); }
+  catch(e){
+    if(e && e.code === "auth/requires-recent-login" && !u.isAnonymous){
+      await reauthenticateWithPopup(u, new GoogleAuthProvider());
+      await deleteUser(u);
+    } else throw e;
+  }
+}
 
 // Hata kodunu Türkçe, kullanıcıya gösterilebilir metne çevir.
 export function authHataMetni(e){

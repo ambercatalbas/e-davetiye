@@ -501,6 +501,20 @@
   </div>
 </div>
 
+<div class="modal" id="hesapModal" hidden>
+  <div class="modal-arka" id="hesapArka"></div>
+  <div class="modal-kart" role="dialog" aria-modal="true" aria-label="Hesabım" style="max-width:440px">
+    <div class="modal-bas"><h2>Hesabım</h2><button class="btn" type="button" id="hesapKapat">Kapat</button></div>
+    <p class="note" id="hesapEmail" style="margin-top:0"></p>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
+      <button class="btn" type="button" id="btnVeriIndir">Verilerimi indir (JSON)</button>
+      <button class="btn" type="button" id="btnCikis2">Çıkış yap</button>
+      <button class="btn" type="button" id="btnHesapSil" style="color:var(--coral);border-color:var(--coral)">Hesabımı ve tüm verilerimi sil</button>
+      <p class="note" id="hesapDurum" aria-live="polite"></p>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ============================================================
    Şablon ön ayarları (davet türleri). Her tür örnek metin +
@@ -1044,10 +1058,7 @@ function girisChip(u){
 }
 $("btnGiris").addEventListener("click", async ()=>{
   const authMod = await import("./firebase/auth.js");
-  if($("btnGiris").dataset.signed === "1"){
-    if(confirm("Çıkış yapılsın mı?")) await authMod.cikis();
-    return;
-  }
+  if($("btnGiris").dataset.signed === "1"){ hesapModalAc(); return; }
   const b = $("btnGiris"); const t0 = b.textContent; b.disabled = true; b.textContent = "Giriş yapılıyor…";
   try{ await authMod.googleGiris(); }
   catch(e){ alert(authMod.authHataMetni(e)); }
@@ -1288,6 +1299,64 @@ async function davetiyeSil(id){
 $("btnDavetlerim").addEventListener("click", davetlerimAc);
 $("davetlerimKapat").addEventListener("click", davetlerimKapat);
 $("davetlerimArka").addEventListener("click", davetlerimKapat);
+
+/* ---- Hesap modalı (KVKK: verilerimi indir / hesabımı sil) ---- */
+function hesapModalAc(){
+  const u = _auth && _auth.currentUser;
+  $("hesapEmail").textContent = (u && u.email) ? ("Giriş: " + u.email) : "Anonim oturum — kalıcı hesap için Google ile giriş yapın.";
+  $("hesapDurum").textContent = "";
+  $("hesapModal").hidden = false; $("hesapKapat").focus();
+}
+function hesapModalKapat(){ $("hesapModal").hidden = true; $("btnGiris").focus(); }
+$("hesapKapat").addEventListener("click", hesapModalKapat);
+$("hesapArka").addEventListener("click", hesapModalKapat);
+document.addEventListener("keydown", e=>{ if(e.key==="Escape" && !$("hesapModal").hidden) hesapModalKapat(); });
+$("btnCikis2").addEventListener("click", async ()=>{ const m = await import("./firebase/auth.js"); await m.cikis(); hesapModalKapat(); });
+
+$("btnVeriIndir").addEventListener("click", async ()=>{
+  $("hesapDurum").textContent = "Veriler toplanıyor…";
+  try{
+    await firebaseHazir();
+    const { collection, getDocs, doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
+    const uid = _auth.currentUser.uid;
+    const snap = await getDocs(collection(_db,"users",uid,"invitations"));
+    const davetiyeler = [];
+    for(const d of snap.docs){
+      let cfg = null; try{ const s = await getDoc(doc(_db,"invitations",d.id)); if(s.exists()) cfg = (s.data().cfg || null); }catch(e){}
+      davetiyeler.push(Object.assign({ id:d.id }, d.data(), { cfg }));
+    }
+    const veri = { disaAktarim:"e-davetiye", hesap:{ uid, email:(_auth.currentUser.email||null) }, davetiyeSayisi:davetiyeler.length, davetiyeler };
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(veri,null,2)],{type:"application/json"}));
+    a.download = "e-davetiye-verilerim.json"; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+    $("hesapDurum").textContent = davetiyeler.length + " davetiye indirildi.";
+  }catch(e){ console.error(e); $("hesapDurum").textContent = "İndirilemedi: " + (e.code || e.message || ""); }
+});
+
+$("btnHesapSil").addEventListener("click", async ()=>{
+  if(!confirm("TÜM davetiyelerin, yanıtların ve hesabın kalıcı olarak silinecek. Geri alınamaz. Devam edilsin mi?")) return;
+  $("hesapDurum").textContent = "Siliniyor…"; $("btnHesapSil").disabled = true;
+  try{
+    await firebaseHazir();
+    const { collection, getDocs, doc, deleteDoc } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
+    const uid = _auth.currentUser.uid;
+    const snap = await getDocs(collection(_db,"users",uid,"invitations"));
+    for(const d of snap.docs){
+      const v = d.data();
+      try{ await deleteDoc(doc(_db,"invitations",d.id)); }catch(e){}
+      if(v.slug){ try{ await deleteDoc(doc(_db,"slugs",v.slug)); }catch(e){} }
+      try{ await deleteDoc(doc(_db,"users",uid,"invitations",d.id)); }catch(e){}
+    }
+    const authMod = await import("./firebase/auth.js");
+    await authMod.hesabiSil();
+    try{ localStorage.clear(); }catch(e){}
+    alert("Hesabın ve verilerin silindi.");
+    location.href = "index.html";
+  }catch(e){
+    console.error(e); $("btnHesapSil").disabled = false;
+    $("hesapDurum").textContent = "Silinemedi: " + (e.code || e.message || "") + " — Google ile yeniden giriş yapıp tekrar deneyin.";
+  }
+});
 
 /* ---- Tema düğmesi ---- */
 $("btnTema").addEventListener("click", ()=>{
