@@ -95,8 +95,22 @@ for (const h of htmlDosyalar) {
   }
 }
 
+// 6) Performans bütçesi — kritik-yol ağırlığı (inline HTML) + render-block kaynak yok.
+const perfButce = { "index.html": 140, "studio.html": 190, "yanitlar.html": 50 }; // KB ham üst sınır
+for (const [f, limitKB] of Object.entries(perfButce)) {
+  if (!existsSync(join(KOK, f))) continue;
+  const src = oku(f);
+  const kb = Buffer.byteLength(src, "utf8") / 1024;
+  if (kb > limitKB) uyari(`perf ${f}: ${kb.toFixed(0)}KB > ${limitKB}KB bütçe aşıldı (kritik-yol ağırlığı)`);
+  if (/<link\b[^>]*rel=["']stylesheet["']/i.test(src)) uyari(`perf ${f}: render-block dış stylesheet (inline CSS bekleniyor)`);
+  const senkScript = (src.match(/<script\b[^>]*\bsrc=[^>]*>/gi) || []).filter((s) => !/type=["']module["']|defer|async/i.test(s));
+  if (senkScript.length) uyari(`perf ${f}: senkron dış script (module/defer/async olmalı) → ${senkScript[0].slice(0, 60)}`);
+}
+const idx = existsSync(join(KOK, "index.html")) ? oku("index.html") : "";
+if (idx && !/rel=["']preconnect["'][^>]*gstatic/i.test(idx)) uyari("perf index.html: gstatic preconnect ipucu yok (LCP hızı)");
+
 if (hatalar.length) {
   console.error("✗ Doğrulama başarısız:\n" + hatalar.map((h) => "  - " + h).join("\n"));
   process.exit(1);
 }
-console.log("✓ Doğrulama geçti: JSON, yerel varlıklar, modül export'ları, PWA varlıkları ve statik a11y (lang, viewport, tabindex, img alt, form etiketleri) tamam.");
+console.log("✓ Doğrulama geçti: JSON, varlıklar, export'lar, PWA, statik a11y ve performans bütçesi (ağırlık, render-block, preconnect) tamam.");

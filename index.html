@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
+<!-- Performans: yayınlanmış davetiye Firebase modüllerini + Firestore/Auth'u erken bağlar (LCP) -->
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin>
+<link rel="dns-prefetch" href="https://firebasestorage.googleapis.com">
 <meta name="description" content="Düğün, nişan, kına, sünnet, doğum günü ve kurumsal davetiyelerinizi dakikalar içinde oluşturun. Zarif tasarım, gerçek LCV (katılım) toplama, WhatsApp'ta paylaşım — ücretsiz başlayın.">
 <meta name="keywords" content="dijital davetiye, e-davetiye, online davetiye, düğün davetiyesi, sünnet davetiyesi, kına davetiyesi, nişan davetiyesi, doğum günü davetiyesi, bebek mevlüdü davetiyesi, kurumsal davetiye, LCV, katılım formu">
 <link rel="canonical" href="https://ambercatalbas.github.io/e-davetiye/">
@@ -934,7 +939,8 @@
     if (cfg.foto && cfg.foto.hero) {
       const box = el("div", "foto-hero");
       const img = el("img");
-      img.src = cfg.foto.hero; img.loading = "lazy";
+      // Hero genelde LCP öğesi → hevesli yükle + yüksek öncelik (lazy DEĞİL)
+      img.src = cfg.foto.hero; img.loading = "eager"; img.fetchPriority = "high"; img.decoding = "async";
       img.alt = cfg.alici || cfg.baslik || "Davetiye görseli";
       box.append(img);
       kok.append(box);
@@ -952,7 +958,7 @@
       const grid = el("div", "foto-galeri");
       cfg.foto.galeri.forEach((u, i) => {
         const im = el("img");
-        im.src = u; im.loading = "lazy"; im.alt = "Fotoğraf " + (i + 1);
+        im.src = u; im.loading = "lazy"; im.decoding = "async"; im.alt = "Fotoğraf " + (i + 1);
         grid.append(im);
       });
       kok.append(grid);
