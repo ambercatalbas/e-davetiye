@@ -143,6 +143,13 @@ export async function lcvBaslat({ inviteId, firebaseConfig, mount, dil, konuk })
       };
       if (konukAd) kayit.konukAnahtari = konukAd; // kişi bazlı takip (davetli tokenı)
       await addDoc(collection(db, "invitations", inviteId, "rsvps"), kayit);
+      // Funnel (#44): anonim LCV olayı — kişisel veri gönderilmez.
+      try {
+        fetch("https://us-central1-e-davetiye-94b6b.cloudfunctions.net/olayKaydet", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ tip: "lcv" }), keepalive: true
+        }).catch(() => {});
+      } catch (e) {}
       kok.innerHTML = "";
       kok.append(el("p", "ust", T.tesekkur));
       kok.append(el("p", "giris", durum === "geliyorum" ? T.gel : T.yok));

@@ -88,6 +88,41 @@ exports.odemeBaslat = functions.region(BOLGE).https.onRequest((req, res) => {
   });
 });
 
+// --- Ürün analitiği / funnel (#44): gizlilik dostu, olay tabanlı sayaçlar ---
+// İstemci yalnız anonim olay tipi gönderir (kişisel veri YOK). Sayaçlar admin SDK
+// ile toplanır; okuma yalnız admin e-postasına açıktır (firestore.rules).
+const OLAY_TIPLERI = ["kayit", "sablon", "yayin", "paylasim", "lcv"];
+exports.olayKaydet = functions.region(BOLGE).https.onRequest(async (req, res) => {
+  cors(res);
+  if (req.method === "OPTIONS") return res.status(204).send("");
+  if (req.method !== "POST") return res.status(405).json({ hata: "yalnız POST" });
+
+  let body = req.body || {};
+  if (typeof body === "string") { try { body = JSON.parse(body); } catch (e) { body = {}; } }
+  const tip = String(body.tip || "");
+  if (!OLAY_TIPLERI.includes(tip)) return res.status(400).json({ hata: "geçersiz tip" });
+
+  const inc = admin.firestore.FieldValue.increment(1);
+  try {
+    const db = admin.firestore();
+    await db.doc("analitik/funnel").set(
+      { [tip]: inc, guncelleme: admin.firestore.FieldValue.serverTimestamp() },
+      { merge: true }
+    );
+    // Şablon performansı (yalnız şablon kimliği; kişisel veri değil).
+    const sablon = String(body.sablon || "").toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 40);
+    if (sablon && (tip === "sablon" || tip === "yayin")) {
+      const alan = tip === "sablon" ? "secildi" : "yayinlandi";
+      await db.doc("analitik/sablonlar").set({ s: { [sablon]: { [alan]: inc } } }, { merge: true });
+    }
+    res.set("Cache-Control", "no-store");
+    return res.json({ ok: true });
+  } catch (e) {
+    console.error("olayKaydet hata:", e);
+    return res.status(500).json({ hata: "kaydedilemedi" });
+  }
+});
+
 // --- iyzico callback: ödemeyi doğrula ve premium'u aç ---
 exports.odemeCallback = functions.region(BOLGE).https.onRequest((req, res) => {
   let body = req.body || {};

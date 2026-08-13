@@ -128,6 +128,15 @@ service cloud.firestore {
       }
     }
 
+    // Ürün analitiği / funnel (#44): toplu sayaçlar. İstemci YAZAMAZ (yalnız Cloud
+    // Function admin SDK yazar). Okuma yalnız yönetici e-postasına açıktır — iç panel.
+    match /analitik/{doc} {
+      allow read: if request.auth != null
+        && request.auth.token.email == 'ambercatalbas@gmail.com'
+        && request.auth.token.email_verified == true;
+      allow write: if false;
+    }
+
     // Özel kısa link: slug -> inviteId. Herkes çözebilir; yalnızca sahip oluşturur (benzersiz).
     match /slugs/{slug} {
       allow get: if true;

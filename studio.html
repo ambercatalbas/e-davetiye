@@ -836,6 +836,17 @@ const setVal = (id,v) => { if($(id)) $(id).value = v == null ? "" : v; };
 const chk = id => $(id) && $(id).checked;
 const setChk = (id,v) => { if($(id)) $(id).checked = !!v; };
 
+/* Ürün funnel'ı (#44): anonim, kişisel veri YOK. Ateşle-ve-unut. */
+const OLAY_FN = "https://us-central1-e-davetiye-94b6b.cloudfunctions.net/olayKaydet";
+function olay(tip, sablon){
+  try{ fetch(OLAY_FN, { method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify(sablon ? {tip, sablon} : {tip}), keepalive:true }).catch(()=>{}); }catch(e){}
+}
+function olayBir(tip, anahtar){        // oturum/tarayıcı başına bir kez
+  try{ if(localStorage.getItem(anahtar)) return; localStorage.setItem(anahtar,"1"); }catch(e){}
+  olay(tip);
+}
+
 /* ---- Görsel tema seçici (renk kartları) ---- */
 const TEMALAR_STUDIO = [
   {id:"safak",ad:"Şafak",grad:"linear-gradient(135deg,#202747,#B98F38)"},
@@ -958,6 +969,7 @@ function sablonKarti(t){
   const use=document.createElement("button"); use.type="button"; use.className="btn pri tpl-use"; use.textContent="Bu şablonu kullan";
   use.addEventListener("click",()=>{
     AKTIF_SABLON=t;
+    olay("sablon", t.id);
     _aktifPremiumSablon = !!t.premium;
     PRESETS[t.id]=t.preset;
     setVal("selTur",t.type);
@@ -1435,6 +1447,8 @@ async function yayinla(){
     $("outIdLink").value = paylasLink;
     $("btnYanit").href = yanitLinki(id);
     $("yayinSonuc").style.display = "";
+    // Funnel (#44): yayın olayı — davetiye başına bir kez (yeniden yayın saymaz).
+    try{ const yk="analitik.yayin."+id; if(!localStorage.getItem(yk)){ localStorage.setItem(yk,"1"); olay("yayin", AKTIF_SABLON && AKTIF_SABLON.id); } }catch(e){}
     premiumDurumGuncelle();
     const ozet = { baslik: (val("inBaslik").trim() || "Adsız davetiye"), tur: val("selTur"), hero: _fotoHero || "", slug: slugKullanildi };
     listeUpsert(Object.assign({ id, guncelleme: Date.now() }, ozet));
@@ -1453,10 +1467,12 @@ async function yayinla(){
 }
 $("btnYayinla").addEventListener("click", yayinla);
 $("btnKopyaId").addEventListener("click", async ()=>{
+  olay("paylasim");
   try{ await navigator.clipboard.writeText($("outIdLink").value); $("btnKopyaId").textContent="Kopyalandı ✓"; setTimeout(()=> $("btnKopyaId").textContent="Kopyala",1600); }
   catch(e){ $("outIdLink").select(); }
 });
 $("btnWaId").addEventListener("click", ()=>{
+  olay("paylasim");
   const alici=val("inAlici").trim(), baslik=val("inBaslik").trim();
   const msg=(alici?alici+", ":"")+(baslik||"Davetiyeniz hazır")+" — davetiyeniz:\n"+$("outIdLink").value;
   window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank","noopener");
@@ -2295,6 +2311,7 @@ temaAktifGuncelle();
 onizle();
 galeriYukle();
 ortakBaslangic();   // paylaşılan #ortak= linkiyle açıldıysa canlı taslağa bağlan
+olayBir("kayit","analitik.kayit.v1");   // funnel: bu tarayıcıda ilk studio açılışı
 </script>
 <footer style="padding:24px 16px;text-align:center;font:13px/1.6 var(--f-sans,system-ui);color:var(--soft,#565C77)">
   <a href="./pricing.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px">Paketler</a> · <a href="./legal.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px">Gizlilik · KVKK · Kullanım Şartları</a>
