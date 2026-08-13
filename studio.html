@@ -108,6 +108,8 @@
   .tpl-art strong{font-family:var(--f-serif);font-size:1rem;font-weight:500;line-height:1.05;max-width:76%;}
   .tpl-badge{position:absolute;right:9px;top:9px;font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;
     padding:4px 6px;border-radius:4px;background:rgba(15,17,30,.66);color:#fff;backdrop-filter:blur(5px);}
+  .tpl-badge.premium{background:linear-gradient(135deg,#8a6a1f,#c8a24a);color:#fff;font-weight:700;}
+  .tpl.premium .tpl-art{box-shadow:inset 0 0 0 2px rgba(200,162,74,.55);}
   .fav{position:absolute;right:8px;bottom:8px;width:31px;height:31px;border:0;border-radius:50%;cursor:pointer;
     background:rgba(255,255,255,.9);color:#6B6070;font-size:1rem;display:grid;place-items:center;z-index:2;}
   .fav.on{color:#BE5540;}
@@ -538,6 +540,7 @@
         <button class="btn block" type="button" id="btnPaket" style="margin-top:8px">🎁 Paylaşım Paketi — QR · Story · Baskı</button>
         <button class="btn block" type="button" id="btnDavetliListe" style="margin-top:8px">👥 Davetli Listesi — kişiye özel link &amp; takip</button>
         <button class="btn block" type="button" id="btnPremium" style="margin-top:8px">✦ Filigranı Kaldır — Premium (99,90 ₺)</button>
+        <p class="note" id="premiumKilitNot" style="display:none;margin-top:6px">🔒 <b>Premium şablon.</b> Filigransız, tam premium paylaşım için Premium alın.</p>
         <details class="share-quick" id="kisiselBox">
           <summary>Kişiye özel davet linki</summary>
           <p class="note" style="margin-top:10px">Her davetliye ismiyle hitap eden ayrı bir link üretin — davetiye <b>“Sevgili …”</b> diye açılır, LCV adı hazır gelir, yanıt kişiyle eşleşir.</p>
@@ -850,6 +853,7 @@ function preseti_uygula(tur){
    galeride görünür ve preset verisiyle editörü doldurur. */
 let TEMPLATES = [];
 let AKTIF_SABLON = null;
+let _aktifPremiumSablon = false; // seçili şablon premium mi (kilit + yayın için)
 const FAVORI_ANAHTAR = "studio.favoriler.v1";
 let favoriler = new Set();
 try{ favoriler = new Set(JSON.parse(localStorage.getItem(FAVORI_ANAHTAR)||"[]")); }catch(e){}
@@ -877,10 +881,10 @@ function metinVaryantlariniKur(t){
 }
 
 function sablonKarti(t){
-  const card=document.createElement("article"); card.className="tpl"; card.dataset.color=t.color||"altin";
+  const card=document.createElement("article"); card.className="tpl"+(t.premium?" premium":""); card.dataset.color=t.color||"altin";
   const art=document.createElement("div"); art.className="tpl-art";
   const artName=document.createElement("strong"); artName.textContent=t.name;
-  const badge=document.createElement("span"); badge.className="tpl-badge"; badge.textContent=t.premium?"Premium":"Ücretsiz";
+  const badge=document.createElement("span"); badge.className="tpl-badge"+(t.premium?" premium":""); badge.textContent=t.premium?"🔒 Premium":"Ücretsiz";
   const fav=document.createElement("button"); fav.type="button"; fav.className="fav"+(favoriler.has(t.id)?" on":"");
   fav.textContent=favoriler.has(t.id)?"♥":"♡"; fav.setAttribute("aria-label",favoriler.has(t.id)?`${t.name} şablonunu favorilerden çıkar`:`${t.name} şablonunu favorilere ekle`);
   fav.addEventListener("click",()=>favoriDegistir(t.id)); art.append(artName,badge,fav);
@@ -891,6 +895,7 @@ function sablonKarti(t){
   const use=document.createElement("button"); use.type="button"; use.className="btn pri tpl-use"; use.textContent="Bu şablonu kullan";
   use.addEventListener("click",()=>{
     AKTIF_SABLON=t;
+    _aktifPremiumSablon = !!t.premium;
     PRESETS[t.id]=t.preset;
     setVal("selTur",t.type);
     preseti_uygula(t.id);
@@ -898,6 +903,7 @@ function sablonKarti(t){
     planla();
     $("inUst").focus({preventScroll:true});
     $("selTur").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"});
+    premiumDurumGuncelle();
   });
   body.append(meta,h,p,use); card.append(art,body); return card;
 }
@@ -1294,7 +1300,7 @@ async function yayinla(){
   try{
     await firebaseHazir();
     const { doc, setDoc, addDoc, getDoc, collection, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
-    const veri = { ownerUid: _auth.currentUser.uid, cfg: cfgKur(), createdAt: serverTimestamp() };
+    const veri = { ownerUid: _auth.currentUser.uid, cfg: cfgKur(), premiumSablon: !!_aktifPremiumSablon, createdAt: serverTimestamp() };
     let id = localStorage.getItem(YAYIN_ANAHTAR);
     if(id){
       // Yeniden yayınlarken premium'u koru (setDoc tüm dokümanı ezer)
@@ -1605,7 +1611,7 @@ $("cihazMasaustu").addEventListener("click", ()=>{ $("phone").classList.remove("
 $("btnPdf").addEventListener("click", ()=>{ const b64 = link().split("#i=")[1] || ""; window.open(RENDER + "?ac=1&print=1#i=" + b64, "_blank", "noopener"); });
 
 /* ---- Olaylar ---- */
-$("selTur").addEventListener("change", ()=>{ AKTIF_SABLON=null; metinVaryantlariniKur(null); preseti_uygula(val("selTur")); planla(); });
+$("selTur").addEventListener("change", ()=>{ AKTIF_SABLON=null; _aktifPremiumSablon=false; metinVaryantlariniKur(null); preseti_uygula(val("selTur")); planla(); premiumDurumGuncelle(); });
 for(const k in CHKS){ $(CHKS[k]).addEventListener("change", ()=>{ syncBodies(); planla(); }); }
 $("form").addEventListener("input", planla);
 $("btnSifirla").addEventListener("click", ()=>{
@@ -1614,7 +1620,7 @@ $("btnSifirla").addEventListener("click", ()=>{
   _fotoHero=""; _fotoGaleri=[]; heroCiz(); galeriCiz(); setVal("inSlug","");
   $("yayinSonuc").style.display="none"; $("btnYayinla").textContent="Yayınla & LCV Topla";
   $("yayinNot").innerHTML="Yayınlayınca kısa bir <b>?id=</b> linki oluşur; davetliler <b>gerçek LCV</b> gönderir, yanıtları panelden görürsün.";
-  AKTIF_SABLON=null; metinVaryantlariniKur(null); setVal("selTur","dugun"); preseti_uygula("dugun"); onizle();
+  AKTIF_SABLON=null; _aktifPremiumSablon=false; metinVaryantlariniKur(null); setVal("selTur","dugun"); preseti_uygula("dugun"); onizle();
 });
 
 /* ---- Paylaşım Paketi: baskı QR · Instagram story · WhatsApp ---- */
@@ -1882,17 +1888,26 @@ document.addEventListener("keydown", e=>{ if(e.key==="Escape" && !$("davetliModa
 /* ---- Premium / filigran kaldırma (#33 — iyzico) ---- */
 const ODEME_FN = "https://us-central1-e-davetiye-94b6b.cloudfunctions.net/odemeBaslat";
 async function premiumDurumGuncelle(){
-  const btn = $("btnPremium"); if(!btn) return;
+  const btn = $("btnPremium"), not = $("premiumKilitNot"); if(!btn) return;
   const id = localStorage.getItem(YAYIN_ANAHTAR);
-  if(!id){ btn.style.display = "none"; return; }
+  const gizle = ()=>{ if(not) not.style.display="none"; };
+  if(!id){ btn.style.display = "none"; gizle(); return; }
   btn.style.display = "";
+  let premium = false;
   try{
     await firebaseHazir();
     const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
     const s = await getDoc(doc(_db,"invitations",id));
-    if(s.exists() && s.data().premium){ btn.textContent = "✦ Premium etkin — filigransız ✓"; btn.disabled = true; btn.style.opacity = ".75"; }
-    else { btn.textContent = "✦ Filigranı Kaldır — Premium (99,90 ₺)"; btn.disabled = false; btn.style.opacity = ""; }
+    if(s.exists()){ premium = !!s.data().premium; if(s.data().premiumSablon != null) _aktifPremiumSablon = !!s.data().premiumSablon; }
   }catch(e){ /* sessiz */ }
+  if(premium){
+    btn.textContent = "✦ Premium etkin — filigransız ✓"; btn.disabled = true; btn.style.opacity = ".75"; gizle();
+  } else if(_aktifPremiumSablon){
+    btn.textContent = "🔒 Premium şablon — Kilidi Aç (99,90 ₺)"; btn.disabled = false; btn.style.opacity = "";
+    if(not) not.style.display = "";
+  } else {
+    btn.textContent = "✦ Filigranı Kaldır — Premium (99,90 ₺)"; btn.disabled = false; btn.style.opacity = ""; gizle();
+  }
 }
 $("btnPremium").addEventListener("click", async ()=>{
   const id = localStorage.getItem(YAYIN_ANAHTAR);
