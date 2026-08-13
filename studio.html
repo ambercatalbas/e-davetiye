@@ -73,6 +73,11 @@
   .theme-btn{background:none;border:1px solid var(--hair);border-radius:6px;color:var(--soft);
     width:38px;height:38px;font-size:1rem;cursor:pointer;display:grid;place-items:center;}
   .theme-btn:hover{color:var(--ink);}
+  .ortak-pill{display:inline-flex;align-items:center;gap:4px;font-size:.66rem;font-weight:600;
+    letter-spacing:.02em;padding:5px 10px;border-radius:999px;white-space:nowrap;
+    color:var(--teal);background:color-mix(in srgb,var(--teal) 15%,transparent);
+    border:1px solid color-mix(in srgb,var(--teal) 40%,transparent);}
+  .ortak-pill #ortakPillSayi{opacity:.85;}
 
   .layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);gap:clamp(16px,2.5vw,30px);
     max-width:1180px;margin:0 auto;padding:clamp(16px,3vw,30px);align-items:start;}
@@ -283,6 +288,8 @@
 
 <header class="bar">
   <div class="brand"><b>E-Davetiye</b><small>Studio</small></div>
+  <span class="ortak-pill" id="ortakPill" hidden title="Ortak düzenleme aktif">🟢 Canlı<span id="ortakPillSayi"></span></span>
+  <button class="btn" type="button" id="btnOrtak" title="Eşinizle/ailenizle birlikte düzenleyin">👥 Birlikte</button>
   <button class="btn" type="button" id="btnDavetlerim" title="Yayınladığın davetiyeler">Davetlerim</button>
   <button class="btn" type="button" id="btnGiris" title="Google ile giriş — yanıtları her cihazdan gör">☁︎ Giriş</button>
   <button class="btn" type="button" id="btnSifirla" title="Yeni davetiye">Sıfırla</button>
@@ -612,6 +619,31 @@
       <button class="btn" type="button" id="btnHesapSil" style="color:var(--coral);border-color:var(--coral)">Hesabımı ve tüm verilerimi sil</button>
       <p class="note" id="hesapDurum" aria-live="polite"></p>
     </div>
+  </div>
+</div>
+
+<div class="modal" id="ortakModal" hidden>
+  <div class="modal-arka" id="ortakArka"></div>
+  <div class="modal-kart" role="dialog" aria-modal="true" aria-label="Birlikte Düzenle" style="max-width:460px">
+    <div class="modal-bas"><h2>👥 Birlikte Düzenle</h2><button class="btn" type="button" id="ortakKapat">Kapat</button></div>
+    <p class="note" style="margin-top:0">Eşiniz veya ailenizle <b>aynı taslağı</b> düzenleyin. Linki paylaşın; herkesin değişikliği <b>canlı</b> yansır.</p>
+    <div class="field" style="margin:6px 0 12px">
+      <label for="inOrtakAd">Görünen adınız <span class="hint">(kim düzenliyor belli olsun)</span></label>
+      <input type="text" id="inOrtakAd" maxlength="40" placeholder="örn: Şifa">
+    </div>
+    <button class="btn pri block" type="button" id="btnOrtakBaslat">Ortak düzenlemeyi başlat</button>
+    <div id="ortakOturum" style="display:none">
+      <div class="linkbox">
+        <input type="text" id="outOrtakLink" readonly aria-label="Ortak düzenleme linki">
+        <button class="btn pri" type="button" id="btnOrtakKopya">Kopyala</button>
+      </div>
+      <button class="btn wa block" type="button" id="btnOrtakWa" style="margin-top:8px">WhatsApp ile davet et</button>
+      <p class="note" id="ortakKisiler" aria-live="polite" style="margin-top:10px"></p>
+      <p class="note" id="ortakSonDuzenleyen" style="min-height:1em"></p>
+      <button class="btn block" type="button" id="btnOrtakKes" style="margin-top:6px;color:var(--coral);border-color:var(--coral)">Bağlantıyı kes</button>
+      <p class="note" style="margin-top:8px">🔒 Bu linke sahip herkes taslağı düzenleyebilir. Yalnızca güvendiğiniz kişilerle paylaşın.</p>
+    </div>
+    <p class="note" id="ortakDurum" aria-live="polite" style="min-height:1em"></p>
   </div>
 </div>
 
@@ -1147,19 +1179,21 @@ const ALANLAR = ["selTur","selTema","selDil","inUst","inAlici","inBaslik","taGir
   "inHediyeBaslik","inHediyeMesaj","inHediyeIban","inHediyeAd","inHediyeNot",
   "inKapakIsim","inKapakButon","inSlug"];
 const ANAHTAR = "studio.taslak.v1";
-function kaydet(){
+// Tüm editör durumunu düz bir nesnede topla (localStorage + ortak düzenleme paylaşır).
+function durumTopla(){
   const d = {}; ALANLAR.forEach(a=> d[a]=val(a));
   for(const k in CHKS) d[CHKS[k]] = chk(CHKS[k]);
   d._fotoHero = _fotoHero; d._fotoGaleri = _fotoGaleri;
   d._haritaMekanlar = _haritaMekanlar;
   d.chkMuzikLisans = chk("chkMuzikLisans");
-  try{ localStorage.setItem(ANAHTAR, JSON.stringify(d)); }catch(e){}
+  return d;
 }
-function yukle(){
-  let d=null; try{ d = JSON.parse(localStorage.getItem(ANAHTAR)||"null"); }catch(e){}
-  if(!d) return false;
-  ALANLAR.forEach(a=> { if(d[a]!=null) setVal(a,d[a]); });
-  for(const k in CHKS) setChk(CHKS[k], !!d[CHKS[k]]);
+// Durum nesnesini forma uygula. opt.atla: o an yazılan alan id'si (üzerine yazma).
+function durumUygula(d, opt){
+  if(!d) return;
+  const atla = (opt && opt.atla) || null;
+  ALANLAR.forEach(a=> { if(d[a]!=null && a!==atla) setVal(a,d[a]); });
+  for(const k in CHKS){ const id=CHKS[k]; if(id!==atla) setChk(id, !!d[id]); }
   _fotoHero = d._fotoHero || ""; _fotoGaleri = Array.isArray(d._fotoGaleri) ? d._fotoGaleri : [];
   _haritaMekanlar = Array.isArray(d._haritaMekanlar) ? d._haritaMekanlar : [];
   setChk("chkMuzikLisans", !!d.chkMuzikLisans);
@@ -1168,6 +1202,12 @@ function yukle(){
     _haritaMekanlar = [{ ad:"", adres:d.inHaritaAdres||"", url:d.inHaritaUrl||"" }];
   heroCiz(); galeriCiz(); haritaMekanCiz();
   syncBodies();
+}
+function kaydet(){ try{ localStorage.setItem(ANAHTAR, JSON.stringify(durumTopla())); }catch(e){} }
+function yukle(){
+  let d=null; try{ d = JSON.parse(localStorage.getItem(ANAHTAR)||"null"); }catch(e){}
+  if(!d) return false;
+  durumUygula(d);
   return true;
 }
 
@@ -1883,6 +1923,111 @@ async function videoOlustur(format){
 $("btnVideoDikey").addEventListener("click", ()=>videoOlustur("dikey"));
 $("btnVideoKare").addEventListener("click", ()=>videoOlustur("kare"));
 
+/* ---- İş birlikçi düzenleme (#46) — canlı ortak taslak ---- */
+const FS_URL = "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+const ORTAK_AD_ANAHTAR = "studio.ortakAd.v1";
+let _ortakId=null, _ortakUnsub=null, _ortakPresUnsub=null, _ortakPresIv=null;
+let _ortakUzakSurum=0, _ortakKayitZaman=null, _ortakYukleniyor=false;
+
+function ortakAd(){ try{ return (localStorage.getItem(ORTAK_AD_ANAHTAR)||"").trim() || "Misafir"; }catch(e){ return "Misafir"; } }
+function ortakLinki(id){ return location.origin + location.pathname + "#ortak=" + id; }
+function aktifAlanId(){ const e=document.activeElement; return (e && e.id) ? e.id : null; }
+function ortakDurumYaz(msg){ $("ortakDurum").textContent = msg||""; }
+function ortakModalAc(){
+  const m=$("ortakModal"); m.hidden=false; document.body.style.overflow="hidden";
+  const ai=$("inOrtakAd"); if(!ai.value){ const a=ortakAd(); ai.value = a==="Misafir" ? "" : a; }
+  ortakArayuzGuncelle();
+}
+function ortakModalKapat(){ $("ortakModal").hidden=true; document.body.style.overflow=""; }
+function ortakArayuzGuncelle(){
+  const acik=!!_ortakId;
+  $("btnOrtakBaslat").style.display = acik ? "none" : "";
+  $("ortakOturum").style.display = acik ? "" : "none";
+  if(acik) $("outOrtakLink").value = ortakLinki(_ortakId);
+  $("ortakPill").hidden = !acik;
+}
+async function ortakBaslat(){
+  try{
+    ortakDurumYaz("Bağlanılıyor…");
+    try{ localStorage.setItem(ORTAK_AD_ANAHTAR, $("inOrtakAd").value.trim()); }catch(e){}
+    await firebaseHazir();
+    const { doc, collection, setDoc, serverTimestamp } = await import(FS_URL);
+    const ref = doc(collection(_db,"drafts"));
+    await setDoc(ref, { veri: durumTopla(), ownerUid:_auth.currentUser.uid, guncelleyen:ortakAd(), yazan:_auth.currentUser.uid, surum:1, createdAt:serverTimestamp(), updatedAt:serverTimestamp() });
+    _ortakUzakSurum = 1;
+    history.replaceState(null,"", "#ortak="+ref.id);
+    await ortakBagla(ref.id);
+    ortakDurumYaz("Hazır — linki eşinizle paylaşın.");
+  }catch(e){ console.error(e); ortakDurumYaz("Başlatılamadı: "+(e.message||e)); }
+}
+async function ortakBagla(id){
+  _ortakId=id;
+  const { doc, collection, onSnapshot, setDoc, serverTimestamp } = await import(FS_URL);
+  const ref = doc(_db,"drafts",id);
+  _ortakUnsub = onSnapshot(ref, snap=>{
+    if(!snap.exists()){ ortakDurumYaz("Taslak sahibi tarafından kapatıldı."); ortakKes(false); return; }
+    if(snap.metadata.hasPendingWrites) return;                 // kendi yazımımız — atla
+    const d=snap.data(); if(!d || typeof d.surum!=="number" || d.surum<=_ortakUzakSurum) return;
+    _ortakUzakSurum = d.surum;
+    _ortakYukleniyor=true;
+    try{ durumUygula(d.veri, {atla: aktifAlanId()}); planla(); }
+    finally{ _ortakYukleniyor=false; }
+    if(d.guncelleyen) $("ortakSonDuzenleyen").textContent = "Son düzenleyen: "+d.guncelleyen;
+  }, err=>{ console.error(err); ortakDurumYaz("Bağlantı hatası: "+(err.code||err.message)); });
+  // Canlı varlık (kim düzenliyor)
+  const presRef = doc(_db,"drafts",id,"presence",_auth.currentUser.uid);
+  const presYaz = ()=> setDoc(presRef,{ ad:ortakAd(), updatedAt:serverTimestamp() }).catch(()=>{});
+  presYaz(); _ortakPresIv = setInterval(presYaz, 15000);
+  _ortakPresUnsub = onSnapshot(collection(_db,"drafts",id,"presence"), snap=>{
+    const simdi=Date.now(), kisiler=[];
+    snap.forEach(dsn=>{ const p=dsn.data(); const ts=(p.updatedAt&&p.updatedAt.toMillis)?p.updatedAt.toMillis():simdi;
+      if(simdi-ts < 45000) kisiler.push(p.ad||"Misafir"); });
+    $("ortakPillSayi").textContent = " · " + (kisiler.length||1);
+    $("ortakKisiler").textContent = "Şu an düzenleyen: " + (kisiler.join(", ") || ortakAd());
+  });
+  ortakArayuzGuncelle();
+}
+const ortakKaydet = ()=>{
+  if(!_ortakId || _ortakYukleniyor) return;
+  clearTimeout(_ortakKayitZaman);
+  _ortakKayitZaman = setTimeout(async ()=>{
+    try{
+      const { doc, updateDoc, serverTimestamp, increment } = await import(FS_URL);
+      await updateDoc(doc(_db,"drafts",_ortakId), { veri:durumTopla(), guncelleyen:ortakAd(), yazan:_auth.currentUser.uid, surum:increment(1), updatedAt:serverTimestamp() });
+    }catch(e){ console.error(e); ortakDurumYaz("Kaydedilemedi: "+(e.message||e)); }
+  }, 700);
+};
+function ortakKes(silPresence){
+  try{ _ortakUnsub && _ortakUnsub(); }catch(e){}
+  try{ _ortakPresUnsub && _ortakPresUnsub(); }catch(e){}
+  clearInterval(_ortakPresIv); _ortakPresIv=null; _ortakUnsub=_ortakPresUnsub=null;
+  if(silPresence!==false && _ortakId && _auth && _auth.currentUser){
+    import(FS_URL).then(({doc,deleteDoc})=> deleteDoc(doc(_db,"drafts",_ortakId,"presence",_auth.currentUser.uid)).catch(()=>{}));
+  }
+  _ortakId=null; _ortakUzakSurum=0;
+  if(location.hash.indexOf("#ortak=")===0) history.replaceState(null,"", location.pathname);
+  ortakArayuzGuncelle();
+}
+async function ortakBaslangic(){
+  const m = location.hash.match(/^#ortak=([A-Za-z0-9_-]{6,})$/);
+  if(!m) return;
+  try{
+    ortakModalAc(); ortakDurumYaz("Ortak taslağa bağlanılıyor…");
+    await firebaseHazir();
+    await ortakBagla(m[1]);
+    ortakDurumYaz("Bağlandı — düzenlemeleriniz canlı paylaşılıyor.");
+  }catch(e){ console.error(e); ortakDurumYaz("Bağlanılamadı: "+(e.message||e)); }
+}
+$("btnOrtak").addEventListener("click", ortakModalAc);
+$("ortakKapat").addEventListener("click", ortakModalKapat);
+$("ortakArka").addEventListener("click", ortakModalKapat);
+$("btnOrtakBaslat").addEventListener("click", ()=>{ if(!$("inOrtakAd").value.trim()){ $("inOrtakAd").focus(); ortakDurumYaz("Lütfen görünen adınızı yazın."); return; } ortakBaslat(); });
+$("inOrtakAd").addEventListener("input", ()=>{ try{ localStorage.setItem(ORTAK_AD_ANAHTAR, $("inOrtakAd").value.trim()); }catch(e){} });
+$("btnOrtakKopya").addEventListener("click", async ()=>{ try{ await navigator.clipboard.writeText(ortakLinki(_ortakId)); $("btnOrtakKopya").textContent="Kopyalandı ✓"; setTimeout(()=>$("btnOrtakKopya").textContent="Kopyala",1600);}catch(e){ $("outOrtakLink").select(); document.execCommand&&document.execCommand("copy"); } });
+$("btnOrtakWa").addEventListener("click", ()=>{ window.open("https://wa.me/?text="+encodeURIComponent("Davetiyemizi birlikte düzenleyelim: "+ortakLinki(_ortakId)),"_blank","noopener"); });
+$("btnOrtakKes").addEventListener("click", ()=>{ ortakKes(true); ortakDurumYaz("Bağlantı kesildi."); });
+$("form").addEventListener("input", ortakKaydet);
+
 $("btnPaket").addEventListener("click", paketAc);
 $("paketKapat").addEventListener("click", paketKapatFn);
 $("paketArka").addEventListener("click", paketKapatFn);
@@ -2149,6 +2294,7 @@ if(!yukle()){ preseti_uygula("dugun"); }
 temaAktifGuncelle();
 onizle();
 galeriYukle();
+ortakBaslangic();   // paylaşılan #ortak= linkiyle açıldıysa canlı taslağa bağlan
 </script>
 <footer style="padding:24px 16px;text-align:center;font:13px/1.6 var(--f-sans,system-ui);color:var(--soft,#565C77)">
   <a href="./pricing.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px">Paketler</a> · <a href="./legal.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px">Gizlilik · KVKK · Kullanım Şartları</a>
