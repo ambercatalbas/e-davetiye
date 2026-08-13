@@ -404,6 +404,10 @@
   .yayin-btn.canli { background:#C62828; color:#fff; border-color:transparent; }
   @keyframes yayinNabiz { 0%,100%{opacity:1} 50%{opacity:.55} }
   @media (prefers-reduced-motion: reduce){ .yayin-rozet{ animation:none } }
+  /* Kişiye özel masa (#47) */
+  .masa-blok { width:100%; display:flex; flex-direction:column; align-items:center; gap:6px;
+    padding:16px; border:1px solid var(--hairline,rgba(127,127,127,.22)); border-radius:12px; }
+  .masa-ad { font-family:var(--f-script,var(--f-serif)); font-size:clamp(1.8rem,7vw,2.6rem); color:var(--gold); margin:0; line-height:1; }
   /* Ücretsiz filigran (premium kaldırır) */
   .filigran { display:block; text-align:center; margin:24px auto 6px; font-family:var(--f-sans);
     font-size:.72rem; letter-spacing:.1em; color:var(--ink-soft); text-decoration:none; opacity:.8; }
@@ -942,19 +946,19 @@
     tr: { gun:"Gün", saat:"Saat", dakika:"Dakika", saniye:"Saniye", zamaniGeldi:"Zamanı geldi!",
           dokunun:"dokunun", ac:"Davetiyeyi Aç", ibanKopyala:"IBAN'ı kopyala", ibanKopyalandi:"Kopyalandı ✓",
           canliIzle:"Canlı İzle", canli:"CANLI YAYIN", yayinBasliyor:"Canlı yayın",
-          filigran:"E-Davetiye ile hazırlandı", odemeOk:"Ödeme alındı — filigran kaldırıldı ✓", locale:"tr-TR" },
+          filigran:"E-Davetiye ile hazırlandı", odemeOk:"Ödeme alındı — filigran kaldırıldı ✓", masaniz:"Masanız", locale:"tr-TR" },
     en: { gun:"Days", saat:"Hours", dakika:"Minutes", saniye:"Seconds", zamaniGeldi:"It's time!",
           dokunun:"tap", ac:"Open Invitation", ibanKopyala:"Copy IBAN", ibanKopyalandi:"Copied ✓",
           canliIzle:"Watch Live", canli:"LIVE", yayinBasliyor:"Live stream",
-          filigran:"Made with E-Davetiye", odemeOk:"Payment received — watermark removed ✓", locale:"en-US" },
+          filigran:"Made with E-Davetiye", odemeOk:"Payment received — watermark removed ✓", masaniz:"Your table", locale:"en-US" },
     ru: { gun:"Дней", saat:"Часов", dakika:"Минут", saniye:"Секунд", zamaniGeldi:"Время пришло!",
           dokunun:"нажмите", ac:"Открыть приглашение", ibanKopyala:"Копировать IBAN", ibanKopyalandi:"Скопировано ✓",
           canliIzle:"Смотреть", canli:"ПРЯМОЙ ЭФИР", yayinBasliyor:"Трансляция",
-          filigran:"Сделано в E-Davetiye", odemeOk:"Оплата получена — водяной знак убран ✓", locale:"ru-RU" },
+          filigran:"Сделано в E-Davetiye", odemeOk:"Оплата получена — водяной знак убран ✓", masaniz:"Ваш стол", locale:"ru-RU" },
     de: { gun:"Tage", saat:"Std.", dakika:"Min.", saniye:"Sek.", zamaniGeldi:"Es ist soweit!",
           dokunun:"tippen", ac:"Einladung öffnen", ibanKopyala:"IBAN kopieren", ibanKopyalandi:"Kopiert ✓",
           canliIzle:"Live ansehen", canli:"LIVE", yayinBasliyor:"Livestream",
-          filigran:"Erstellt mit E-Davetiye", odemeOk:"Zahlung erhalten — Wasserzeichen entfernt ✓", locale:"de-DE" }
+          filigran:"Erstellt mit E-Davetiye", odemeOk:"Zahlung erhalten — Wasserzeichen entfernt ✓", masaniz:"Ihr Tisch", locale:"de-DE" }
   };
   const dilSoz = cfg => SOZLUK[cfg && cfg.dil] || SOZLUK.tr;
 
@@ -1305,6 +1309,15 @@
     return cfg;
   }
 
+  // Kişiye özel masa bilgisi (#47) — ?k= davetliye masasını gösterir.
+  function masaEl(cfg, masa) {
+    const D = dilSoz(cfg);
+    const box = el("div", "masa-blok");
+    box.append(el("p", "ust kucuk", D.masaniz || "Masanız"));
+    box.append(el("p", "masa-ad", masa));
+    return box;
+  }
+
   // Ücretsiz davetiye filigranı — premium (ödeme) kaldırır.
   function filigranEl(cfg) {
     const D = dilSoz(cfg);
@@ -1368,6 +1381,7 @@
         const data = snap.data();
         const cfg = kisisellestir(data.cfg || data);
         const kok = goster(cfg, { lcv: true });
+        if (konuk && data.masaPlani && data.masaPlani[konuk]) kok.append(masaEl(cfg, data.masaPlani[konuk])); // #47 kişiye özel masa
         if (!data.premium) kok.append(filigranEl(cfg));   // ücretsiz: filigran (premium kaldırır)
         else if (_p.get("odeme") === "ok") odemeTosti(cfg);
         const { lcvBaslat } = await import("./firebase/lcv.js");

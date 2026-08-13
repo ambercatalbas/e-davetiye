@@ -235,6 +235,13 @@
   .dv-kart .dv-ad{font-family:var(--f-serif);font-size:1rem;color:var(--ink);}
   .dv-kart .dv-eylem{display:flex;gap:6px;}
   .dv-kart .mini{font-size:.72rem;padding:5px 9px;}
+  .dv-masalar{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .dv-masa{display:flex;align-items:center;gap:7px;font-size:.76rem;padding:5px 11px;border-radius:20px;border:1px solid var(--edge);background:var(--panel-2);color:var(--soft);}
+  .dv-masa.dolu{border-color:var(--coral);color:var(--coral);}
+  .dv-masa b{color:var(--ink);}
+  .dv-masa .sil{border:0;background:none;color:var(--faint);cursor:pointer;font-size:1rem;padding:0;line-height:1;}
+  .dv-masa .sil:hover{color:var(--coral);}
+  .dv-masa-sec{font-size:.72rem;padding:3px 7px;border:1px solid var(--edge);border-radius:7px;background:var(--field);color:var(--ink);max-width:120px;}
   .dv-rozet{font-size:.68rem;padding:3px 9px;border-radius:20px;font-weight:600;white-space:nowrap;}
   .dv-rozet.yanit{background:rgba(56,142,90,.16);color:#3f9d68;}
   .dv-rozet.acik{background:rgba(184,140,56,.16);color:var(--gold);}
@@ -635,10 +642,22 @@
         <button class="btn pri" type="button" id="btnCsvAktar">İçe aktar</button>
       </div>
     </details>
+    <details class="share-quick" id="masaBox">
+      <summary>🍽 Masa / oturma planı</summary>
+      <div class="dv-ekle" style="margin-top:8px;grid-template-columns:1.5fr .7fr auto">
+        <input type="text" id="inMasaAd" maxlength="40" placeholder="Masa adı (Masa 1, Gelin…)" aria-label="Masa adı">
+        <input type="number" id="inMasaKapasite" min="1" max="60" value="10" aria-label="Masa kapasitesi">
+        <button class="btn pri" type="button" id="btnMasaEkle">Masa Ekle</button>
+      </div>
+      <div class="dv-masalar" id="masaListe"></div>
+      <button class="btn block" type="button" id="btnMasaGoster" style="margin-top:8px">Masaları davetlilere göster</button>
+      <p class="hint" style="margin:6px 2px 0">Her davetlinin satırından masasını seçin. “Göster” ile davetliler kendi masalarını kişiye özel linkte görür.</p>
+    </details>
     <div class="dv-ozet" id="davetliOzet"></div>
     <div class="dv-araclar">
       <button class="btn" type="button" id="btnDurumYenile">↻ Durumu yenile</button>
       <button class="btn" type="button" id="btnTumLink">Tüm linkleri kopyala</button>
+      <button class="btn" type="button" id="btnMasaCsv">Planı dışa aktar (CSV)</button>
     </div>
     <div class="dv-liste" id="davetliListe"></div>
     <p class="note" id="davetliDurum" aria-live="polite" style="min-height:1.1em"></p>
@@ -1756,8 +1775,9 @@ $("btnKonukWa").addEventListener("click", ()=>{
   window.open("https://wa.me/?text=" + encodeURIComponent(mesaj), "_blank", "noopener");
 });
 
-/* ---- Davetli Listesi (#30) ---- */
-let _davetliler = [];            // [{ad, grup}]
+/* ---- Davetli Listesi (#30) + Masa Planı (#47) ---- */
+let _davetliler = [];            // [{ad, grup, masa}]
+let _masalar = [];               // [{ad, kapasite}]
 let _davetliDurum = {};          // ad -> "yanit" | "acik" | "bekle"
 function davetliId(){ return localStorage.getItem(YAYIN_ANAHTAR) || ""; }
 function davetliMsg(m){ $("davetliDurum").textContent = m || ""; }
@@ -1775,8 +1795,9 @@ async function davetliAc(){
     const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
     const s = await getDoc(doc(_db,"users",_auth.currentUser.uid,"guestLists",id));
     _davetliler = (s.exists() && Array.isArray(s.data().guests)) ? s.data().guests : [];
-  }catch(e){ console.warn("davetli yükle:", e); _davetliler = []; }
-  davetliMsg(""); davetliCiz();
+    _masalar = (s.exists() && Array.isArray(s.data().masalar)) ? s.data().masalar : [];
+  }catch(e){ console.warn("davetli yükle:", e); _davetliler = []; _masalar = []; }
+  davetliMsg(""); davetliCiz(); masaCiz();
   durumYenile();
 }
 function davetliKapatFn(){ $("davetliModal").hidden = true; $("btnDavetliListe").focus(); }
@@ -1786,9 +1807,59 @@ async function davetliKaydet(){
   try{
     await firebaseHazir();
     const { doc, setDoc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
-    await setDoc(doc(_db,"users",_auth.currentUser.uid,"guestLists",id), { guests: _davetliler, updatedAt: serverTimestamp() });
+    await setDoc(doc(_db,"users",_auth.currentUser.uid,"guestLists",id), { guests: _davetliler, masalar: _masalar, updatedAt: serverTimestamp() });
   }catch(e){ console.warn("davetli kaydet:", e); davetliMsg("Kaydedilemedi — giriş yapıp tekrar deneyin."); }
 }
+
+/* ---- Masa planı (#47) ---- */
+function masaDoluluk(masaAd){ return _davetliler.filter(d=>d.masa===masaAd).length; }
+function masaCiz(){
+  const kutu = $("masaListe"); if(!kutu) return; kutu.innerHTML = "";
+  _masalar.forEach((m,i)=>{
+    const dolu = masaDoluluk(m.ad), askin = dolu > (m.kapasite||0);
+    const c = el2("div","dv-masa"+(askin?" dolu":""));
+    c.innerHTML = "<b>"+esc(m.ad)+"</b> "+dolu+"/"+(m.kapasite||0)+(askin?" ⚠":"");
+    const sil = el2("button","sil","×"); sil.type="button"; sil.title="Masayı kaldır"; sil.setAttribute("aria-label","Masayı kaldır");
+    sil.addEventListener("click", ()=>{
+      const ad = _masalar[i].ad;
+      _masalar.splice(i,1);
+      _davetliler.forEach(d=>{ if(d.masa===ad) delete d.masa; });
+      masaCiz(); davetliCiz(); davetliKaydet();
+    });
+    c.append(sil); kutu.append(c);
+  });
+}
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])); }
+$("btnMasaEkle").addEventListener("click", ()=>{
+  const ad = val("inMasaAd").trim().slice(0,40); const kap = Math.max(1, Math.min(60, parseInt(val("inMasaKapasite")||"10",10)));
+  if(!ad) { $("inMasaAd").focus(); return; }
+  if(_masalar.some(m=>m.ad.toLowerCase()===ad.toLowerCase())) { davetliMsg("Bu masa zaten var."); return; }
+  _masalar.push({ ad, kapasite: kap }); setVal("inMasaAd",""); $("inMasaAd").focus();
+  masaCiz(); davetliCiz(); davetliKaydet();
+});
+async function masalariGoster(){
+  const id = davetliId(); if(!id){ davetliMsg("Önce yayınlayın."); return; }
+  const harita = {};
+  _davetliler.forEach(d=>{ if(d.masa) harita[d.ad] = d.masa; });
+  try{
+    await firebaseHazir();
+    const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
+    await updateDoc(doc(_db,"invitations",id), { masaPlani: harita });
+    davetliMsg(Object.keys(harita).length + " davetli masası yayınlandı — kişiye özel linkte görünecek.");
+  }catch(e){ console.warn(e); davetliMsg("Masalar yayınlanamadı."); }
+}
+$("btnMasaGoster").addEventListener("click", masalariGoster);
+$("btnMasaCsv").addEventListener("click", ()=>{
+  if(!_davetliler.length){ davetliMsg("Davetli yok."); return; }
+  const bas = ["Ad","Grup","Masa","Durum"];
+  const sat = _davetliler.map(d=>{
+    const s=_davetliDurum[d.ad]; const durum = s==="yanit"?"Yanıtladı":s==="acik"?"Açıldı":"Bekliyor";
+    return [d.ad, d.grup||"", d.masa||"", durum].map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(",");
+  });
+  const csv = "﻿"+[bas.join(","), ...sat].join("\n");
+  indirURL("data:text/csv;charset=utf-8,"+encodeURIComponent(csv), dosyaTaban()+"-masa-plani.csv");
+  davetliMsg("Masa planı CSV indirildi.");
+});
 
 function davetliCiz(){
   const liste = $("davetliListe"); liste.innerHTML = "";
@@ -1815,6 +1886,13 @@ function davetliCiz(){
       const sol = el2("div"); sol.style.display="flex"; sol.style.alignItems="center"; sol.style.gap="8px"; sol.style.flexWrap="wrap";
       sol.append(el2("span","dv-ad", d.ad));
       sol.append(el2("span","dv-rozet "+(durum==="yanit"?"yanit":durum==="acik"?"acik":"bekle"), etiket));
+      if(_masalar.length){
+        const sec = document.createElement("select"); sec.className="dv-masa-sec"; sec.setAttribute("aria-label", d.ad+" masası");
+        const bos = document.createElement("option"); bos.value=""; bos.textContent="🍽 masa…"; sec.append(bos);
+        _masalar.forEach(m=>{ const o=document.createElement("option"); o.value=m.ad; o.textContent=m.ad; if(d.masa===m.ad)o.selected=true; sec.append(o); });
+        sec.addEventListener("change", ()=>{ if(sec.value) _davetliler[i].masa=sec.value; else delete _davetliler[i].masa; masaCiz(); davetliKaydet(); });
+        sol.append(sec);
+      }
       const eylem = el2("div","dv-eylem");
       const bKopya = el2("button","btn mini","Link"); bKopya.type="button"; bKopya.title="Kişiye özel linki kopyala";
       bKopya.addEventListener("click", async ()=>{ const u=davetliLink(d.ad); if(!u){davetliMsg("Önce yayınlayın.");return;} try{ await navigator.clipboard.writeText(u); bKopya.textContent="✓"; setTimeout(()=>bKopya.textContent="Link",1200);}catch(e){} });
