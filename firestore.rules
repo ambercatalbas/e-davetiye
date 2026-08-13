@@ -50,6 +50,18 @@ service cloud.firestore {
         allow update, delete: if false;
       }
 
+      // Görüntülenme izleri (#37 analitik): her açılışta cihaz türü loglanır (anonim, gizlilik dostu).
+      match /views/{vid} {
+        allow create: if request.auth != null
+          && request.resource.data.keys().hasOnly(['cihaz', 'createdAt'])
+          && request.resource.data.cihaz is string
+          && request.resource.data.cihaz.size() <= 20
+          && request.resource.data.createdAt == request.time;
+        allow read: if request.auth != null
+          && get(/databases/$(database)/documents/invitations/$(inviteId)).data.ownerUid == request.auth.uid;
+        allow update, delete: if false;
+      }
+
       // Açılış izleri: kişiye özel link (?k=/?t=) açıldığında davetli tokenı loglanır.
       // Davetli (anonim) yazar; yalnız sahip okur (kişi bazlı "açıldı" takibi). Güncelleme/silme yok.
       match /opens/{oid} {

@@ -81,6 +81,13 @@
     <div class="tile top"><b id="tTop">0</b><small>Yanıt</small></div>
   </div>
 
+  <div class="tiles" id="analitik" style="display:none">
+    <div class="tile"><b id="tGor">0</b><small>Görüntülenme</small></div>
+    <div class="tile"><b id="tAcan">0</b><small>Benzersiz Açan</small></div>
+    <div class="tile"><b id="tOran">%0</b><small>Yanıt Oranı</small></div>
+    <div class="tile"><b id="tCihaz">—</b><small>Cihaz (mob/masa/tab)</small></div>
+  </div>
+
   <div class="toolbar" id="toolbar" style="display:none">
     <h2>Gelen Yanıtlar</h2>
     <button class="btn" id="btnCsv" type="button">CSV indir</button>
@@ -98,13 +105,14 @@
 </div>
 
 <script type="module">
-import { getFirestore, doc, getDoc, deleteDoc, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+import { getFirestore, doc, getDoc, getDocs, deleteDoc, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 import { app as fbApp, anonSagla, googleGiris, authHataMetni } from "./firebase/auth.js";
 
 const $ = id => document.getElementById(id);
 const id = new URLSearchParams(location.search).get("id");
 const durum = $("durum");
 let yanitlar = [];
+let _views = [], _opens = [];   // #37 analitik
 
 function tarih(ts){
   try{ const d = ts && ts.toDate ? ts.toDate() : null; if(!d) return "";
@@ -181,6 +189,34 @@ function dinle(){
     if(err.code === "permission-denied") girisGoster();
     else durum.textContent = "Yanıtlar yüklenemedi: " + (err.code||err.message);
   });
+  analitikYukle();
+}
+
+// #37 — görüntülenme + açan analitiği (sahip okur).
+async function analitikYukle(){
+  try{
+    const [vSnap, oSnap] = await Promise.all([
+      getDocs(collection(_db,"invitations",id,"views")).catch(()=>({docs:[]})),
+      getDocs(collection(_db,"invitations",id,"opens")).catch(()=>({docs:[]}))
+    ]);
+    _views = vSnap.docs.map(d=>d.data());
+    _opens = oSnap.docs.map(d=>d.data());
+    analitikCiz();
+  }catch(e){ /* sessiz */ }
+}
+function analitikCiz(){
+  const gor = _views.length;
+  const acan = new Set(_opens.map(o=>(o.konukAnahtari||"").toLowerCase()).filter(Boolean)).size;
+  const oran = gor ? Math.round((yanitlar.length / gor) * 100) : 0;
+  const c = { mobil:0, masaustu:0, tablet:0 };
+  _views.forEach(v=>{ if(c[v.cihaz]!=null) c[v.cihaz]++; });
+  if($("tGor")){
+    $("tGor").textContent = gor;
+    $("tAcan").textContent = acan;
+    $("tOran").textContent = "%" + oran;
+    $("tCihaz").textContent = c.mobil + "/" + c.masaustu + "/" + c.tablet;
+    $("analitik").style.display = "";
+  }
 }
 
 function girisGoster(){
@@ -208,6 +244,7 @@ function ciz(){
   $("tKisi").textContent = kisi;
   $("tTop").textContent = yanitlar.length;
   $("tiles").style.display = "";
+  analitikCiz();
 
   const liste = $("liste");
   liste.innerHTML = "";

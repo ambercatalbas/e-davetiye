@@ -1388,6 +1388,22 @@
         const lcvMount = el("div", "lcv-mount");
         kok.append(lcvMount);
         lcvBaslat({ inviteId: realId, firebaseConfig, mount: lcvMount, dil: cfg.dil, konuk });
+        // Görüntülenme izi (#37 analitik): her açılışta cihaz türü, oturumda bir kez.
+        {
+          const gAnahtar = "goruntulendi:" + realId;
+          if (!sessionStorage.getItem(gAnahtar)) {
+            (async () => {
+              try {
+                const { getAuth, signInAnonymously } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js");
+                const a = getAuth(app); if (!a.currentUser) await signInAnonymously(a);
+                const ua = navigator.userAgent || "";
+                const cihaz = /iPad|Tablet/i.test(ua) ? "tablet" : /Mobi|Android|iPhone/i.test(ua) ? "mobil" : "masaustu";
+                await addDoc(collection(db, "invitations", realId, "views"), { cihaz, createdAt: serverTimestamp() });
+                sessionStorage.setItem(gAnahtar, "1");
+              } catch (e) { /* iz opsiyonel */ }
+            })();
+          }
+        }
         // Kişiye özel açılış izi (#30): davetli tokenı varsa oturumda bir kez logla.
         if (konuk) {
           const izAnahtar = "acildi:" + realId + ":" + konuk;
