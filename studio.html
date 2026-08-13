@@ -1252,7 +1252,11 @@ function kucult(file, maxBoyut, kalite){
       const c = document.createElement("canvas"); c.width = w; c.height = h;
       c.getContext("2d").drawImage(img, 0, 0, w, h);
       URL.revokeObjectURL(img.src);
-      c.toBlob(b => b ? res(b) : rej(new Error("blob")), "image/jpeg", kalite || 0.85);
+      // Önce WebP (küçük+kaliteli); desteklenmiyorsa JPEG. Canvas re-encode EXIF'i temizler.
+      c.toBlob(b => {
+        if (b && b.type === "image/webp") res({ blob:b, tip:"image/webp", uzanti:"webp" });
+        else c.toBlob(b2 => b2 ? res({ blob:b2, tip:"image/jpeg", uzanti:"jpg" }) : rej(new Error("blob")), "image/jpeg", kalite || 0.85);
+      }, "image/webp", kalite || 0.82);
     };
     img.onerror = ()=>{ URL.revokeObjectURL(img.src); rej(new Error("görsel okunamadı")); };
     img.src = URL.createObjectURL(file);
@@ -1260,11 +1264,13 @@ function kucult(file, maxBoyut, kalite){
 }
 async function fotoYukle(file){
   await firebaseHazir();
+  if(!/^image\//.test(file.type||"")) throw Object.assign(new Error("Yalnız görsel dosyası"), { code:"format" });
+  if(file.size > 25 * 1024 * 1024) throw Object.assign(new Error("Görsel çok büyük (en fazla 25 MB)"), { code:"size" });
   const { getStorage, ref, uploadBytes, getDownloadURL } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js");
-  const blob = await kucult(file, 1600, 0.85);
-  const ad = Date.now() + "-" + Math.random().toString(36).slice(2,8) + ".jpg";
+  const { blob, tip, uzanti } = await kucult(file, 1600, 0.82);
+  const ad = Date.now() + "-" + Math.random().toString(36).slice(2,8) + "." + uzanti;
   const r = ref(getStorage(_app), "uploads/" + _auth.currentUser.uid + "/" + ad);
-  await uploadBytes(r, blob, { contentType: "image/jpeg" });
+  await uploadBytes(r, blob, { contentType: tip });
   return await getDownloadURL(r);
 }
 function miniGorsel(url, silCb){
@@ -1290,9 +1296,14 @@ $("heroInput").addEventListener("change", async (e)=>{
   catch(err){ console.error(err); alert("Görsel yüklenemedi ("+(err.code||err.message||"")+"). Storage açık ve kurallar publish edilmiş mi?"); }
   finally{ yer.remove(); if(!_fotoHero) $("heroEkle").style.display=""; }
 });
+const GALERI_LIMIT = 12; // plan kotası (ücretsiz) — galeri fotoğraf sayısı
 $("galeriInput").addEventListener("change", async (e)=>{
   const files = [...(e.target.files||[])]; e.target.value=""; if(!files.length) return;
-  for(const f of files){
+  const kalan = GALERI_LIMIT - _fotoGaleri.length;
+  if(kalan <= 0){ alert("Galeri limiti dolu — en fazla "+GALERI_LIMIT+" fotoğraf."); return; }
+  const eklenecek = files.slice(0, kalan);
+  if(files.length > kalan) alert("Galeri limiti "+GALERI_LIMIT+" — yalnız "+kalan+" fotoğraf eklenecek.");
+  for(const f of eklenecek){
     const yer = el2("div","foto-mini yukleniyor","yükleniyor…"); $("galeriKutu").insertBefore(yer, $("galeriEkle"));
     try{ const u = await fotoYukle(f); _fotoGaleri.push(u); }
     catch(err){ console.error(err); alert("Görsel yüklenemedi ("+(err.code||err.message||"")+")."); }
@@ -1302,6 +1313,13 @@ $("galeriInput").addEventListener("change", async (e)=>{
 });
 $("muzikInput").addEventListener("change", async (e)=>{
   const f = e.target.files && e.target.files[0]; e.target.value=""; if(!f) return;
+  if(!/^audio\//.test(f.type||"")){ alert("Yalnız ses dosyası (mp3, m4a…)."); return; }
+  if(f.size > 15 * 1024 * 1024){ alert("Ses dosyası çok büyük — en fazla 15 MB."); return; }
+  // süre limiti (Storage maliyeti + davetiye deneyimi): 6 dk
+  try{
+    const sure = await new Promise(r=>{ const a=new Audio(); a.preload="metadata"; a.onloadedmetadata=()=>{ URL.revokeObjectURL(a.src); r(a.duration||0); }; a.onerror=()=>r(0); a.src=URL.createObjectURL(f); });
+    if(sure > 360){ alert("Müzik en fazla 6 dakika olabilir (şu an ~"+Math.round(sure/60)+" dk)."); return; }
+  }catch(e){}
   const lbl = $("muzikEkle"); const t0 = lbl.textContent; lbl.textContent = "yükleniyor…";
   try{
     await firebaseHazir();
