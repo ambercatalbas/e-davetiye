@@ -626,7 +626,10 @@
       <button class="btn" type="button" id="btnBaskiKart">🖨 Baskı kartı</button>
       <button class="btn" type="button" id="btnStory">◳ Story görseli</button>
       <button class="btn wa" type="button" id="btnPaketWa">WhatsApp</button>
+      <button class="btn" type="button" id="btnVideoDikey">🎬 Video (dikey)</button>
+      <button class="btn" type="button" id="btnVideoKare">🎬 Video (kare)</button>
     </div>
+    <div class="paket-qr" id="videoOnizle" style="display:none;margin-top:10px"></div>
     <p class="note" id="paketDurum" aria-live="polite" style="min-height:1.1em"></p>
     <p class="note"><b>Instagram story:</b> "Story görseli" ile 1080×1920 kapak inip telefona kaydolur; Instagram'da story olarak paylaşıp linki "bağlantı" etiketiyle ekleyebilirsin.</p>
   </div>
@@ -1799,6 +1802,86 @@ async function storyGorsel(){
     paketDurum("Story görseli indirildi (1080×1920).");
   }catch(e){ paketDurum("Story görseli oluşturulamadı."); console.error(e); }
 }
+
+/* ---- Video davetiye (#51) — MediaRecorder + canvas animasyonu ---- */
+function enIyiVideoMime(){
+  const adaylar = ['video/mp4;codecs=h264','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
+  for(const m of adaylar){ try{ if(window.MediaRecorder && MediaRecorder.isTypeSupported(m)) return m; }catch(e){} }
+  return 'video/webm';
+}
+async function videoOlustur(format){
+  if(!window.MediaRecorder){ paketDurum("Tarayıcı video kaydını desteklemiyor."); return; }
+  const btnD=$("btnVideoDikey"), btnK=$("btnVideoKare"); btnD.disabled=btnK.disabled=true;
+  paketDurum("Video hazırlanıyor… (~11 sn, sekmeyi açık tutun)");
+  try{
+    const W=1080, H = format==="kare" ? 1080 : 1920;
+    const c=document.createElement("canvas"); c.width=W; c.height=H; const g=c.getContext("2d");
+    const pal = { safak:["#2a3566","#0b1020"], gece:["#0A1230","#05070f"], luks:["#241c15","#000000"], yaz:["#0E6E78","#0a2f36"], botanik:["#1c4d34","#08160e"], pudra:["#3a1e2b","#120a0f"], modern:["#16294a","#070d16"], bohem:["#4a2f1f","#160d07"], cocuk:["#12384c","#06131b"], minimal:["#4a4a3d","#1a1a15"] }[val("selTema")] || ["#2a3566","#0b1020"];
+    const ust=(val("inUst").trim()||"DAVETLİSİNİZ").toUpperCase();
+    const baslik=val("inBaslik").trim()||"Davetiye";
+    const tarih = val("inTarih") ? tarihUzun(val("inTarih")) : "";
+    const premium = /Premium etkin/.test($("btnPremium").textContent);
+    // captureStream(0): kareleri requestFrame ile elle iteriz — bazı tarayıcılar
+    // arka-plan/headless bağlamda rAF'ı durdurur; setInterval + requestFrame her yerde çalışır.
+    const FPS=30;
+    let vstream = c.captureStream(0);
+    let vtrack = vstream.getVideoTracks()[0];
+    const elle = vtrack && typeof vtrack.requestFrame === "function";
+    if(!elle){ vstream = c.captureStream(FPS); vtrack = vstream.getVideoTracks()[0]; }
+    const tracks = [vtrack];
+    let audio=null;
+    const muzikUrl = (chk("chkMuzik") && chk("chkMuzikLisans")) ? val("inMuzikUrl") : "";
+    if(muzikUrl){ try{ audio=new Audio(muzikUrl); audio.crossOrigin="anonymous"; audio.loop=true;
+      const as = audio.captureStream ? audio.captureStream() : (audio.mozCaptureStream && audio.mozCaptureStream());
+      if(as) as.getAudioTracks().forEach(t=>tracks.push(t)); }catch(e){ audio=null; } }
+    const stream = new MediaStream(tracks);
+    const mime = enIyiVideoMime();
+    const rec = new MediaRecorder(stream, { mimeType:mime, videoBitsPerSecond: 8000000 });
+    const parcalar=[]; rec.ondataavailable=e=>{ if(e.data && e.data.size) parcalar.push(e.data); };
+    const bitti = new Promise(r=> rec.onstop=r);
+    const SURE=11000; const fy=H/1920;
+    function ciz(t){
+      const grad=g.createLinearGradient(0,0,0,H); grad.addColorStop(0,pal[0]); grad.addColorStop(1,pal[1]); g.fillStyle=grad; g.fillRect(0,0,W,H);
+      g.save(); for(let i=0;i<26;i++){ const x=(i*137.5)%W; const y=H-((t*40+i*90)%(H+120))+60; g.fillStyle="rgba(230,200,120,"+(0.08+0.09*Math.sin(t+i))+")"; g.beginPath(); g.arc(x,y,2.2,0,7); g.fill(); } g.restore();
+      const cx=W/2, fade=(a,b)=>Math.max(0,Math.min(1,(t-a)/(b-a))); g.textAlign="center";
+      g.strokeStyle="rgba(200,162,74,"+(0.5*fade(0.2,1))+")"; g.lineWidth=3; g.strokeRect(48,48,W-96,H-96);
+      g.save(); g.globalAlpha=fade(0.3,1.2); g.strokeStyle="#E7C060"; g.lineWidth=6;
+      const my=H*0.22; g.beginPath(); g.arc(cx,my,42,Math.PI,0); g.stroke();
+      for(let i=0;i<7;i++){ const a=Math.PI+(i+1)*(Math.PI/8); g.beginPath(); g.moveTo(cx+Math.cos(a)*56,my+Math.sin(a)*56); g.lineTo(cx+Math.cos(a)*78,my+Math.sin(a)*78); g.stroke(); } g.restore();
+      g.globalAlpha=fade(1,2); g.fillStyle="rgba(255,255,255,.72)"; g.font="600 "+Math.round(34)+"px Georgia, serif"; g.fillText(ust,cx,H*0.32);
+      const sc=1+0.03*Math.sin(t*1.2); g.globalAlpha=fade(1.6,2.6);
+      g.save(); g.translate(cx,H*0.42); g.scale(sc,sc); g.fillStyle="#fff";
+      let fs=Math.round(92*fy); g.font="italic "+fs+"px Georgia, serif"; while(fs>40 && g.measureText(baslik).width>W-200){ fs-=4; g.font="italic "+fs+"px Georgia, serif"; }
+      g.fillText(baslik,0,0); g.restore();
+      if(tarih){ g.globalAlpha=fade(2.6,3.6); g.fillStyle="rgba(255,255,255,.86)"; g.font="42px Georgia, serif"; g.fillText(tarih,cx,H*0.52); }
+      g.globalAlpha=fade(4,5); g.fillStyle="rgba(255,255,255,.92)"; g.font="600 40px Georgia, serif"; g.fillText("Sizi aramızda görmek isteriz", cx, H*0.63);
+      g.globalAlpha=fade(4.6,5.6); g.fillStyle="rgba(230,200,120,.95)"; g.font="32px Georgia, serif"; g.fillText("Detaylar & LCV için davetiyeye dokunun", cx, H*0.68);
+      if(!premium){ g.globalAlpha=0.6; g.fillStyle="rgba(255,255,255,.6)"; g.font="28px Georgia, serif"; g.fillText("e-davetiye ile hazırlandı", cx, H-90); }
+      g.globalAlpha=1;
+    }
+    ciz(0); if(elle) vtrack.requestFrame();           // ilk kareyi garanti et
+    rec.start(500);                                    // periyodik flush (boş blob'a karşı)
+    if(audio){ try{ await audio.play(); }catch(e){} }
+    const bas=performance.now();
+    const iv=setInterval(()=>{
+      const t=(performance.now()-bas)/1000;
+      ciz(t); if(elle) vtrack.requestFrame();
+    }, 1000/FPS);
+    setTimeout(()=>{ clearInterval(iv); try{ rec.stop(); }catch(e){} if(audio){ try{ audio.pause(); }catch(e){} } }, SURE);
+    await bitti;
+    const uzanti = mime.startsWith("video/mp4") ? "mp4" : "webm";
+    const blob = new Blob(parcalar, { type: mime.split(";")[0] });
+    if(!blob.size){ paketDurum("Video kaydı boş — tarayıcı desteklemiyor olabilir."); return; }
+    const url = URL.createObjectURL(blob);
+    const kutu=$("videoOnizle"); kutu.style.display=""; kutu.innerHTML="";
+    const v=document.createElement("video"); v.src=url; v.controls=true; v.playsInline=true; v.style.maxWidth="200px"; v.style.borderRadius="10px"; kutu.append(v);
+    indirURL(url, dosyaTaban()+"-video-"+format+"."+uzanti);
+    paketDurum("Video indirildi ("+format+", "+uzanti.toUpperCase()+", ~"+(Math.round(blob.size/1024/1024*10)/10)+"MB)"+(premium?"":" — filigranlı; Premium'da kalkar")+".");
+  }catch(e){ console.error(e); paketDurum("Video oluşturulamadı: "+(e.message||e)); }
+  finally{ btnD.disabled=btnK.disabled=false; }
+}
+$("btnVideoDikey").addEventListener("click", ()=>videoOlustur("dikey"));
+$("btnVideoKare").addEventListener("click", ()=>videoOlustur("kare"));
 
 $("btnPaket").addEventListener("click", paketAc);
 $("paketKapat").addEventListener("click", paketKapatFn);
