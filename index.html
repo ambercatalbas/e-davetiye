@@ -404,6 +404,15 @@
   .yayin-btn.canli { background:#C62828; color:#fff; border-color:transparent; }
   @keyframes yayinNabiz { 0%,100%{opacity:1} 50%{opacity:.55} }
   @media (prefers-reduced-motion: reduce){ .yayin-rozet{ animation:none } }
+  /* Arka plan müziği (#27) */
+  .muzik-btn { position:fixed; right:16px; bottom:16px; z-index:60; width:52px; height:52px; border-radius:50%;
+    border:0; background:var(--gold); color:#1a1205; cursor:pointer; box-shadow:0 10px 26px -12px var(--shadow);
+    display:grid; place-items:center; font-size:1.4rem; transition:transform .2s; }
+  .muzik-btn:hover { transform:translateY(-2px); }
+  .muzik-btn:focus-visible { outline:2px solid var(--coral); outline-offset:3px; }
+  .muzik-btn.calisiyor { animation:muzikNabiz 1.5s ease-in-out infinite; }
+  @keyframes muzikNabiz { 0%,100%{box-shadow:0 0 0 0 rgba(200,162,74,.5)} 50%{box-shadow:0 0 0 11px rgba(200,162,74,0)} }
+  @media (prefers-reduced-motion: reduce){ .muzik-btn.calisiyor{ animation:none } }
   /* Kişiye özel masa (#47) */
   .masa-blok { width:100%; display:flex; flex-direction:column; align-items:center; gap:6px;
     padding:16px; border:1px solid var(--hairline,rgba(127,127,127,.22)); border-radius:12px; }
@@ -946,19 +955,19 @@
     tr: { gun:"Gün", saat:"Saat", dakika:"Dakika", saniye:"Saniye", zamaniGeldi:"Zamanı geldi!",
           dokunun:"dokunun", ac:"Davetiyeyi Aç", ibanKopyala:"IBAN'ı kopyala", ibanKopyalandi:"Kopyalandı ✓",
           canliIzle:"Canlı İzle", canli:"CANLI YAYIN", yayinBasliyor:"Canlı yayın",
-          filigran:"E-Davetiye ile hazırlandı", odemeOk:"Ödeme alındı — filigran kaldırıldı ✓", masaniz:"Masanız", locale:"tr-TR" },
+          filigran:"E-Davetiye ile hazırlandı", odemeOk:"Ödeme alındı — filigran kaldırıldı ✓", masaniz:"Masanız", muzikCal:"Müziği çal", muzikSustur:"Müziği sustur", locale:"tr-TR" },
     en: { gun:"Days", saat:"Hours", dakika:"Minutes", saniye:"Seconds", zamaniGeldi:"It's time!",
           dokunun:"tap", ac:"Open Invitation", ibanKopyala:"Copy IBAN", ibanKopyalandi:"Copied ✓",
           canliIzle:"Watch Live", canli:"LIVE", yayinBasliyor:"Live stream",
-          filigran:"Made with E-Davetiye", odemeOk:"Payment received — watermark removed ✓", masaniz:"Your table", locale:"en-US" },
+          filigran:"Made with E-Davetiye", odemeOk:"Payment received — watermark removed ✓", masaniz:"Your table", muzikCal:"Play music", muzikSustur:"Mute music", locale:"en-US" },
     ru: { gun:"Дней", saat:"Часов", dakika:"Минут", saniye:"Секунд", zamaniGeldi:"Время пришло!",
           dokunun:"нажмите", ac:"Открыть приглашение", ibanKopyala:"Копировать IBAN", ibanKopyalandi:"Скопировано ✓",
           canliIzle:"Смотреть", canli:"ПРЯМОЙ ЭФИР", yayinBasliyor:"Трансляция",
-          filigran:"Сделано в E-Davetiye", odemeOk:"Оплата получена — водяной знак убран ✓", masaniz:"Ваш стол", locale:"ru-RU" },
+          filigran:"Сделано в E-Davetiye", odemeOk:"Оплата получена — водяной знак убран ✓", masaniz:"Ваш стол", muzikCal:"Включить музыку", muzikSustur:"Выключить музыку", locale:"ru-RU" },
     de: { gun:"Tage", saat:"Std.", dakika:"Min.", saniye:"Sek.", zamaniGeldi:"Es ist soweit!",
           dokunun:"tippen", ac:"Einladung öffnen", ibanKopyala:"IBAN kopieren", ibanKopyalandi:"Kopiert ✓",
           canliIzle:"Live ansehen", canli:"LIVE", yayinBasliyor:"Livestream",
-          filigran:"Erstellt mit E-Davetiye", odemeOk:"Zahlung erhalten — Wasserzeichen entfernt ✓", masaniz:"Ihr Tisch", locale:"de-DE" }
+          filigran:"Erstellt mit E-Davetiye", odemeOk:"Zahlung erhalten — Wasserzeichen entfernt ✓", masaniz:"Ihr Tisch", muzikCal:"Musik abspielen", muzikSustur:"Musik stumm", locale:"de-DE" }
   };
   const dilSoz = cfg => SOZLUK[cfg && cfg.dil] || SOZLUK.tr;
 
@@ -1346,9 +1355,31 @@
     const kok = olustur(cfg);
     mount.append(kok);
     if (cfg.kapak) kapakGoster(cfg);
+    muzikKur(cfg);
     document.title = cfg.belgeBaslik || cfg.baslik || "Davetiye";
     if (yazdir) setTimeout(() => { try { window.print(); } catch (e) {} }, 900);
     return kok;
+  }
+
+  // Arka plan müziği (#27) — yüzen çal/sustur; VARSAYILAN SESSİZ (otomatik çalmaz).
+  let _muzikSes = null;
+  function muzikKur(cfg) {
+    if (_muzikSes) { try { _muzikSes.pause(); } catch (e) {} _muzikSes = null; }
+    const eski = document.getElementById("muzikBtn"); if (eski) eski.remove();
+    if (!cfg || !cfg.muzik || !cfg.muzik.url || yazdir) return;
+    const D = dilSoz(cfg);
+    const audio = new Audio(cfg.muzik.url); audio.loop = true; audio.preload = "none";
+    _muzikSes = audio;
+    const btn = el("button", "muzik-btn"); btn.id = "muzikBtn"; btn.type = "button";
+    btn.setAttribute("aria-label", D.muzikCal || "Müziği çal");
+    btn.title = cfg.muzik.ad || (D.muzikCal || "Müzik");
+    btn.innerHTML = "<span class='muzik-ikon' aria-hidden='true'>♪</span>";
+    let caliyor = false;
+    btn.addEventListener("click", () => {
+      if (caliyor) { audio.pause(); caliyor = false; btn.classList.remove("calisiyor"); btn.setAttribute("aria-label", D.muzikCal || "Müziği çal"); }
+      else { audio.play().then(() => { caliyor = true; btn.classList.add("calisiyor"); btn.setAttribute("aria-label", D.muzikSustur || "Müziği sustur"); }).catch(() => {}); }
+    });
+    document.body.append(btn);
   }
 
   if (inviteId || slug) {
