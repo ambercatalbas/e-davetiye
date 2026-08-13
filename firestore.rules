@@ -15,9 +15,14 @@ service cloud.firestore {
     match /invitations/{inviteId} {
       allow get: if true;
       allow list: if false;
+      // premium YALNIZ sunucu (Cloud Functions admin) tarafından yazılır; istemci veremez.
       allow create: if request.auth != null
-                    && request.resource.data.ownerUid == request.auth.uid;
-      allow update, delete: if request.auth != null
+                    && request.resource.data.ownerUid == request.auth.uid
+                    && request.resource.data.get('premium', false) == false;
+      allow update: if request.auth != null
+                    && resource.data.ownerUid == request.auth.uid
+                    && request.resource.data.get('premium', false) == resource.data.get('premium', false);
+      allow delete: if request.auth != null
                     && resource.data.ownerUid == request.auth.uid;
 
       match /rsvps/{rsvpId} {

@@ -404,6 +404,17 @@
   .yayin-btn.canli { background:#C62828; color:#fff; border-color:transparent; }
   @keyframes yayinNabiz { 0%,100%{opacity:1} 50%{opacity:.55} }
   @media (prefers-reduced-motion: reduce){ .yayin-rozet{ animation:none } }
+  /* Ücretsiz filigran (premium kaldırır) */
+  .filigran { display:block; text-align:center; margin:24px auto 6px; font-family:var(--f-sans);
+    font-size:.72rem; letter-spacing:.1em; color:var(--ink-soft); text-decoration:none; opacity:.8; }
+  .filigran::before { content:"✦"; color:var(--gold); margin-right:6px; }
+  .filigran:hover { opacity:1; }
+  /* Ödeme bildirimi */
+  .odeme-tost { position:fixed; left:50%; bottom:24px; transform:translate(-50%,20px); z-index:80;
+    background:var(--gold); color:#1a1205; font-family:var(--f-sans); font-size:.86rem; font-weight:600;
+    padding:12px 20px; border-radius:30px; box-shadow:0 14px 34px -16px var(--shadow);
+    opacity:0; transition:opacity .35s, transform .35s; }
+  .odeme-tost.gorunur { opacity:1; transform:translate(-50%,0); }
 
   /* Hediye / dilek listesi (IBAN, liste, not) */
   .hediye-blok { width:100%; display:flex; flex-direction:column; align-items:center; gap:14px; }
@@ -930,16 +941,20 @@
   const SOZLUK = {
     tr: { gun:"Gün", saat:"Saat", dakika:"Dakika", saniye:"Saniye", zamaniGeldi:"Zamanı geldi!",
           dokunun:"dokunun", ac:"Davetiyeyi Aç", ibanKopyala:"IBAN'ı kopyala", ibanKopyalandi:"Kopyalandı ✓",
-          canliIzle:"Canlı İzle", canli:"CANLI YAYIN", yayinBasliyor:"Canlı yayın", locale:"tr-TR" },
+          canliIzle:"Canlı İzle", canli:"CANLI YAYIN", yayinBasliyor:"Canlı yayın",
+          filigran:"E-Davetiye ile hazırlandı", odemeOk:"Ödeme alındı — filigran kaldırıldı ✓", locale:"tr-TR" },
     en: { gun:"Days", saat:"Hours", dakika:"Minutes", saniye:"Seconds", zamaniGeldi:"It's time!",
           dokunun:"tap", ac:"Open Invitation", ibanKopyala:"Copy IBAN", ibanKopyalandi:"Copied ✓",
-          canliIzle:"Watch Live", canli:"LIVE", yayinBasliyor:"Live stream", locale:"en-US" },
+          canliIzle:"Watch Live", canli:"LIVE", yayinBasliyor:"Live stream",
+          filigran:"Made with E-Davetiye", odemeOk:"Payment received — watermark removed ✓", locale:"en-US" },
     ru: { gun:"Дней", saat:"Часов", dakika:"Минут", saniye:"Секунд", zamaniGeldi:"Время пришло!",
           dokunun:"нажмите", ac:"Открыть приглашение", ibanKopyala:"Копировать IBAN", ibanKopyalandi:"Скопировано ✓",
-          canliIzle:"Смотреть", canli:"ПРЯМОЙ ЭФИР", yayinBasliyor:"Трансляция", locale:"ru-RU" },
+          canliIzle:"Смотреть", canli:"ПРЯМОЙ ЭФИР", yayinBasliyor:"Трансляция",
+          filigran:"Сделано в E-Davetiye", odemeOk:"Оплата получена — водяной знак убран ✓", locale:"ru-RU" },
     de: { gun:"Tage", saat:"Std.", dakika:"Min.", saniye:"Sek.", zamaniGeldi:"Es ist soweit!",
           dokunun:"tippen", ac:"Einladung öffnen", ibanKopyala:"IBAN kopieren", ibanKopyalandi:"Kopiert ✓",
-          canliIzle:"Live ansehen", canli:"LIVE", yayinBasliyor:"Livestream", locale:"de-DE" }
+          canliIzle:"Live ansehen", canli:"LIVE", yayinBasliyor:"Livestream",
+          filigran:"Erstellt mit E-Davetiye", odemeOk:"Zahlung erhalten — Wasserzeichen entfernt ✓", locale:"de-DE" }
   };
   const dilSoz = cfg => SOZLUK[cfg && cfg.dil] || SOZLUK.tr;
 
@@ -1290,6 +1305,23 @@
     return cfg;
   }
 
+  // Ücretsiz davetiye filigranı — premium (ödeme) kaldırır.
+  function filigranEl(cfg) {
+    const D = dilSoz(cfg);
+    const a = el("a", "filigran", (D.filigran || "E-Davetiye ile hazırlandı"));
+    a.href = "https://ambercatalbas.github.io/e-davetiye/";
+    a.target = "_blank"; a.rel = "noopener";
+    return a;
+  }
+  // Ödeme sonrası bildirim.
+  function odemeTosti(cfg) {
+    const D = dilSoz(cfg);
+    const t = el("div", "odeme-tost", (D.odemeOk || "Ödeme alındı — filigran kaldırıldı ✓"));
+    document.body.append(t);
+    setTimeout(() => { t.classList.add("gorunur"); }, 60);
+    setTimeout(() => { t.classList.remove("gorunur"); setTimeout(() => t.remove(), 400); }, 4200);
+  }
+
   // Ortak render: tema uygula, kartı bas, kapağı göster. lcv:true ise sahte
   // RSVP butonlarını kaldırır (gerçek LCV formu ayrıca eklenecek).
   function goster(cfg, opts) {
@@ -1336,6 +1368,8 @@
         const data = snap.data();
         const cfg = kisisellestir(data.cfg || data);
         const kok = goster(cfg, { lcv: true });
+        if (!data.premium) kok.append(filigranEl(cfg));   // ücretsiz: filigran (premium kaldırır)
+        else if (_p.get("odeme") === "ok") odemeTosti(cfg);
         const { lcvBaslat } = await import("./firebase/lcv.js");
         const lcvMount = el("div", "lcv-mount");
         kok.append(lcvMount);

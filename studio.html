@@ -537,6 +537,7 @@
         </div>
         <button class="btn block" type="button" id="btnPaket" style="margin-top:8px">🎁 Paylaşım Paketi — QR · Story · Baskı</button>
         <button class="btn block" type="button" id="btnDavetliListe" style="margin-top:8px">👥 Davetli Listesi — kişiye özel link &amp; takip</button>
+        <button class="btn block" type="button" id="btnPremium" style="margin-top:8px">✦ Filigranı Kaldır — Premium (99,90 ₺)</button>
         <details class="share-quick" id="kisiselBox">
           <summary>Kişiye özel davet linki</summary>
           <p class="note" style="margin-top:10px">Her davetliye ismiyle hitap eden ayrı bir link üretin — davetiye <b>“Sevgili …”</b> diye açılır, LCV adı hazır gelir, yanıt kişiyle eşleşir.</p>
@@ -1292,10 +1293,15 @@ async function yayinla(){
   b.disabled = true; b.textContent = "Yayınlanıyor…";
   try{
     await firebaseHazir();
-    const { doc, setDoc, addDoc, collection, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
+    const { doc, setDoc, addDoc, getDoc, collection, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
     const veri = { ownerUid: _auth.currentUser.uid, cfg: cfgKur(), createdAt: serverTimestamp() };
     let id = localStorage.getItem(YAYIN_ANAHTAR);
-    if(id){ await setDoc(doc(_db,"invitations",id), veri); }
+    if(id){
+      // Yeniden yayınlarken premium'u koru (setDoc tüm dokümanı ezer)
+      try{ const eski = await getDoc(doc(_db,"invitations",id));
+        if(eski.exists() && eski.data().premium){ veri.premium = true; if(eski.data().premiumAt) veri.premiumAt = eski.data().premiumAt; } }catch(e){}
+      await setDoc(doc(_db,"invitations",id), veri);
+    }
     else { const ref = await addDoc(collection(_db,"invitations"), veri); id = ref.id; localStorage.setItem(YAYIN_ANAHTAR, id); }
     // Özel link (slug) — verildiyse slugs/{slug} = {inviteId} (benzersiz; başkasınınki alınamaz)
     let paylasLink = idLinki(id), slugKullanildi = "";
@@ -1309,6 +1315,7 @@ async function yayinla(){
     $("outIdLink").value = paylasLink;
     $("btnYanit").href = yanitLinki(id);
     $("yayinSonuc").style.display = "";
+    premiumDurumGuncelle();
     const ozet = { baslik: (val("inBaslik").trim() || "Adsız davetiye"), tur: val("selTur"), hero: _fotoHero || "", slug: slugKullanildi };
     listeUpsert(Object.assign({ id, guncelleme: Date.now() }, ozet));
     // Hesaba (uid) bağla — cihazlar arası "Davetiyelerim" için
@@ -1342,6 +1349,7 @@ $("btnWaId").addEventListener("click", ()=>{
     $("outIdLink").value = idLinki(id);
     $("btnYanit").href = yanitLinki(id);
     $("yayinSonuc").style.display = "";
+    premiumDurumGuncelle();
   }
 })();
 
@@ -1503,7 +1511,7 @@ async function davetiyeDuzenle(id, tur){
     const rec = listeAl().find(x=>x.id===id); setVal("inSlug", (rec && rec.slug) || "");
     localStorage.setItem(YAYIN_ANAHTAR, id);
     $("btnYayinla").textContent = "Güncelle & Yeniden Yayınla";
-    $("outIdLink").value = idLinki(id); $("btnYanit").href = yanitLinki(id); $("yayinSonuc").style.display = "";
+    $("outIdLink").value = idLinki(id); $("btnYanit").href = yanitLinki(id); $("yayinSonuc").style.display = ""; premiumDurumGuncelle();
     kaydet(); onizle(); davetlerimKapat();
     window.scrollTo({top:0, behavior:"smooth"});
   }catch(e){ console.error(e); alert("Yüklenemedi: "+(e.code||e.message||"")); }
@@ -1870,6 +1878,39 @@ $("btnDavetliListe").addEventListener("click", davetliAc);
 $("davetliKapat").addEventListener("click", davetliKapatFn);
 $("davetliArka").addEventListener("click", davetliKapatFn);
 document.addEventListener("keydown", e=>{ if(e.key==="Escape" && !$("davetliModal").hidden) davetliKapatFn(); });
+
+/* ---- Premium / filigran kaldırma (#33 — iyzico) ---- */
+const ODEME_FN = "https://us-central1-e-davetiye-94b6b.cloudfunctions.net/odemeBaslat";
+async function premiumDurumGuncelle(){
+  const btn = $("btnPremium"); if(!btn) return;
+  const id = localStorage.getItem(YAYIN_ANAHTAR);
+  if(!id){ btn.style.display = "none"; return; }
+  btn.style.display = "";
+  try{
+    await firebaseHazir();
+    const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
+    const s = await getDoc(doc(_db,"invitations",id));
+    if(s.exists() && s.data().premium){ btn.textContent = "✦ Premium etkin — filigransız ✓"; btn.disabled = true; btn.style.opacity = ".75"; }
+    else { btn.textContent = "✦ Filigranı Kaldır — Premium (99,90 ₺)"; btn.disabled = false; btn.style.opacity = ""; }
+  }catch(e){ /* sessiz */ }
+}
+$("btnPremium").addEventListener("click", async ()=>{
+  const id = localStorage.getItem(YAYIN_ANAHTAR);
+  if(!id){ alert("Önce davetiyeyi yayınlayın."); return; }
+  const btn = $("btnPremium"); const t0 = btn.textContent;
+  btn.disabled = true; btn.textContent = "Ödeme başlatılıyor…";
+  try{
+    const r = await fetch(ODEME_FN, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ inviteId: id }) });
+    const j = await r.json();
+    if(j.paymentPageUrl){
+      window.open(j.paymentPageUrl, "_blank", "noopener");
+      btn.textContent = "Ödeme sekmesi açıldı — tamamlayıp bu sayfayı yenileyin";
+    } else {
+      alert("Ödeme başlatılamadı: " + (j.detay || j.hata || "bilinmeyen"));
+      btn.disabled = false; btn.textContent = t0;
+    }
+  }catch(e){ alert("Ödeme hatası: " + e.message); btn.disabled = false; btn.textContent = t0; }
+});
 
 /* ---- Başlat ---- */
 temaCiz();
