@@ -50,10 +50,22 @@
   footer a{color:inherit;}
   ul{padding-left:1.1em;color:var(--soft);}
   li{margin:5px 0;}
+  .geri{display:inline-flex;align-items:center;gap:5px;min-height:44px;margin-bottom:20px;padding:9px 15px 9px 11px;
+    font-family:var(--f-sans);font-size:.86rem;font-weight:600;color:var(--ink);background:var(--panel);
+    border:1px solid var(--hair);border-radius:12px;text-decoration:none;-webkit-tap-highlight-color:transparent;
+    transition:border-color .15s,background .15s,transform .12s;}
+  .geri svg{flex:none;margin-left:-1px;color:var(--gold);}
+  .geri:hover{border-color:var(--gold);}
+  .geri:active{transform:translateY(1px);}
+  .geri:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
 </style>
 </head>
 <body>
 <main class="wrap">
+  <a class="geri" href="./studio.html" aria-label="Studio'ya dön">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    Studio
+  </a>
   <p class="ust">E-Davetiye</p>
   <h1>Destek &amp; Yardım</h1>
   <p class="alt">Dijital davetiyenizi oluştururken, paylaşırken veya katılım (LCV) toplarken yardıma mı ihtiyacınız var? Yanıtları burada bulun ya da bize yazın.</p>

@@ -32,8 +32,14 @@
   .brand{display:flex;flex-direction:column;line-height:1;margin-right:auto;}
   .brand b{font-family:var(--f-serif);font-weight:500;font-size:1.12rem;}
   .brand small{font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-top:3px;}
-  .lnk{font-size:.78rem;font-weight:600;color:var(--gold);text-decoration:none;border:1px solid var(--hair);
-    border-radius:7px;padding:9px 12px;}
+  .geri{display:inline-flex;align-items:center;gap:5px;min-height:42px;padding:8px 14px 8px 10px;
+    font-family:var(--f-sans);font-size:.84rem;font-weight:600;color:var(--ink);background:var(--panel);
+    border:1px solid var(--hair);border-radius:11px;text-decoration:none;-webkit-tap-highlight-color:transparent;
+    transition:border-color .15s,background .15s,transform .12s;}
+  .geri svg{flex:none;margin-left:-1px;color:var(--gold);}
+  .geri:hover{border-color:var(--gold);background:var(--panel-2);}
+  .geri:active{transform:translateY(1px);}
+  .geri:focus-visible{outline:2px solid var(--coral);outline-offset:2px;}
   .wrap{max-width:860px;margin:0 auto;padding:clamp(16px,3vw,30px);}
   h1{font-family:var(--f-serif);font-weight:500;font-size:clamp(1.5rem,4vw,2rem);margin:0 0 4px;}
   .alt{color:var(--soft);font-size:.9rem;margin:0 0 22px;}
@@ -68,7 +74,10 @@
 <body>
 <header class="bar">
   <div class="brand"><b>E-Davetiye</b><small>Yanıtlar</small></div>
-  <a class="lnk" href="studio.html">← Studio</a>
+  <a class="geri" href="studio.html" aria-label="Studio'ya dön">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    Studio
+  </a>
 </header>
 <div class="wrap">
   <h1 id="baslik">Yanıtlar</h1>
