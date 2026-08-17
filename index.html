@@ -471,6 +471,11 @@
            font-family:var(--f-serif); font-size:1.02rem; color:var(--ink); margin:0; }
   .yanit.gorunur { opacity:1; transform:none; }
 
+  /* "Güncellendi" notu — yayın sonrası düzenlenmiş davetiyelerde (?id=) */
+  .guncell-not { width:100%; text-align:center; font-family:var(--f-sans); font-size:.68rem;
+                 letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft);
+                 opacity:.85; margin:18px 0 2px; }
+
   /* LCV formu (Firestore — ?id= davetiyelerinde) */
   .lcv-mount { width:100%; display:flex; justify-content:center; }
   .lcv-blok { width:100%; max-width:360px; display:flex; flex-direction:column; align-items:center; gap:12px; }
@@ -1412,6 +1417,19 @@
         const data = snap.data();
         const cfg = kisisellestir(data.cfg || data);
         const kok = goster(cfg, { lcv: true });
+        // "Güncellendi" notu: davetiye yayından sonra düzenlenip yeniden yayınlandıysa,
+        // geri dönen davetli değişikliği fark etsin (?id= linki canlı okur).
+        if (data.guncellendiAt && typeof data.guncellendiAt.toDate === "function") {
+          try {
+            const _gd = data.guncellendiAt.toDate();
+            const _dil = cfg.dil || "tr";
+            const _lbl = ({ tr:"Güncellendi", en:"Updated", ru:"Обновлено", de:"Aktualisiert",
+                            fr:"Mis à jour", es:"Actualizado", it:"Aggiornato", pt:"Atualizado",
+                            ar:"محدّث", az:"Yeniləndi", uz:"Yangilandi" })[_dil] || "Updated";
+            const _tarih = _gd.toLocaleDateString(_dil, { day:"numeric", month:"long" });
+            kok.append(el("div", "guncell-not", "↻ " + _lbl + " · " + _tarih));
+          } catch (e) {}
+        }
         if (konuk && data.masaPlani && data.masaPlani[konuk]) kok.append(masaEl(cfg, data.masaPlani[konuk])); // #47 kişiye özel masa
         if (!data.premium) kok.append(filigranEl(cfg));   // ücretsiz: filigran (premium kaldırır)
         else if (_p.get("odeme") === "ok") odemeTosti(cfg);
