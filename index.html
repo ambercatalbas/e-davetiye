@@ -556,6 +556,95 @@
   @keyframes kapakGir { from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:none} }
   @keyframes kapakNabiz { 0%,100%{opacity:.45} 50%{opacity:1} }
 
+  /* ---- Zarf açılışı (kapak.stil = "zarf") -------------------------------
+     Perde varyantıyla aynı .kapak katmanını kullanır; içerik yerine 3B bir
+     zarf çizer. Kapak rotateX ile üstten açılır, kart içinden süzülür.
+     prefers-reduced-motion: JS animasyonu hiç başlatmaz, kartı doğrudan açar. */
+  .kapak.zarf .kapak-ic { gap:clamp(18px,4vw,26px); }
+  .zarf-sahne { perspective:1100px; perspective-origin:50% 30%; }
+  .zarf-kutu {
+    position:relative; width:clamp(258px,76vw,340px); aspect-ratio:3/2;
+    transform-style:preserve-3d; transition:transform .6s cubic-bezier(.3,.8,.3,1), opacity .5s ease;
+  }
+  .zarf-kutu > * { position:absolute; inset:0; }
+
+  /* Gövde (arka yüz) */
+  .zarf-arka {
+    background:linear-gradient(160deg, var(--kart,#fff), color-mix(in srgb, var(--gold) 8%, var(--kart,#fff)));
+    border:1px solid var(--hairline); border-radius:6px;
+  }
+  /* Ön cep — üst kenarı V şeklinde; kartın önünde durur */
+  .zarf-on {
+    /* z-index 4: yan kapaklarin (3) ustunde, ust kapagin (5) altinda */
+    background:linear-gradient(180deg, color-mix(in srgb, var(--gold) 14%, var(--kart,#fff)), var(--kart,#fff));
+    border-radius:0 0 6px 6px; z-index:4;
+    clip-path:polygon(0 28%, 50% 76%, 100% 28%, 100% 100%, 0 100%);
+    box-shadow:0 -1px 0 var(--hairline) inset;
+  }
+  /* Yan kapaklar — kartı yanlardan örter; üst kapağın altında kalır */
+  .zarf-sol, .zarf-sag {
+    z-index:3; background:linear-gradient(120deg, color-mix(in srgb, var(--gold) 12%, var(--kart,#fff)), var(--kart,#fff));
+  }
+  .zarf-sol { clip-path:polygon(0 0, 0 100%, 54% 50%); }
+  .zarf-sag { clip-path:polygon(100% 0, 100% 100%, 46% 50%); }
+
+  /* Kart — zarfın içinden yukarı süzülür */
+  .zarf-kart {
+    top:7%; bottom:auto; left:7%; right:7%; height:86%;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:clamp(8px,2vw,12px); text-align:center; padding:clamp(14px,4vw,20px);
+    background:var(--kart,#fff); border:1px solid var(--hairline); border-radius:4px;
+    box-shadow:0 10px 26px rgba(0,0,0,.16); z-index:2;
+    transform:translateY(0); transition:transform .85s cubic-bezier(.25,.9,.3,1);
+  }
+  .zarf-kart .orn svg { width:clamp(34px,9vw,46px); }
+  .zarf-ust { font-family:var(--f-sans); font-size:.6rem; letter-spacing:.28em;
+              text-transform:uppercase; color:var(--gold); margin:0; }
+  .zarf-isim { font-family:var(--f-script); font-size:clamp(1.5rem,6vw,2.1rem);
+               color:var(--ink); margin:0; line-height:1.1; }
+  .zarf-cizgi { width:52px; height:1px; background:var(--hairline); }
+
+  /* Üst kapak — açılan parça */
+  .zarf-kapak {
+    bottom:auto; height:88%; z-index:5; transform-origin:50% 0;
+    transform:rotateX(0deg); transform-style:preserve-3d;
+    transition:transform .9s cubic-bezier(.4,.05,.25,1);
+    background:linear-gradient(180deg, color-mix(in srgb, var(--gold) 22%, var(--kart,#fff)), color-mix(in srgb, var(--gold) 10%, var(--kart,#fff)));
+    clip-path:polygon(0 0, 100% 0, 50% 100%);
+    filter:drop-shadow(0 2px 3px rgba(0,0,0,.10));
+  }
+  /* Mühür — kapağın ucunda, kapakla birlikte döner */
+  .zarf-muhur {
+    position:absolute; left:50%; top:62%; transform:translate(-50%,-50%);
+    width:clamp(38px,10vw,48px); aspect-ratio:1; border-radius:50%;
+    display:grid; place-items:center;
+    background:radial-gradient(circle at 35% 30%, var(--gold-bright), var(--gold));
+    color:var(--on-gold); font-family:var(--f-sans); font-size:.62rem;
+    font-weight:700; letter-spacing:.08em;
+    box-shadow:0 2px 6px rgba(0,0,0,.25); transition:opacity .3s ease .15s;
+  }
+
+  /* Açılış */
+  .kapak.zarf.acilliyor .zarf-kapak { transform:rotateX(-172deg); }
+  .kapak.zarf.acilliyor .zarf-muhur { opacity:0; }
+  .kapak.zarf.acilliyor .zarf-kart  { transform:translateY(-62%); }
+  .kapak.zarf.acilliyor .zarf-kutu  { transform:scale(1.06) translateY(6%); }
+  /* Çıkış: sahne büyüyerek söner — "kartın içine giriliyor" hissi.
+     Perde varyantının yukarı kayması zarf için kapalı. */
+  .kapak.zarf.acildi { opacity:0; transform:none; transition:opacity .55s ease; }
+  .kapak.zarf.acildi .zarf-kutu { transform:scale(1.85) translateY(-14%); }
+  /* Kartın yazısı önce söner: büyürken alttaki davetiyenin metniyle
+     üst üste binip okunaksız görünmesin. */
+  .kapak.zarf.acildi .zarf-kart > * { opacity:0; transition:opacity .3s ease; }
+  .kapak.zarf.acildi .kapak-buton,
+  .kapak.zarf.acildi .kapak-ipucu { opacity:0; transition:opacity .25s ease; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .zarf-kutu, .zarf-kart, .zarf-kapak, .zarf-muhur { transition:none; }
+    .kapak-ic { animation:none; }
+    .kapak-ipucu { animation:none; }
+  }
+
   /* Erişilebilirlik: hareketi azalt */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -912,6 +1001,19 @@
     </svg>`;
   }
 
+  // Mühür yazısı: "Ayşe & Mehmet" → "A & M"; tek kelimede ilk harf.
+  // Zaten kısa bir mühür verilmişse (≤4 karakter) olduğu gibi kullanılır.
+  function bashHarfler(metin) {
+    const t = String(metin || "").trim();
+    if (!t) return "";
+    if (t.length <= 4) return t.toUpperCase();
+    const parcalar = t.split(/\s*[&+·]\s*/).filter(Boolean);
+    if (parcalar.length >= 2) {
+      return parcalar.slice(0, 2).map(x => (x.trim()[0] || "").toUpperCase()).join(" & ");
+    }
+    return (t[0] || "").toUpperCase();
+  }
+
   const azHareket = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function hedefTarih(z) {
@@ -1260,15 +1362,45 @@
     const D = dilSoz(cfg);
     // Dış katman yalnız fare kolaylığı için tıklanabilir; erişilebilir kontrol iç butondur
     // (iç içe interaktif öğe olmaması için dış div'e role/tabindex verilmez).
-    const kapak = el("div", "kapak");
+    const zarfMi = k.stil === "zarf";
+    const kapak = el("div", "kapak" + (zarfMi ? " zarf" : ""));
     const ic = el("div", "kapak-ic");
     const tepe = cfg.tepeSusu || "gunes";
-    ic.append(el("div", "orn " + tepe, ORN[tepe] || ORN.gunes));
     const ust = k.ustBaslik || cfg.ustBaslik;
-    if (ust) ic.append(el("p", "kapak-ust", ust));
     const isim = k.isim || cfg.imzaKurum || cfg.alici;
-    if (isim) ic.append(el("p", "kapak-isim", isim));
-    ic.append(el("div", "kapak-cizgi"));
+
+    if (zarfMi) {
+      // Zarf: gövde + ön cep + içindeki kart + açılan üst kapak (mühürlü).
+      const sahne = el("div", "zarf-sahne");
+      const kutu = el("div", "zarf-kutu");
+      kutu.append(el("div", "zarf-arka"));
+
+      const kart = el("div", "zarf-kart");
+      kart.append(el("div", "orn " + tepe, ORN[tepe] || ORN.gunes));
+      if (ust) kart.append(el("p", "zarf-ust", ust));
+      if (isim) kart.append(el("p", "zarf-isim", isim));
+      kart.append(el("div", "zarf-cizgi"));
+      kutu.append(kart);
+
+      kutu.append(el("div", "zarf-sol"));
+      kutu.append(el("div", "zarf-sag"));
+      kutu.append(el("div", "zarf-on"));
+
+      const kpk = el("div", "zarf-kapak");
+      // Mühür yazısı: muhurYazi'nın baş harfleri, yoksa isimden türet.
+      const muhur = bashHarfler(cfg.muhurYazi || isim || "");
+      if (muhur) kpk.append(el("div", "zarf-muhur", muhur));
+      kutu.append(kpk);
+
+      sahne.append(kutu);
+      ic.append(sahne);
+    } else {
+      ic.append(el("div", "orn " + tepe, ORN[tepe] || ORN.gunes));
+      if (ust) ic.append(el("p", "kapak-ust", ust));
+      if (isim) ic.append(el("p", "kapak-isim", isim));
+      ic.append(el("div", "kapak-cizgi"));
+    }
+
     const btn = el("button", "kapak-buton", k.buton || D.ac);
     btn.type = "button";
     ic.append(btn);
@@ -1284,8 +1416,16 @@
     function ac() {
       if (acildi) return; acildi = true;
       document.body.style.overflow = "";
-      kapak.classList.add("acildi");
-      setTimeout(() => kapak.remove(), azHareket() ? 0 : 1000);
+      if (azHareket()) { kapak.remove(); return; }   // hareket azaltma: doğrudan karta
+      if (zarfMi) {
+        // Önce zarf açılır (kapak döner, kart süzülür), sonra katman söner.
+        kapak.classList.add("acilliyor");
+        setTimeout(() => kapak.classList.add("acildi"), 1150);
+        setTimeout(() => kapak.remove(), 1750);
+      } else {
+        kapak.classList.add("acildi");
+        setTimeout(() => kapak.remove(), 1000);
+      }
     }
     kapak.addEventListener("click", ac);       // fare: kapağın herhangi yerine tıkla
     btn.addEventListener("click", ac);          // klavye/SR: iç buton (Enter/Space) → aç
