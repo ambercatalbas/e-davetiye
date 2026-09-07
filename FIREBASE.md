@@ -38,7 +38,7 @@ invitations/{id}/rsvps/{rid}
 Şu an link tüm veriyi URL'e gömüyor (`#i=`). LCV için link, Firestore'daki davetiyeyi işaret etmeli:
 
 ```
-https://ambercatalbas.github.io/e-davetiye/?id=<inviteId>
+https://davet.ambersf.com/?id=<inviteId>
 ```
 - Web sayfası `?id=` ile davetiyeyi Firestore'dan çeker, render eder ve altına **LCV formunu** koyar (`firebase/lcv.js`).
 - Uygulamalar "Kaydet" anında davetiyeyi Firestore'a yazıp `id` alır; paylaş linki bu `id`yi taşır.

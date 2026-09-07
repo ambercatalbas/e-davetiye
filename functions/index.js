@@ -27,7 +27,7 @@ const iyzipay = new Iyzipay(IYZICO);
 const PROJE = process.env.GCLOUD_PROJECT || "e-davetiye-94b6b";
 const BOLGE = "us-central1";
 const CALLBACK_URL = `https://${BOLGE}-${PROJE}.cloudfunctions.net/odemeCallback`;
-const SITE = "https://ambercatalbas.github.io/e-davetiye";
+const SITE = "https://davet.ambersf.com";
 const FIYAT = "99.90"; // premium (filigran kaldırma) — TL
 
 function cors(res) {

@@ -34,7 +34,7 @@ Bu plan üç şeyi hedefler:
 
 ### 2.1 Mimari
 - **Web motoru:** `index.html` (tek dosya, harici bağımlılık yok), GitHub Pages'te yayında
-  (`ambercatalbas.github.io/e-davetiye`). İçerik `DAVETIYELER` objesinden (`?d=slug`)
+  (`davet.ambersf.com`). İçerik `DAVETIYELER` objesinden (`?d=slug`)
   ya da mobilden gelen `#i=<base64url(JSON)>` hash'inden gelir.
 - **iOS:** SwiftUI, iOS 17+, yerel depolama (`UserDefaults`), QR + link + WhatsApp paylaşımı.
 - **Android:** Jetpack Compose, iOS ile eşdeğer; yerel depolama, ZXing QR.

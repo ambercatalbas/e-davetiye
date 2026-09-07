@@ -30,7 +30,7 @@ Hızlı filtreler: `label:priority:P0` · `milestone:"Faz 1 — Satılabilir Çe
 ## Davetiye Studio
 
 Kod yazmadan davetiye oluşturmak için canlı Studio'yu açın:
-https://ambercatalbas.github.io/e-davetiye/studio.html
+https://davet.ambersf.com/studio.html
 
 - JSON tabanlı şablon galerisi (`templates.json`), arama ve tür/renk/paket filtreleri
 - Cihazda kalıcı favoriler ve “Bu şablonu kullan” akışı
@@ -52,9 +52,9 @@ Site GitHub Pages'te yayında (giriş gerektirmez, doğrudan paylaşılabilir):
 
 | Davetiye | Kim | Tarih | Link |
 |----------|-----|-------|------|
-| Kahvaltı (şaka) | Şifa | Her sabah 10.00 | https://ambercatalbas.github.io/e-davetiye/ |
-| Yaz Tatili | Eren & Yasemin | 9 Ağustos | https://ambercatalbas.github.io/e-davetiye/?d=eren |
-| Yaz Tatili | Yasin & Tuba + çocuklar | 25 Ağustos | https://ambercatalbas.github.io/e-davetiye/?d=yasin |
+| Kahvaltı (şaka) | Şifa | Her sabah 10.00 | https://davet.ambersf.com/ |
+| Yaz Tatili | Eren & Yasemin | 9 Ağustos | https://davet.ambersf.com/?d=eren |
+| Yaz Tatili | Yasin & Tuba + çocuklar | 25 Ağustos | https://davet.ambersf.com/?d=yasin |
 
 ## Dokuz tema
 

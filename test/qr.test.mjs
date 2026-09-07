@@ -39,7 +39,7 @@ test("zamanlama (timing) deseni 6. satırda değişimli", () => {
 
 test("daha uzun girdi daha büyük sürüm üretir", () => {
   const kisa = qrMatrix("x", "M").size;
-  const uzun = qrMatrix("https://ambercatalbas.github.io/e-davetiye/?id=" + "a".repeat(120), "M").size;
+  const uzun = qrMatrix("https://davet.ambersf.com/?id=" + "a".repeat(120), "M").size;
   assert.ok(uzun > kisa, `uzun (${uzun}) > kısa (${kisa}) olmalı`);
 });
 
