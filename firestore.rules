@@ -26,28 +26,43 @@ service cloud.firestore {
                     && resource.data.ownerUid == request.auth.uid;
 
       match /rsvps/{rsvpId} {
-        allow create: if request.auth != null
-          && request.resource.data.keys().hasOnly(['ad', 'durum', 'kisiSayisi', 'not', 'consentVersion', 'consentGranted', 'privacyNoticeVersion', 'createdAt', 'konukAnahtari'])
-          && request.resource.data.ad is string
-          && request.resource.data.ad.size() > 0
-          && request.resource.data.ad.size() <= 80
-          && request.resource.data.durum in ['geliyorum', 'gelemiyorum']
-          && request.resource.data.kisiSayisi is int
-          && request.resource.data.kisiSayisi >= 0
-          && request.resource.data.kisiSayisi <= 20
-          && request.resource.data.not is string
-          && request.resource.data.not.size() <= 300
-          && (!('konukAnahtari' in request.resource.data)
-              || (request.resource.data.konukAnahtari is string && request.resource.data.konukAnahtari.size() <= 80))
-          && request.resource.data.consentGranted == true
-          && request.resource.data.consentVersion == 'lcv-tr-2026-08-06-v1'
-          && request.resource.data.privacyNoticeVersion == 'privacy-2026-08-06-v1'
-          && request.resource.data.createdAt == request.time;
+        // Ortak alan doğrulaması (create + update). Kişiye özel yanıtta doküman kimliği
+        // = konukToken → tek yanıt; link sahibi kendi yanıtını düzenleyebilir (#Faz2).
+        function lcvGecerli() {
+          return request.resource.data.keys().hasOnly(['ad', 'durum', 'kisiSayisi', 'not', 'consentVersion', 'consentGranted', 'privacyNoticeVersion', 'createdAt', 'konukAnahtari', 'konukToken', 'guncellendiAt'])
+            && request.resource.data.ad is string
+            && request.resource.data.ad.size() > 0
+            && request.resource.data.ad.size() <= 80
+            && request.resource.data.durum in ['geliyorum', 'gelemiyorum']
+            && request.resource.data.kisiSayisi is int
+            && request.resource.data.kisiSayisi >= 0
+            && request.resource.data.kisiSayisi <= 20
+            && request.resource.data.not is string
+            && request.resource.data.not.size() <= 300
+            && (!('konukAnahtari' in request.resource.data)
+                || (request.resource.data.konukAnahtari is string && request.resource.data.konukAnahtari.size() <= 80))
+            && (!('konukToken' in request.resource.data)
+                || (request.resource.data.konukToken is string && request.resource.data.konukToken == rsvpId && rsvpId.size() <= 64))
+            && (!('guncellendiAt' in request.resource.data) || request.resource.data.guncellendiAt == request.time)
+            && request.resource.data.consentGranted == true
+            && request.resource.data.consentVersion == 'lcv-tr-2026-08-06-v1'
+            && request.resource.data.privacyNoticeVersion == 'privacy-2026-08-06-v1'
+            && request.resource.data.createdAt == request.time;
+        }
+
+        allow create: if request.auth != null && lcvGecerli();
+
+        // Yalnız token'lı (kişiye özel) yanıt güncellenebilir: doküman kimliği token'la eşleşmeli.
+        // Token tahmin edilemez bir yetenek anahtarıdır; link sahibi kendi yanıtını değiştirir.
+        allow update: if request.auth != null
+          && resource.data.konukToken == rsvpId
+          && request.resource.data.konukToken == rsvpId
+          && lcvGecerli();
 
         allow read: if request.auth != null
           && get(/databases/$(database)/documents/invitations/$(inviteId)).data.ownerUid == request.auth.uid;
 
-        allow update, delete: if false;
+        allow delete: if false;
       }
 
       // Görüntülenme izleri (#37 analitik): her açılışta cihaz türü loglanır (anonim, gizlilik dostu).

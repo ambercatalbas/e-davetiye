@@ -2075,13 +2075,24 @@ $("btnKonukWa").addEventListener("click", ()=>{
 });
 
 /* ---- Davetli Listesi (#30) + Masa Planı (#47) ---- */
-let _davetliler = [];            // [{ad, grup, masa}]
+let _davetliler = [];            // [{ad, grup, masa, token}]
+// Kararlı davetli anahtarı (#Faz2): isimden bağımsız kesin eşleştirme + tek yanıt/düzenleme.
+function yeniToken(){
+  try{ const a=new Uint8Array(12); crypto.getRandomValues(a); return Array.from(a,b=>("0"+(b&0x3f).toString(36)).slice(-1)).join("").replace(/[^a-z0-9]/g,"").slice(0,12); }
+  catch(e){ return (Date.now().toString(36)+Math.random().toString(36).slice(2)).slice(0,12); }
+}
 let _masalar = [];               // [{ad, kapasite}]
 let _davetliDurum = {};          // ad -> "yanit" | "acik" | "bekle"
 function davetliId(){ return localStorage.getItem(YAYIN_ANAHTAR) || ""; }
 function davetliMsg(m){ $("davetliDurum").textContent = m || ""; }
 function davetliTaban(){ return (($("outIdLink") && $("outIdLink").value) || "").trim(); }
-function davetliLink(ad){ const t = davetliTaban(); if(!t) return ""; return t + (t.includes("?") ? "&" : "?") + "k=" + encodeURIComponent(ad); }
+function davetliLink(d){ const t = davetliTaban(); if(!t) return "";
+  const ad = (typeof d === "string") ? d : (d && d.ad) || "";
+  const tok = (typeof d === "object" && d) ? d.token : "";
+  let u = t + (t.includes("?") ? "&" : "?") + "k=" + encodeURIComponent(ad);
+  if(tok) u += "&g=" + encodeURIComponent(tok);
+  return u;
+}
 
 async function davetliAc(){
   $("davetliModal").hidden = false; $("davetliKapat").focus(); davetliMsg("");
@@ -2096,6 +2107,10 @@ async function davetliAc(){
     _davetliler = (s.exists() && Array.isArray(s.data().guests)) ? s.data().guests : [];
     _masalar = (s.exists() && Array.isArray(s.data().masalar)) ? s.data().masalar : [];
   }catch(e){ console.warn("davetli yükle:", e); _davetliler = []; _masalar = []; }
+  // Eski listelerde token yoksa üret ve sakla (geriye dönük uyum + kesin eşleştirme).
+  let tokenEklendi = false;
+  _davetliler.forEach(d=>{ if(!d.token){ d.token = yeniToken(); tokenEklendi = true; } });
+  if(tokenEklendi) davetliKaydet();
   davetliMsg(""); davetliCiz(); masaCiz();
   durumYenile();
 }
@@ -2194,9 +2209,9 @@ function davetliCiz(){
       }
       const eylem = el2("div","dv-eylem");
       const bKopya = el2("button","btn mini","Link"); bKopya.type="button"; bKopya.title="Kişiye özel linki kopyala";
-      bKopya.addEventListener("click", async ()=>{ const u=davetliLink(d.ad); if(!u){davetliMsg("Önce yayınlayın.");return;} try{ await navigator.clipboard.writeText(u); bKopya.textContent="✓"; setTimeout(()=>bKopya.textContent="Link",1200);}catch(e){} });
+      bKopya.addEventListener("click", async ()=>{ const u=davetliLink(d); if(!u){davetliMsg("Önce yayınlayın.");return;} try{ await navigator.clipboard.writeText(u); bKopya.textContent="✓"; setTimeout(()=>bKopya.textContent="Link",1200);}catch(e){} });
       const bWa = el2("button","btn wa mini","WA"); bWa.type="button"; bWa.title="WhatsApp ile gönder";
-      bWa.addEventListener("click", ()=>{ const u=davetliLink(d.ad); if(!u){davetliMsg("Önce yayınlayın.");return;} const m="Sevgili "+d.ad+", sizi özel davetimize bekliyoruz 🤍\n"+u; window.open("https://wa.me/?text="+encodeURIComponent(m),"_blank","noopener"); });
+      bWa.addEventListener("click", ()=>{ const u=davetliLink(d); if(!u){davetliMsg("Önce yayınlayın.");return;} const m="Sevgili "+d.ad+", sizi özel davetimize bekliyoruz 🤍\n"+u; window.open("https://wa.me/?text="+encodeURIComponent(m),"_blank","noopener"); });
       const bSil = el2("button","dv-sil","×"); bSil.type="button"; bSil.title="Sil"; bSil.setAttribute("aria-label","Davetliyi sil");
       bSil.addEventListener("click", ()=>{ _davetliler.splice(i,1); davetliCiz(); davetliKaydet(); });
       eylem.append(bKopya, bWa, bSil);
@@ -2209,7 +2224,7 @@ function davetliCiz(){
 function davetliVarMi(ad){ const n=ad.trim().toLowerCase(); return _davetliler.some(d=>d.ad.trim().toLowerCase()===n); }
 function davetliEkleTek(ad, grup){
   ad = (ad||"").trim().slice(0,80); if(!ad || davetliVarMi(ad)) return false;
-  _davetliler.push({ ad, grup: (grup||"").trim().slice(0,40) }); return true;
+  _davetliler.push({ ad, grup: (grup||"").trim().slice(0,40), token: yeniToken() }); return true;
 }
 $("btnDavetliEkle").addEventListener("click", ()=>{
   if(davetliEkleTek(val("inDavetliAd"), val("inDavetliGrup"))){ setVal("inDavetliAd",""); setVal("inDavetliGrup",""); $("inDavetliAd").focus(); davetliCiz(); davetliKaydet(); }
@@ -2241,11 +2256,18 @@ async function durumYenile(){
       getDocs(collection(_db,"invitations",id,"rsvps")),
       getDocs(collection(_db,"invitations",id,"opens")).catch(()=>({forEach:()=>{}}))
     ]);
-    const yanitlayan = new Set(), acan = new Set();
-    rSnap.forEach(d=>{ const r=d.data(); if(r.konukAnahtari) yanitlayan.add(r.konukAnahtari.trim().toLowerCase()); if(r.ad) yanitlayan.add(r.ad.trim().toLowerCase()); });
+    const yanitlayan = new Set(), yanitToken = new Set(), acan = new Set();
+    rSnap.forEach(d=>{ const r=d.data();
+      if(r.konukToken) yanitToken.add(String(r.konukToken)); // kesin eşleştirme (#Faz2)
+      if(r.konukAnahtari) yanitlayan.add(r.konukAnahtari.trim().toLowerCase());
+      if(r.ad) yanitlayan.add(r.ad.trim().toLowerCase());
+    });
     oSnap.forEach(d=>{ const o=d.data(); if(o.konukAnahtari) acan.add(o.konukAnahtari.trim().toLowerCase()); });
     _davetliDurum = {};
-    _davetliler.forEach(d=>{ const n=d.ad.trim().toLowerCase(); _davetliDurum[d.ad] = yanitlayan.has(n) ? "yanit" : (acan.has(n) ? "acik" : "bekle"); });
+    _davetliler.forEach(d=>{ const n=d.ad.trim().toLowerCase();
+      const yanitVar = (d.token && yanitToken.has(String(d.token))) || yanitlayan.has(n);
+      _davetliDurum[d.ad] = yanitVar ? "yanit" : (acan.has(n) ? "acik" : "bekle");
+    });
     davetliCiz();
   }catch(e){ console.warn("durum yenile:", e); }
 }
@@ -2253,7 +2275,7 @@ $("btnDurumYenile").addEventListener("click", ()=>{ davetliMsg("Yenileniyor…")
 
 $("btnTumLink").addEventListener("click", async ()=>{
   if(!_davetliler.length) return; const t = davetliTaban(); if(!t){ davetliMsg("Önce yayınlayın."); return; }
-  const metin = _davetliler.map(d=> d.ad + ": " + davetliLink(d.ad)).join("\n");
+  const metin = _davetliler.map(d=> d.ad + ": " + davetliLink(d)).join("\n");
   try{ await navigator.clipboard.writeText(metin); davetliMsg(_davetliler.length+" link kopyalandı."); }catch(e){ davetliMsg("Kopyalanamadı."); }
 });
 

@@ -10,7 +10,7 @@
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 import {
-  getFirestore, collection, addDoc, serverTimestamp
+  getFirestore, collection, addDoc, doc, setDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 // Görünen metinler (yalnız arayüz; saklanan rıza değerleri sabit kalır)
@@ -52,13 +52,15 @@ function el(tag, cls, html) {
   return n;
 }
 
-export async function lcvBaslat({ inviteId, firebaseConfig, mount, dil, konuk }) {
+export async function lcvBaslat({ inviteId, firebaseConfig, mount, dil, konuk, konukToken }) {
   if (!inviteId || !firebaseConfig || !mount) {
     console.warn("lcvBaslat: inviteId / firebaseConfig / mount gerekli");
     return;
   }
   const T = LCV_SOZ[dil] || LCV_SOZ.tr;
   const konukAd = (konuk || "").trim().slice(0, 80); // kişiye özel davet: ismi/hitabı
+  // Kararlı davetli anahtarı (#Faz2): isimden bağımsız KESİN eşleştirme + tek yanıt/düzenleme.
+  const token = (konukToken || "").trim().replace(/[^A-Za-z0-9_-]/g, "").slice(0, 64);
 
   const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
   const auth = getAuth(app);
@@ -141,8 +143,15 @@ export async function lcvBaslat({ inviteId, firebaseConfig, mount, dil, konuk })
         privacyNoticeVersion: "privacy-2026-08-06-v1",
         createdAt: serverTimestamp()
       };
-      if (konukAd) kayit.konukAnahtari = konukAd; // kişi bazlı takip (davetli tokenı)
-      await addDoc(collection(db, "invitations", inviteId, "rsvps"), kayit);
+      if (konukAd) kayit.konukAnahtari = konukAd; // görünen ad/hitap
+      if (token) {
+        // Kişiye özel: kararlı token doküman kimliği → tek yanıt; yeniden gönderim düzenler.
+        kayit.konukToken = token;
+        kayit.guncellendiAt = serverTimestamp();
+        await setDoc(doc(db, "invitations", inviteId, "rsvps", token), kayit);
+      } else {
+        await addDoc(collection(db, "invitations", inviteId, "rsvps"), kayit);
+      }
       // Funnel (#44): anonim LCV olayı — kişisel veri gönderilmez.
       try {
         fetch("https://us-central1-e-davetiye-94b6b.cloudfunctions.net/olayKaydet", {

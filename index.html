@@ -1455,6 +1455,8 @@
   let konuk = "";
   const konukHam = _p.get("k");
   if (konukHam) { try { konuk = decodeURIComponent(konukHam).trim().slice(0, 80); } catch (e) { konuk = String(konukHam).trim().slice(0, 80); } }
+  // Kararlı davetli anahtarı (#Faz2): ?g= → isimden bağımsız kesin eşleştirme + tek yanıt/düzenleme.
+  const konukToken = (_p.get("g") || "").trim().replace(/[^A-Za-z0-9_-]/g, "").slice(0, 64);
   function kisisellestir(cfg) {
     if (cfg && konuk) {
       const zatenHitap = /^(sevgili|değerli|sayın|kıymetli|dear|уважаем|liebe)/i.test(konuk);
@@ -1576,7 +1578,7 @@
         const { lcvBaslat } = await import("./firebase/lcv.js");
         const lcvMount = el("div", "lcv-mount");
         kok.append(lcvMount);
-        lcvBaslat({ inviteId: realId, firebaseConfig, mount: lcvMount, dil: cfg.dil, konuk });
+        lcvBaslat({ inviteId: realId, firebaseConfig, mount: lcvMount, dil: cfg.dil, konuk, konukToken });
         // Görüntülenme izi (#37 analitik): her açılışta cihaz türü, oturumda bir kez.
         {
           const gAnahtar = "goruntulendi:" + realId;
