@@ -437,7 +437,8 @@
         </div>
         <div class="field"><label for="inRsvpOlCv">Olumlu yanıt</label><input type="text" id="inRsvpOlCv" maxlength="120"></div>
         <div class="field"><label for="inRsvpHaCv">Olumsuz yanıt</label><input type="text" id="inRsvpHaCv" maxlength="120"></div>
-        <p class="note">Önizlemede çalışır. <b>Yayınla</b> ile gerçek LCV toplama (Firestore) aktif olur; yanıtları panelden görürsün.</p>
+        <div class="field"><label for="inLcvSonTarih">Son yanıt tarihi (isteğe bağlı)</label><input type="date" id="inLcvSonTarih"></div>
+        <p class="note">Son yanıt tarihi verirsen, o günden sonra davetliler yanıt gönderemez; formda “Yanıtlar kapandı” görünür. Boş bırakırsan süresiz açık kalır. <b>Yayınla</b> ile gerçek LCV toplama (Firestore) aktif olur; yanıtları panelden görürsün.</p>
       </div>
 
       <label class="toggle" style="margin-top:14px"><input type="checkbox" id="chkDilek"><span class="sw"></span><span class="tlabel">Dilek defteri</span></label>
@@ -1134,6 +1135,8 @@ function cfgKur(){
       olumlu:  { etiket: s("inRsvpOlEt")||"Geliyorum", cevap: s("inRsvpOlCv")||"Harika! 🎉" },
       olumsuz: { etiket: s("inRsvpHaEt")||"Gelemiyorum", cevap: s("inRsvpHaCv")||"Çok üzüldük. 🤍" }
     };
+    const st = (val("inLcvSonTarih")||"").trim(); // ISO YYYY-MM-DD; o günün sonuna kadar açık
+    if(/^\d{4}-\d{2}-\d{2}$/.test(st)) cfg.lcvSonTarih = st;
   }
 
   // Kapak / zarf açılışı
@@ -1185,7 +1188,7 @@ function planla(){ clearTimeout(zaman); zaman=setTimeout(()=>{ onizle(); kaydet(
 /* ---- Taslak (localStorage) ---- */
 const ALANLAR = ["selTur","selTema","selDil","inUst","inAlici","inBaslik","taGiris","inImza","inKurum",
   "inTarih","inSaat","inGeriBaslik","inBitti","taDetaylar","inMuhur","inIkramBaslik","inIkramGrup",
-  "taIkram","inIkramNot","inSartBaslik","taSart","inRsvpOlEt","inRsvpHaEt","inRsvpOlCv","inRsvpHaCv",
+  "taIkram","inIkramNot","inSartBaslik","taSart","inRsvpOlEt","inRsvpHaEt","inRsvpOlCv","inRsvpHaCv","inLcvSonTarih",
   "inProgramBaslik","taProgram","inHaritaBaslik",
   "selYayinPlatform","inYayinBaslik","inYayinUrl","inYayinTarih","inYayinSaat","inMuzikAd","inMuzikUrl",
   "inHediyeBaslik","inHediyeMesaj","inHediyeIban","inHediyeAd","inHediyeNot",
@@ -1516,6 +1519,7 @@ function formDoldur(cfg, tur){
   if(cfg.rsvp){
     setVal("inRsvpOlEt",(cfg.rsvp.olumlu&&cfg.rsvp.olumlu.etiket)||""); setVal("inRsvpHaEt",(cfg.rsvp.olumsuz&&cfg.rsvp.olumsuz.etiket)||"");
     setVal("inRsvpOlCv",(cfg.rsvp.olumlu&&cfg.rsvp.olumlu.cevap)||""); setVal("inRsvpHaCv",(cfg.rsvp.olumsuz&&cfg.rsvp.olumsuz.cevap)||"");
+    setVal("inLcvSonTarih", cfg.lcvSonTarih || "");
   }
   setChk("chkProgram", !!(cfg.program && cfg.program.length));
   setVal("inProgramBaslik", cfg.programBaslik||"Program");

@@ -491,6 +491,8 @@
   .lcv-aydinlatma { font-family:var(--f-sans); font-size:.72rem; line-height:1.5; color:var(--ink-soft);
                     text-align:center; max-width:44ch; margin:2px 0 0; }
   .lcv-aydinlatma a { color:var(--gold); }
+  .lcv-sontarih { font-family:var(--f-sans); font-size:.76rem; color:var(--gold); text-align:center;
+                  letter-spacing:.02em; margin:-2px 0 2px; }
   .lcv-riza { display:flex; align-items:flex-start; gap:8px; font-family:var(--f-sans); font-size:.78rem;
               line-height:1.45; color:var(--ink); text-align:left; max-width:44ch; cursor:pointer; }
   .lcv-riza-input { margin-top:3px; flex:none; accent-color:var(--gold); width:16px; height:16px; }
@@ -1578,7 +1580,7 @@
         const { lcvBaslat } = await import("./firebase/lcv.js");
         const lcvMount = el("div", "lcv-mount");
         kok.append(lcvMount);
-        lcvBaslat({ inviteId: realId, firebaseConfig, mount: lcvMount, dil: cfg.dil, konuk, konukToken });
+        lcvBaslat({ inviteId: realId, firebaseConfig, mount: lcvMount, dil: cfg.dil, konuk, konukToken, sonTarih: cfg.lcvSonTarih });
         // Görüntülenme izi (#37 analitik): her açılışta cihaz türü, oturumda bir kez.
         {
           const gAnahtar = "goruntulendi:" + realId;
