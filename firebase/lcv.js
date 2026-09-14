@@ -216,6 +216,25 @@ export async function lcvBaslat({ inviteId, firebaseConfig, mount, dil, konuk, k
     }
   });
 
+  // Mobil klavye düzeltmesi: bir alana odaklanınca sayfanın altına geçici kaydırma
+  // boşluğu aç ve alanı klavyenin üstüne (ekran ortasına) kaydır. Aksi halde alttaki
+  // alanlar/gönder butonu klavyenin arkasında kalıyordu.
+  let _kbZaman;
+  kok.addEventListener("focusin", (e) => {
+    if (!e.target.matches || !e.target.matches("input, textarea")) return;
+    kok.style.paddingBottom = "55vh";
+    clearTimeout(_kbZaman);
+    _kbZaman = setTimeout(() => {
+      try { e.target.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (x) {}
+    }, 300);
+  });
+  kok.addEventListener("focusout", () => {
+    setTimeout(() => {
+      const a = document.activeElement;
+      if (!a || !kok.contains(a) || !(a.matches && a.matches("input, textarea"))) kok.style.paddingBottom = "";
+    }, 150);
+  });
+
   mount.innerHTML = "";
   mount.append(kok);
 }
