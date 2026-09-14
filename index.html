@@ -470,6 +470,7 @@
            transition:opacity .4s ease, transform .4s ease;
            font-family:var(--f-serif); font-size:1.02rem; color:var(--ink); margin:0; }
   .yanit.gorunur { opacity:1; transform:none; }
+  .lcv-onizleme { max-width:44ch; margin:0 auto; text-align:center; font-size:.92em; opacity:.8; font-style:italic; }
 
   /* "Güncellendi" notu — yayın sonrası düzenlenmiş davetiyelerde (?id=) */
   .guncell-not { width:100%; text-align:center; font-family:var(--f-sans); font-size:.68rem;
@@ -1064,19 +1065,19 @@
     tr: { gun:"Gün", saat:"Saat", dakika:"Dakika", saniye:"Saniye", zamaniGeldi:"Zamanı geldi!",
           dokunun:"dokunun", ac:"Davetiyeyi Aç", ibanKopyala:"IBAN'ı kopyala", ibanKopyalandi:"Kopyalandı ✓",
           canliIzle:"Canlı İzle", canli:"CANLI YAYIN", yayinBasliyor:"Canlı yayın",
-          filigran:"E-Davetiye ile hazırlandı", odemeOk:"Ödeme alındı — filigran kaldırıldı ✓", masaniz:"Masanız", muzikCal:"Müziği çal", muzikSustur:"Müziği sustur", locale:"tr-TR" },
+          filigran:"E-Davetiye ile hazırlandı", odemeOk:"Ödeme alındı — filigran kaldırıldı ✓", masaniz:"Masanız", muzikCal:"Müziği çal", muzikSustur:"Müziği sustur", lcvOnizleme:"Bu bir önizleme bağlantısıdır; buradan yanıt gönderilemez. Katılım durumunuzu lütfen davet sahibine iletin.", locale:"tr-TR" },
     en: { gun:"Days", saat:"Hours", dakika:"Minutes", saniye:"Seconds", zamaniGeldi:"It's time!",
           dokunun:"tap", ac:"Open Invitation", ibanKopyala:"Copy IBAN", ibanKopyalandi:"Copied ✓",
           canliIzle:"Watch Live", canli:"LIVE", yayinBasliyor:"Live stream",
-          filigran:"Made with E-Davetiye", odemeOk:"Payment received — watermark removed ✓", masaniz:"Your table", muzikCal:"Play music", muzikSustur:"Mute music", locale:"en-US" },
+          filigran:"Made with E-Davetiye", odemeOk:"Payment received — watermark removed ✓", masaniz:"Your table", muzikCal:"Play music", muzikSustur:"Mute music", lcvOnizleme:"This is a preview link; responses cannot be sent from here. Please let the host know whether you can attend.", locale:"en-US" },
     ru: { gun:"Дней", saat:"Часов", dakika:"Минут", saniye:"Секунд", zamaniGeldi:"Время пришло!",
           dokunun:"нажмите", ac:"Открыть приглашение", ibanKopyala:"Копировать IBAN", ibanKopyalandi:"Скопировано ✓",
           canliIzle:"Смотреть", canli:"ПРЯМОЙ ЭФИР", yayinBasliyor:"Трансляция",
-          filigran:"Сделано в E-Davetiye", odemeOk:"Оплата получена — водяной знак убран ✓", masaniz:"Ваш стол", muzikCal:"Включить музыку", muzikSustur:"Выключить музыку", locale:"ru-RU" },
+          filigran:"Сделано в E-Davetiye", odemeOk:"Оплата получена — водяной знак убран ✓", masaniz:"Ваш стол", muzikCal:"Включить музыку", muzikSustur:"Выключить музыку", lcvOnizleme:"Это ссылка для предпросмотра; ответ отсюда отправить нельзя. Пожалуйста, сообщите организатору, придёте ли вы.", locale:"ru-RU" },
     de: { gun:"Tage", saat:"Std.", dakika:"Min.", saniye:"Sek.", zamaniGeldi:"Es ist soweit!",
           dokunun:"tippen", ac:"Einladung öffnen", ibanKopyala:"IBAN kopieren", ibanKopyalandi:"Kopiert ✓",
           canliIzle:"Live ansehen", canli:"LIVE", yayinBasliyor:"Livestream",
-          filigran:"Erstellt mit E-Davetiye", odemeOk:"Zahlung erhalten — Wasserzeichen entfernt ✓", masaniz:"Ihr Tisch", muzikCal:"Musik abspielen", muzikSustur:"Musik stumm", locale:"de-DE" }
+          filigran:"Erstellt mit E-Davetiye", odemeOk:"Zahlung erhalten — Wasserzeichen entfernt ✓", masaniz:"Ihr Tisch", muzikCal:"Musik abspielen", muzikSustur:"Musik stumm", lcvOnizleme:"Dies ist ein Vorschau-Link; von hier aus kann keine Antwort gesendet werden. Bitte teilen Sie dem Gastgeber mit, ob Sie kommen.", locale:"de-DE" }
   };
   const dilSoz = cfg => SOZLUK[cfg && cfg.dil] || SOZLUK.tr;
 
@@ -1326,7 +1327,10 @@
 
     if (cfg.muhurYazi) kok.append(el("div", "muhur", muhurSVG(cfg.muhurYazi)));
 
-    if (cfg.rsvp) {
+    if (cfg.rsvp && cfg.lcvOnizleme) {
+      // #i= (yayınlanmamış) link: yanıt Firestore'a yazılamaz → sahte buton yerine dürüst not.
+      kok.append(el("p", "lcv-onizleme", dilSoz(cfg).lcvOnizleme));
+    } else if (cfg.rsvp) {
       const box = el("div", "rsvp");
       const bE = el("button", "btn olumlu", cfg.rsvp.olumlu.etiket);
       const bH = el("button", "btn olumsuz", cfg.rsvp.olumsuz.etiket);
@@ -1634,6 +1638,7 @@
     const ozel = cozHash();
     const dParam = new URLSearchParams(location.search).get("d");
     const cfg = kisisellestir(ozel || (dParam && DAVETIYELER[dParam]));
+    if (ozel) ozel.lcvOnizleme = true; // ?d= demo örnekleri butonlu kalır
     if (cfg) goster(cfg);
     else document.documentElement.classList.remove("dav"); // geçersiz/eksik → landing'e dön
     window.addEventListener("hashchange", () => location.reload());
