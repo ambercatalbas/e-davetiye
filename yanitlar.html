@@ -274,6 +274,7 @@ function ciz(){
       '<span class="ad">'+esc(y.ad)+(geliyor && y.kisiSayisi>1 ? ' <span style="color:var(--soft);font-size:.85rem">· '+y.kisiSayisi+' kişi</span>' : '')+
         (y.konukAnahtari ? ' <span style="color:var(--faint);font-size:.72rem" title="Kişiye özel davet">🎟 '+esc(y.konukAnahtari)+'</span>' : '')+'</span>'+
       '<span class="rozet '+(geliyor?'gel':'yok')+'">'+(geliyor?'Geliyor':'Gelemiyor')+'</span>'+
+      (y.refakatci ? '<span class="not">👥 '+esc(y.refakatci)+'</span>' : '')+
       (y.not ? '<span class="not">“'+esc(y.not)+'”</span>' : '')+
       '<span class="zaman">'+tarih(y.createdAt)+'</span>';
     liste.append(sat);
@@ -281,9 +282,9 @@ function ciz(){
 }
 
 $("btnCsv").addEventListener("click", ()=>{
-  const bas = ["Ad","Davetli","Durum","Kisi","Not","Tarih"];
+  const bas = ["Ad","Davetli","Durum","Kisi","Refakatci","Not","Tarih"];
   const sat = yanitlar.map(y=>[
-    y.ad, y.konukAnahtari||"", y.durum, y.kisiSayisi, (y.not||"").replace(/\n/g," "), tarih(y.createdAt)
+    y.ad, y.konukAnahtari||"", y.durum, y.kisiSayisi, (y.refakatci||"").replace(/\n/g," "), (y.not||"").replace(/\n/g," "), tarih(y.createdAt)
   ].map(x=>'"'+String(x==null?"":x).replace(/"/g,'""')+'"').join(","));
   const csv = "﻿" + [bas.join(","), ...sat].join("\n");
   const a = document.createElement("a");
@@ -298,7 +299,8 @@ $("btnListe").addEventListener("click", ()=>{
   const gel = yanitlar.filter(y=>y.durum==="geliyorum");
   const yok = yanitlar.filter(y=>y.durum==="gelemiyorum");
   const kisi = gel.reduce((t,y)=> t + (Number(y.kisiSayisi)||0), 0);
-  const isim = y => esc(y.ad||"") + (y.konukAnahtari && y.konukAnahtari!==y.ad ? ' <span class="kt">('+esc(y.konukAnahtari)+')</span>' : "");
+  const isim = y => esc(y.ad||"") + (y.konukAnahtari && y.konukAnahtari!==y.ad ? ' <span class="kt">('+esc(y.konukAnahtari)+')</span>' : "")
+    + (y.refakatci ? '<div class="kt">👥 '+esc(y.refakatci)+'</div>' : "");
   const sirala = arr => arr.slice().sort((a,b)=> String(a.ad||"").localeCompare(String(b.ad||""),"tr"));
   const satir = (arr, kisiKol) => sirala(arr).map((y,i)=>
     '<tr><td class="s">'+(i+1)+'</td><td>'+isim(y)+'</td>'+(kisiKol?'<td class="k">'+(Number(y.kisiSayisi)||1)+'</td>':'')+'<td class="n">'+(y.not?esc(y.not):'')+'</td></tr>').join("");

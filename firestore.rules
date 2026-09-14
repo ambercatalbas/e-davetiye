@@ -29,7 +29,7 @@ service cloud.firestore {
         // Ortak alan doğrulaması (create + update). Kişiye özel yanıtta doküman kimliği
         // = konukToken → tek yanıt; link sahibi kendi yanıtını düzenleyebilir (#Faz2).
         function lcvGecerli() {
-          return request.resource.data.keys().hasOnly(['ad', 'durum', 'kisiSayisi', 'not', 'consentVersion', 'consentGranted', 'privacyNoticeVersion', 'createdAt', 'konukAnahtari', 'konukToken', 'guncellendiAt'])
+          return request.resource.data.keys().hasOnly(['ad', 'durum', 'kisiSayisi', 'not', 'consentVersion', 'consentGranted', 'privacyNoticeVersion', 'createdAt', 'konukAnahtari', 'konukToken', 'guncellendiAt', 'refakatci'])
             && request.resource.data.ad is string
             && request.resource.data.ad.size() > 0
             && request.resource.data.ad.size() <= 80
@@ -43,6 +43,8 @@ service cloud.firestore {
                 || (request.resource.data.konukAnahtari is string && request.resource.data.konukAnahtari.size() <= 80))
             && (!('konukToken' in request.resource.data)
                 || (request.resource.data.konukToken is string && request.resource.data.konukToken == rsvpId && rsvpId.size() <= 64))
+            && (!('refakatci' in request.resource.data)
+                || (request.resource.data.refakatci is string && request.resource.data.refakatci.size() <= 300))
             && (!('guncellendiAt' in request.resource.data) || request.resource.data.guncellendiAt == request.time)
             && request.resource.data.consentGranted == true
             && request.resource.data.consentVersion == 'lcv-tr-2026-08-06-v1'

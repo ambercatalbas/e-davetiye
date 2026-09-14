@@ -22,7 +22,8 @@ const LCV_SOZ = {
         yok:"Yanıtınız alındı. Bir dahaki sefere mutlaka. 🤍", hata:"Bir sorun oldu, tekrar deneyin.",
         aydinlatma:'Adınız ve katılım yanıtınız, etkinliği planlayabilmesi için davetiye sahibine iletilir. Ayrıntılar için <a href="./legal.html#lcv" target="_blank" rel="noopener">LCV Aydınlatma Metni</a>.',
         riza:" LCV yanıtımın davetiye sahibine iletilmesine açık rıza veriyorum.",
-        kapandi:"Yanıt süresi doldu — bu davetiye için katılım bildirimi kapandı.", sonTarihEt:"Son yanıt tarihi" },
+        kapandi:"Yanıt süresi doldu — bu davetiye için katılım bildirimi kapandı.", sonTarihEt:"Son yanıt tarihi",
+        refakatci:"Yanınızdakilerin adları (isteğe bağlı)" },
   en: { baslik:"RSVP", ad:"Your name", geliyorum:"I'm coming", gelemiyorum:"Can't make it",
         kisi:"Guests", not:"Note (optional)", gonder:"Send Response", gonderiliyor:"Sending…",
         adUyari:"Please enter your name.", rizaUyari:"Please consent to send your response.",
@@ -30,7 +31,8 @@ const LCV_SOZ = {
         yok:"Your response is received. Next time for sure. 🤍", hata:"Something went wrong, please try again.",
         aydinlatma:'Your name and RSVP are shared with the host to help plan the event. Details: <a href="./legal.html#lcv" target="_blank" rel="noopener">privacy notice</a>.',
         riza:" I consent to my RSVP being shared with the host.",
-        kapandi:"RSVP is now closed for this invitation.", sonTarihEt:"Please respond by" },
+        kapandi:"RSVP is now closed for this invitation.", sonTarihEt:"Please respond by",
+        refakatci:"Names of your guests (optional)" },
   ru: { baslik:"Подтвердить участие", ad:"Ваше имя", geliyorum:"Приду", gelemiyorum:"Не смогу",
         kisi:"Кол-во гостей", not:"Примечание (необязательно)", gonder:"Отправить", gonderiliyor:"Отправка…",
         adUyari:"Пожалуйста, введите имя.", rizaUyari:"Дайте согласие на отправку ответа.",
@@ -38,7 +40,8 @@ const LCV_SOZ = {
         yok:"Ваш ответ получен. В следующий раз обязательно. 🤍", hata:"Произошла ошибка, попробуйте снова.",
         aydinlatma:'Ваше имя и ответ будут переданы организатору для планирования события. Подробнее: <a href="./legal.html#lcv" target="_blank" rel="noopener">уведомление о конфиденциальности</a>.',
         riza:" Я согласен(на) на передачу моего ответа организатору.",
-        kapandi:"Приём ответов для этого приглашения закрыт.", sonTarihEt:"Ответьте до" },
+        kapandi:"Приём ответов для этого приглашения закрыт.", sonTarihEt:"Ответьте до",
+        refakatci:"Имена ваших гостей (необязательно)" },
   de: { baslik:"Zusagen", ad:"Ihr Name", geliyorum:"Ich komme", gelemiyorum:"Kann nicht",
         kisi:"Personenzahl", not:"Notiz (optional)", gonder:"Antwort senden", gonderiliyor:"Senden…",
         adUyari:"Bitte geben Sie Ihren Namen ein.", rizaUyari:"Bitte stimmen Sie dem Senden zu.",
@@ -46,7 +49,8 @@ const LCV_SOZ = {
         yok:"Ihre Antwort ist eingegangen. Beim nächsten Mal bestimmt. 🤍", hata:"Etwas ist schiefgelaufen, bitte erneut versuchen.",
         aydinlatma:'Ihr Name und Ihre Zusage werden zur Planung an die gastgebende Person weitergegeben. Details: <a href="./legal.html#lcv" target="_blank" rel="noopener">Datenschutzhinweis</a>.',
         riza:" Ich stimme zu, dass meine Antwort an die gastgebende Person weitergegeben wird.",
-        kapandi:"Die Rückmeldung für diese Einladung ist geschlossen.", sonTarihEt:"Bitte antworten Sie bis" }
+        kapandi:"Die Rückmeldung für diese Einladung ist geschlossen.", sonTarihEt:"Bitte antworten Sie bis",
+        refakatci:"Namen Ihrer Begleitung (optional)" }
 };
 
 function el(tag, cls, html) {
@@ -117,6 +121,12 @@ export async function lcvBaslat({ inviteId, firebaseConfig, mount, dil, konuk, k
   kisiSatir.append(kisiEtiket, kisiInput);
   kok.append(kisiSatir);
 
+  // +1 refakatçi isimleri (#Faz3): yalnız "geliyorum" ve kişi sayısı > 1 iken görünür.
+  const refakatci = el("textarea", "lcv-input lcv-not lcv-refakatci");
+  refakatci.placeholder = T.refakatci; refakatci.maxLength = 300; refakatci.setAttribute("aria-label", T.refakatci);
+  refakatci.style.display = "none";
+  kok.append(refakatci);
+
   const not = el("textarea", "lcv-input lcv-not");
   not.placeholder = T.not; not.maxLength = 300; not.setAttribute("aria-label", T.not);
   kok.append(not);
@@ -140,13 +150,19 @@ export async function lcvBaslat({ inviteId, firebaseConfig, mount, dil, konuk, k
   yanit.setAttribute("aria-live", "polite");
   kok.append(yanit);
 
+  function refakatciGuncelle() {
+    const say = Math.min(20, Math.max(1, parseInt(kisiInput.value || "1", 10)));
+    refakatci.style.display = (durum === "geliyorum" && say > 1) ? "" : "none";
+  }
   function durumSec(secilen) {
     durum = secilen;
     btnGel.classList.toggle("secili", secilen === "geliyorum");
     btnYok.classList.toggle("secili", secilen === "gelemiyorum");
     kisiSatir.style.display = secilen === "geliyorum" ? "" : "none";
+    refakatciGuncelle();
     gonder.disabled = !riza.checked;
   }
+  kisiInput.addEventListener("input", refakatciGuncelle);
   btnGel.addEventListener("click", () => durumSec("geliyorum"));
   btnYok.addEventListener("click", () => durumSec("gelemiyorum"));
   riza.addEventListener("change", () => { gonder.disabled = !durum || !riza.checked; });
@@ -169,6 +185,10 @@ export async function lcvBaslat({ inviteId, firebaseConfig, mount, dil, konuk, k
         createdAt: serverTimestamp()
       };
       if (konukAd) kayit.konukAnahtari = konukAd; // görünen ad/hitap
+      if (durum === "geliyorum") {
+        const rf = refakatci.value.trim().slice(0, 300); // +1 refakatçi isimleri
+        if (rf) kayit.refakatci = rf;
+      }
       if (token) {
         // Kişiye özel: kararlı token doküman kimliği → tek yanıt; yeniden gönderim düzenler.
         kayit.konukToken = token;
