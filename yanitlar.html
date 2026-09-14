@@ -99,7 +99,10 @@
 
   <div class="toolbar" id="toolbar" style="display:none">
     <h2>Gelen Yanıtlar</h2>
-    <button class="btn" id="btnCsv" type="button">CSV indir</button>
+    <div style="display:flex;gap:8px">
+      <button class="btn" id="btnListe" type="button">Katılım Listesi</button>
+      <button class="btn" id="btnCsv" type="button">CSV indir</button>
+    </div>
   </div>
   <div class="liste" id="liste"></div>
   <div class="durum" id="durum"></div>
@@ -287,6 +290,42 @@ $("btnCsv").addEventListener("click", ()=>{
   a.href = URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
   a.download = "lcv-yanitlar.csv"; a.click();
   setTimeout(()=> URL.revokeObjectURL(a.href), 2000);
+});
+
+// Katılım listesi — yazdırılabilir / PDF kaydedilebilir şık çıktı (yeni pencere).
+$("btnListe").addEventListener("click", ()=>{
+  if(!yanitlar.length){ return; }
+  const gel = yanitlar.filter(y=>y.durum==="geliyorum");
+  const yok = yanitlar.filter(y=>y.durum==="gelemiyorum");
+  const kisi = gel.reduce((t,y)=> t + (Number(y.kisiSayisi)||0), 0);
+  const isim = y => esc(y.ad||"") + (y.konukAnahtari && y.konukAnahtari!==y.ad ? ' <span class="kt">('+esc(y.konukAnahtari)+')</span>' : "");
+  const sirala = arr => arr.slice().sort((a,b)=> String(a.ad||"").localeCompare(String(b.ad||""),"tr"));
+  const satir = (arr, kisiKol) => sirala(arr).map((y,i)=>
+    '<tr><td class="s">'+(i+1)+'</td><td>'+isim(y)+'</td>'+(kisiKol?'<td class="k">'+(Number(y.kisiSayisi)||1)+'</td>':'')+'<td class="n">'+(y.not?esc(y.not):'')+'</td></tr>').join("");
+  const baslik = ($("baslik").textContent||"Katılım Listesi").replace(/\s*—\s*Yanıtlar\s*$/,"").trim() || "Katılım Listesi";
+  const now = new Date().toLocaleString("tr-TR",{day:"numeric",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});
+  const html = '<!doctype html><html lang="tr"><head><meta charset="utf-8"><title>Katılım Listesi — '+esc(baslik)+'</title><style>'
+    + '*{box-sizing:border-box}body{font-family:"Palatino Linotype",Palatino,Georgia,serif;color:#1a1a2e;margin:32px}'
+    + 'h1{font-size:22px;margin:0 0 2px}.alt{color:#666;font-size:12px;margin:0 0 18px}'
+    + '.ozet{display:flex;gap:26px;margin:0 0 20px;font-size:12px;color:#666}.ozet b{font-size:20px;display:block;color:#1a1a2e}'
+    + 'h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c5d1f;border-bottom:1px solid #ddd;padding-bottom:5px;margin:24px 0 6px}'
+    + 'table{width:100%;border-collapse:collapse;font-size:13px}td,th{text-align:left;padding:6px 8px;border-bottom:1px solid #eee;vertical-align:top}'
+    + 'th{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#999}td.s{width:30px;color:#bbb}td.k{width:52px;text-align:center}td.n{color:#555}'
+    + '.kt{color:#999;font-size:.88em}.bos{color:#999;font-style:italic;padding:8px 0}'
+    + '.yz{margin-bottom:16px;padding:8px 14px;font:inherit;cursor:pointer;border:1px solid #ccc;border-radius:8px;background:#faf7f2}'
+    + '@media print{body{margin:12mm}.yz{display:none}}'
+    + '</style></head><body>'
+    + '<button class="yz" onclick="window.print()">Yazdır / PDF kaydet</button>'
+    + '<h1>'+esc(baslik)+'</h1><p class="alt">Katılım Listesi · '+esc(now)+'</p>'
+    + '<div class="ozet"><span><b>'+gel.length+'</b>Geliyor</span><span><b>'+kisi+'</b>Toplam kişi</span><span><b>'+yok.length+'</b>Gelemiyor</span></div>'
+    + '<h2>Gelenler ('+gel.length+')</h2>'
+    + (gel.length ? '<table><thead><tr><th></th><th>Ad</th><th>Kişi</th><th>Not</th></tr></thead><tbody>'+satir(gel,true)+'</tbody></table>' : '<p class="bos">Henüz “geliyorum” yanıtı yok.</p>')
+    + '<h2>Gelemeyenler ('+yok.length+')</h2>'
+    + (yok.length ? '<table><thead><tr><th></th><th>Ad</th><th>Not</th></tr></thead><tbody>'+satir(yok,false)+'</tbody></table>' : '<p class="bos">Gelemeyen bildiren yok.</p>')
+    + '</body></html>';
+  const w = window.open("", "_blank");
+  if(!w){ alert("Yazdırma penceresi engellendi. Tarayıcı açılır pencere iznini verip tekrar deneyin."); return; }
+  w.document.open(); w.document.write(html); w.document.close();
 });
 </script>
 </body>
