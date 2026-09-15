@@ -1,33 +1,35 @@
 # Gelir modeli, paketleme ve fiyat deneyi
 
-Sürüm: 2026-08-06-v1 · Durum: uygulanacak ürün kararı
+Sürüm: 2026-09-14-v2 · Durum: uygulandı (kademeli tek ödeme)
 
 ## Karar
 
-Ana model **ücretsiz deneme + etkinlik başına tek ödeme**dir. Kullanıcı tasarımı ve ilk paylaşımı risk almadan deneyebilir; değer yoğun düğün/sünnet gibi etkinlikte Premium alır. Pro abonelik, tekrar tekrar etkinlik üreten organizatör ve işletmeler içindir. Hakların makine tarafından okunabilir kaynağı `config/plans.json` dosyasıdır.
+Ana model **ücretsiz deneme + kademeli, etkinlik başına tek ödeme**dir. Kullanıcı tasarımı ve ilk paylaşımı risk almadan dener; ardından bütçesine göre iki tek-ödeme ürününden birini alır: düşük bariyerli **Filigransız (₺99,90)** ya da değer yoğun etkinlik için **Premium Etkinlik (₺499)**. İki ürün her bütçeye hitap ederek dönüşümü genişletir ve fiyat esnekliği testine (Deney A) doğal zemin hazırlar. **Pro** abonelik, tekrar tekrar etkinlik üreten organizatör ve işletmeler için yol haritasındadır (yinelenen tahsilat henüz uygulanmadı; sayfada "Yakında"). Hakların makine tarafından okunabilir kaynağı `config/plans.json` dosyasıdır; sunucu (`functions/index.js`) ödeme doğrulanınca bu haklardan bir anlık görüntüyü `invitations/{id}.entitlements` alanına yazar.
 
 ## Paket matrisi
 
-| Özellik | Ücretsiz | Premium Etkinlik | Pro |
-|---|---:|---:|---:|
-| Fiyat hipotezi | ₺0 | ₺499 / etkinlik | ₺1.490 / ay |
-| Yayın | 30 gün | 12 ay | 20 aktif etkinlik |
-| LCV | 30 | 500 | etkinlik başı 5.000 |
-| Şablon | Temel | Tümü | Tümü |
-| Filigran | Var | Yok | Yok + marka kiti |
-| Özel kısa link | — | Var | Var |
-| Fotoğraf | — | 20 | etkinlik başı 100 |
-| Müzik, program, harita, hediye | — | Var | Var |
-| Analitik ve CSV | — | Var | Var |
-| Hatırlatma | — | Var | Var / toplu |
-| Ekip | 1 kişi | 2 kişi | 5 kişi |
-| Destek | Standart | Öncelikli | Öncelikli |
+| Özellik | Ücretsiz | Filigransız | Premium Etkinlik | Pro (yakında) |
+|---|---:|---:|---:|---:|
+| Fiyat hipotezi | ₺0 | ₺99,90 tek ödeme | ₺499 tek ödeme | ₺1.490 / ay |
+| Yayın | 30 gün | 90 gün | 12 ay | 20 aktif etkinlik |
+| LCV | 30 | 30 | 500 | etkinlik başı 5.000 |
+| Şablon | Temel | Tümü | Tümü | Tümü |
+| Filigran | Var | Yok | Yok | Yok + marka kiti |
+| Özel kısa link | — | — | Var | Var |
+| Fotoğraf | 12 | 12 | 20 | etkinlik başı 100 |
+| Müzik, program, harita, hediye | — | — | Var | Var |
+| Analitik ve CSV | — | — | Var | Var |
+| Hatırlatma | — | — | Var | Var / toplu |
+| Ekip | 1 kişi | 1 kişi | 2 kişi | 5 kişi |
+| Destek | Standart | Standart | Öncelikli | Öncelikli |
+
+Filigransız, "sadece filigranı kaldır" isteyen düşük bütçeli kullanıcıyı yakalar ve Premium Etkinlik'e yükseltme köprüsüdür (satın alanlara studio içinde ₺499 yükseltme sunulur; sistem asla plan düşürmez). LCV limitleri **yumuşak**tır: 30/500 aşımında yanıt kaybolmaz, ev sahibi panelinde sayaç kilitlenir ve yükseltme önerilir.
 
 SMS/WhatsApp Business gönderim ücretleri pakete gömülmez; sağlayıcı maliyeti + açık hizmet bedeliyle kontör olarak satılır. Böylece yüksek hacimli bir müşterinin marjı bozması engellenir.
 
 ## Fiyat hipotezi
 
-2026 Ağustos masa başı karşılaştırmasında Türkiye'deki görünen etkinlik başı teklifler yaklaşık ₺449–₺999 bandında; bir örnekte standart paket ₺599,90, diğerinde tek etkinlik ₺449 ve başka bir sağlayıcıda ₺499/₺699/₺999 katmanları görülmektedir. E-Davetiye'nin ilk giriş fiyatı ₺499, premium tasarım + gerçek LCV değerini korurken deneme bariyerini düşük tutar.
+2026 Ağustos masa başı karşılaştırmasında Türkiye'deki görünen etkinlik başı teklifler yaklaşık ₺449–₺999 bandında; bir örnekte standart paket ₺599,90, diğerinde tek etkinlik ₺449 ve başka bir sağlayıcıda ₺499/₺699/₺999 katmanları görülmektedir. E-Davetiye kademeli konumlanır: **₺99,90** giriş (yalnız filigran + tüm şablonlar) deneme bariyerini rakiplerin altına indirir; **₺499** tam paket premium tasarım + gerçek LCV değerini bandın ortasında karşılar. Nihai fiyatlar Deney A ile doğrulanır.
 
 Kaynaklar (fiyatlar tarihe ve kampanyaya göre değişebilir):
 
@@ -74,7 +76,7 @@ Paywall kapatıldığında içerik ve form verisi kaybolmaz. Kullanıcı paket s
 
 ## Ölçüm olayları
 
-`paywall_viewed`, `plan_selected`, `checkout_started`, `checkout_completed`, `checkout_failed`, `upgrade_dismissed`, `entitlement_blocked`. Tüm olaylarda `plan_id`, `trigger`, `invitation_type`, `experiment_variant`; ödeme olayında sunucu taraflı `order_id` bulunur. Kişisel davetli verisi analitiğe gönderilmez.
+Uygulanan olay adları (Türkçe; `functions/index.js` → `olayKaydet` ve `odemeCallback`): `paywall_goruntulendi`, `plan_secildi`, `odeme_baslatildi`, `odeme_tamamlandi`, `odeme_basarisiz`, `yukseltme_kapatildi`. Sayaçlar `analitik/funnel`, plan kırılımı `analitik/planlar` altında toplanır. `odeme_tamamlandi`/`odeme_basarisiz` sunucu tarafında (callback doğrulaması sonrası) artırılır; sipariş kimliği (`order_id` = iyzico paymentId) `orders/{token}` ve `invitations/{id}.orderId` alanında tutulur. Kişisel davetli verisi analitiğe gönderilmez.
 
 ## Yerel ödeme gereksinimleri
 
