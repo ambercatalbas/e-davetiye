@@ -6,7 +6,7 @@
   <style>
     :root{color-scheme:light dark;--bg:#fffaf7;--card:#fff;--text:#241c18;--muted:#6d625d;--line:#e9ddd6;--brand:#9b3f58}
     @media(prefers-color-scheme:dark){:root{--bg:#171311;--card:#211b18;--text:#f8efea;--muted:#c6b9b2;--line:#443832;--brand:#f1a9ba}}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 system-ui,-apple-system,sans-serif}main{max-width:840px;margin:auto;padding:32px 20px 80px}nav{display:flex;gap:12px;flex-wrap:wrap;margin:20px 0 32px}a{color:var(--brand)}nav a{padding:8px 12px;border:1px solid var(--line);border-radius:999px;text-decoration:none}section{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;margin:18px 0}h1{font-size:clamp(2rem,6vw,3.5rem);line-height:1.05}h2{font-size:1.35rem;margin-top:0}h3{font-size:1rem}p,li{max-width:72ch}.note{color:var(--muted)}table{width:100%;border-collapse:collapse}td,th{padding:9px;text-align:left;border-bottom:1px solid var(--line)}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 system-ui,-apple-system,sans-serif}main{max-width:840px;margin:auto;padding:32px 20px 80px}nav{display:flex;gap:12px;flex-wrap:wrap;margin:20px 0 32px}a{color:var(--brand)}nav a{padding:8px 12px;border:1px solid var(--line);border-radius:999px;text-decoration:none}section{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;margin:18px 0}h1{font-size:clamp(2rem,6vw,3.5rem);line-height:1.05}h2{font-size:1.35rem;margin-top:0}h3{font-size:1rem}p,li{max-width:72ch}.note{color:var(--muted)}table{width:100%;border-collapse:collapse}td,th{padding:9px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}.doldur{color:var(--brand);font-style:italic}.doldur::before{content:"▸ "}.hint{color:var(--muted);font-size:.85em}
     .geri{display:inline-flex;align-items:center;gap:5px;min-height:44px;margin-bottom:8px;padding:9px 15px 9px 11px;font:600 .9rem/1 system-ui,-apple-system,sans-serif;color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:12px;text-decoration:none;-webkit-tap-highlight-color:transparent;transition:border-color .15s,background .15s,transform .12s}
     .geri svg{flex:none;margin-left:-1px;color:var(--brand)}
     .geri:hover{border-color:var(--brand)}
@@ -20,7 +20,7 @@
     Studio
   </a>
   <h1>Gizlilik merkezi</h1>
-  <p class="note">Sürüm 2026-09-15-v2 · Türkçe metin aşağıdadır; English summary follows. Ticari işletme bilgileri (unvan, adres, MERSİS/vergi no) yayından önce tamamlanacaktır.</p>
+  <p class="note">Sürüm 2026-09-16-v3 · Türkçe metin aşağıdadır; English summary follows. Mesafeli satış satıcı alanları taslak olarak listelendi; <span class="doldur">işaretli</span> ticari bilgiler (unvan, adres, MERSİS/vergi no, KEP…) yayından önce doldurulacaktır.</p>
   <nav aria-label="Hukuki metinler"><a href="#lcv">LCV aydınlatma</a><a href="#gizlilik">Gizlilik</a><a href="#sartlar">Kullanım şartları</a><a href="#onbilgi">Ön bilgilendirme</a><a href="#mesafeli">Mesafeli satış</a><a href="#cerez">Çerezler</a><a href="#english">English</a></nav>
 
   <section id="lcv"><h2>LCV Aydınlatma Metni</h2>
@@ -45,15 +45,22 @@
   </section>
 
   <section id="onbilgi"><h2>Ön Bilgilendirme Formu</h2>
-    <p class="note" style="border:1px solid var(--brand);border-radius:12px;padding:10px 12px"><strong>TASLAK.</strong> Bu metin 6502 sayılı Tüketicinin Korunması Hakkında Kanun ve Mesafeli Sözleşmeler Yönetmeliği çerçevesinde hazırlanmış taslaktır; köşeli parantezli <code>[…]</code> alanlar satıcının ticari bilgileriyle doldurulmalı ve yayından önce hukuk danışmanınca gözden geçirilmelidir.</p>
+    <p class="note" style="border:1px solid var(--brand);border-radius:12px;padding:10px 12px"><strong>TASLAK.</strong> Bu metin 6502 sayılı Tüketicinin Korunması Hakkında Kanun ve Mesafeli Sözleşmeler Yönetmeliği çerçevesinde hazırlanmış taslaktır; <span class="doldur">işaretli</span> alanlar satıcının ticari bilgileriyle doldurulmalı ve yayından önce hukuk danışmanınca gözden geçirilmelidir.</p>
     <p>İşbu form, mesafeli sözleşme kurulmadan önce tüketiciyi bilgilendirmek amacıyla düzenlenmiştir. Ödeme adımında bu formu ve <a href="#mesafeli">Mesafeli Satış Sözleşmesi</a>'ni onaylamanız istenir.</p>
 
     <h3>1. Satıcı / hizmet sağlayıcı</h3>
+    <p class="hint">Aşağıdaki alanlar yayından önce satıcının gerçek ticari bilgileriyle doldurulmalıdır. <span class="doldur">işaretli</span> satırlar boştur. Tüzel kişi (Ltd./A.Ş.) ve şahıs firması için farklı alanlar geçerlidir — ilgili olmayan satırı silin.</p>
     <table>
-      <tr><th>Unvan</th><td>[Ticari unvan]</td></tr>
-      <tr><th>Adres</th><td>[Açık adres]</td></tr>
-      <tr><th>MERSİS / Vergi no</th><td>[MERSİS no] / [Vergi dairesi ve no]</td></tr>
-      <tr><th>E-posta / Telefon</th><td><a href="mailto:support@ambersf.com">support@ambersf.com</a> / [Telefon]</td></tr>
+      <tr><th>Unvan / ad-soyad</th><td><span class="doldur">Ticari unvan</span> <span class="hint">(tüzel kişi: tam unvan, ör. “… Yazılım Ltd. Şti.”; şahıs firması: ad-soyad + varsa işletme adı)</span></td></tr>
+      <tr><th>İşletme türü</th><td><span class="doldur">Limited / Anonim / Şahıs firması</span></td></tr>
+      <tr><th>Açık adres</th><td><span class="doldur">Mahalle, cadde/sokak, no, ilçe/il, posta kodu</span></td></tr>
+      <tr><th>Telefon</th><td><span class="doldur">+90 (5xx) xxx xx xx</span></td></tr>
+      <tr><th>E-posta</th><td><a href="mailto:support@ambersf.com">support@ambersf.com</a></td></tr>
+      <tr><th>KEP adresi</th><td><span class="doldur">…@hs01.kep.tr</span> <span class="hint">(tüzel kişiler için zorunlu; varsa)</span></td></tr>
+      <tr><th>MERSİS no</th><td><span class="doldur">16 haneli MERSİS numarası</span></td></tr>
+      <tr><th>Ticaret sicil no / müdürlüğü</th><td><span class="doldur">Sicil no</span> / <span class="doldur">… Ticaret Sicil Müdürlüğü</span> <span class="hint">(tüzel kişi)</span></td></tr>
+      <tr><th>Vergi dairesi ve no</th><td><span class="doldur">Vergi dairesi</span> / <span class="doldur">10 haneli VKN</span> <span class="hint">(şahıs firması ise 11 haneli T.C. kimlik no)</span></td></tr>
+      <tr><th>ETBİS kaydı</th><td><span class="doldur">ETBİS'e kayıtlı / kayıt bilgisi</span> <span class="hint">(elektronik ticaret bilgi sistemi bildirimi)</span></td></tr>
     </table>
 
     <h3>2. Hizmetin temel nitelikleri</h3>
@@ -81,7 +88,7 @@
     <p class="note" style="border:1px solid var(--brand);border-radius:12px;padding:10px 12px"><strong>TASLAK.</strong> Yayından önce satıcı bilgileri doldurulmalı ve hukuk danışmanınca onaylanmalıdır.</p>
 
     <h3>Madde 1 — Taraflar</h3>
-    <p><strong>Satıcı:</strong> [Ticari unvan], [adres], [MERSİS/vergi no], <a href="mailto:support@ambersf.com">support@ambersf.com</a>, [telefon].<br>
+    <p><strong>Satıcı:</strong> <a href="#onbilgi">Ön Bilgilendirme Formu'ndaki</a> satıcı bilgileri (unvan, adres, MERSİS/vergi no, KEP, telefon, e-posta) bu sözleşmenin ayrılmaz parçasıdır.<br>
     <strong>Alıcı (Tüketici):</strong> Ödeme adımında beyan ettiği ad-soyad, e-posta, telefon, kimlik ve adres bilgileri esas alınan kullanıcı.</p>
 
     <h3>Madde 2 — Konu</h3>
