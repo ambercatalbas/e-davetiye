@@ -1,6 +1,6 @@
 {
   "$schema": "../schemas/plans.schema.json",
-  "version": "2026-08-06-v1",
+  "version": "2026-09-14-v2",
   "currency": "TRY",
   "plans": [
     {
@@ -8,8 +8,16 @@
       "name": "Ücretsiz",
       "billing": "free",
       "price": 0,
-      "limits": { "activeInvitations": 1, "rsvpsPerInvitation": 30, "photos": 0, "teamMembers": 1, "publishDays": 30 },
+      "limits": { "activeInvitations": 1, "rsvpsPerInvitation": 30, "photos": 12, "teamMembers": 1, "publishDays": 30 },
       "features": ["basic_templates", "countdown", "whatsapp_share", "qr", "watermark"]
+    },
+    {
+      "id": "premium_watermark",
+      "name": "Filigransız",
+      "billing": "one_time",
+      "price": 99.9,
+      "limits": { "activeInvitations": 1, "rsvpsPerInvitation": 30, "photos": 12, "teamMembers": 1, "publishDays": 90 },
+      "features": ["all_templates", "countdown", "whatsapp_share", "qr", "remove_watermark"]
     },
     {
       "id": "premium_event",

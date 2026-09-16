@@ -15,13 +15,20 @@ service cloud.firestore {
     match /invitations/{inviteId} {
       allow get: if true;
       allow list: if false;
-      // premium YALNIZ sunucu (Cloud Functions admin) tarafından yazılır; istemci veremez.
+      // premium/plan/entitlements/orderId/planAt YALNIZ sunucu (Cloud Functions admin)
+      // tarafından yazılır; istemci ne oluştururken verebilir ne de sonradan değiştirebilir.
       allow create: if request.auth != null
                     && request.resource.data.ownerUid == request.auth.uid
-                    && request.resource.data.get('premium', false) == false;
+                    && request.resource.data.get('premium', false) == false
+                    && request.resource.data.get('plan', 'free') == 'free'
+                    && request.resource.data.get('entitlements', {}) == {}
+                    && request.resource.data.get('orderId', '') == '';
       allow update: if request.auth != null
                     && resource.data.ownerUid == request.auth.uid
-                    && request.resource.data.get('premium', false) == resource.data.get('premium', false);
+                    && request.resource.data.get('premium', false) == resource.data.get('premium', false)
+                    && request.resource.data.get('plan', 'free') == resource.data.get('plan', 'free')
+                    && request.resource.data.get('entitlements', {}) == resource.data.get('entitlements', {})
+                    && request.resource.data.get('orderId', '') == resource.data.get('orderId', '');
       allow delete: if request.auth != null
                     && resource.data.ownerUid == request.auth.uid;
 
@@ -152,6 +159,12 @@ service cloud.firestore {
         && request.auth.token.email == 'ambercatalbas@gmail.com'
         && request.auth.token.email_verified == true;
       allow write: if false;
+    }
+
+    // Ödeme siparişleri: order_id + idempotency kaydı. YALNIZ sunucu (Cloud Function
+    // admin SDK) yazar/okur; alıcı e-postası içerir, istemciye hiç açılmaz.
+    match /orders/{token} {
+      allow read, write: if false;
     }
 
     // Özel kısa link: slug -> inviteId. Herkes çözebilir; yalnızca sahip oluşturur (benzersiz).

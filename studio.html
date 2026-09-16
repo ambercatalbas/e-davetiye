@@ -359,8 +359,9 @@
         <input type="text" id="inUst" maxlength="60">
       </div>
       <div class="field">
-        <label for="inAlici">Kime <span class="hint">(el yazısı hitap)</span></label>
-        <input type="text" id="inAlici" maxlength="60">
+        <label for="inAlici">Karşılama <span class="hint">(herkese görünür, el yazısı)</span></label>
+        <input type="text" id="inAlici" maxlength="60" placeholder="Sevgili Misafirlerimiz">
+        <p class="hint" style="margin:6px 2px 0;line-height:1.5">Belirli bir kişiye özel değil, herkese görünen karşılamadır. Kişiye özel isim için aşağıdaki <b>“Kişiye özel link”</b> bölümünü kullanın — davetiye o kişiye “Sevgili {isim}” diye açılır.</p>
       </div>
       <div class="field">
         <label for="inBaslik">Başlık</label>
@@ -563,8 +564,8 @@
         </div>
         <button class="btn block" type="button" id="btnPaket" style="margin-top:8px">🎁 Paylaşım Paketi — QR · Story · Baskı</button>
         <button class="btn block" type="button" id="btnDavetliListe" style="margin-top:8px">👥 Davetli Listesi — kişiye özel link &amp; takip</button>
-        <button class="btn block" type="button" id="btnPremium" style="margin-top:8px">✦ Filigranı Kaldır — Premium (99,90 ₺)</button>
-        <p class="note" id="premiumKilitNot" style="display:none;margin-top:6px">🔒 <b>Premium şablon.</b> Filigransız, tam premium paylaşım için Premium alın.</p>
+        <button class="btn block" type="button" id="btnPremium" style="margin-top:8px">✦ Filigranı Kaldır / Yükselt</button>
+        <p class="note" id="premiumKilitNot" style="display:none;margin-top:6px">🔒 <b>Premium şablon.</b> Filigransız ve tam premium paylaşım için bir plana yükseltin (₺99,90'dan başlar).</p>
         <details class="share-quick" id="kisiselBox">
           <summary>Kişiye özel davet linki</summary>
           <p class="note" style="margin-top:10px">Her davetliye ismiyle hitap eden ayrı bir link üretin — davetiye <b>“Sevgili …”</b> diye açılır, LCV adı hazır gelir, yanıt kişiyle eşleşir.</p>
@@ -1354,11 +1355,13 @@ $("heroInput").addEventListener("change", async (e)=>{
   catch(err){ console.error(err); alert("Görsel yüklenemedi ("+(err.code||err.message||"")+"). Storage açık ve kurallar publish edilmiş mi?"); }
   finally{ yer.remove(); if(!_fotoHero) $("heroEkle").style.display=""; }
 });
-const GALERI_LIMIT = 12; // plan kotası (ücretsiz) — galeri fotoğraf sayısı
+// Galeri kotası plana göre (config/plans.json → entitlements.limits.photos). Ücretsiz varsayılan 12.
+function galeriLimit(){ try{ return limitAl("photos", 12); }catch(e){ return 12; } }
 $("galeriInput").addEventListener("change", async (e)=>{
   const files = [...(e.target.files||[])]; e.target.value=""; if(!files.length) return;
+  const GALERI_LIMIT = galeriLimit();
   const kalan = GALERI_LIMIT - _fotoGaleri.length;
-  if(kalan <= 0){ alert("Galeri limiti dolu — en fazla "+GALERI_LIMIT+" fotoğraf."); return; }
+  if(kalan <= 0){ alert("Galeri limiti dolu — planınızda en fazla "+GALERI_LIMIT+" fotoğraf. Daha fazlası için Premium Etkinlik'e yükseltin."); return; }
   const eklenecek = files.slice(0, kalan);
   if(files.length > kalan) alert("Galeri limiti "+GALERI_LIMIT+" — yalnız "+kalan+" fotoğraf eklenecek.");
   for(const f of eklenecek){
@@ -1432,9 +1435,17 @@ async function yayinla(){
     const veri = { ownerUid: _auth.currentUser.uid, cfg: cfgKur(), premiumSablon: !!_aktifPremiumSablon, createdAt: serverTimestamp() };
     let id = localStorage.getItem(YAYIN_ANAHTAR);
     if(id){
-      // Yeniden yayınlarken premium'u koru (setDoc tüm dokümanı ezer)
+      // Yeniden yayınlarken sunucu-sahipli alanları KORU (setDoc tüm dokümanı ezer;
+      // firestore.rules bu alanların istemcide değişmesini reddeder).
       try{ const eski = await getDoc(doc(_db,"invitations",id));
-        if(eski.exists() && eski.data().premium){ veri.premium = true; if(eski.data().premiumAt) veri.premiumAt = eski.data().premiumAt; } }catch(e){}
+        if(eski.exists()){ const e = eski.data();
+          if(e.premium) veri.premium = true;
+          if(e.premiumAt) veri.premiumAt = e.premiumAt;
+          if(e.plan) veri.plan = e.plan;
+          if(e.entitlements) veri.entitlements = e.entitlements;
+          if(e.orderId) veri.orderId = e.orderId;
+          if(e.planAt) veri.planAt = e.planAt;
+        } }catch(e){}
       await setDoc(doc(_db,"invitations",id), veri);
     }
     else { const ref = await addDoc(collection(_db,"invitations"), veri); id = ref.id; localStorage.setItem(YAYIN_ANAHTAR, id); }
@@ -1442,10 +1453,14 @@ async function yayinla(){
     let paylasLink = idLinki(id), slugKullanildi = "";
     const slugHam = (val("inSlug") || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
     if (slugHam && slugHam.length >= 3) {
-      try {
-        await setDoc(doc(_db, "slugs", slugHam), { inviteId: id, ownerUid: _auth.currentUser.uid, createdAt: serverTimestamp() });
-        paylasLink = RENDER + "?s=" + slugHam; slugKullanildi = slugHam;
-      } catch (e) { console.warn(e); alert("“" + slugHam + "” özel linki alınamadı (başkası kullanıyor olabilir). Kimlik linki kullanılıyor."); }
+      if (!hakVar("custom_slug")) {
+        alert("Özel kısa link Premium Etkinlik planına dahildir. Şimdilik kimlik linki kullanılıyor; “Yükselt” ile açabilirsiniz.");
+      } else {
+        try {
+          await setDoc(doc(_db, "slugs", slugHam), { inviteId: id, ownerUid: _auth.currentUser.uid, createdAt: serverTimestamp() });
+          paylasLink = RENDER + "?s=" + slugHam; slugKullanildi = slugHam;
+        } catch (e) { console.warn(e); alert("“" + slugHam + "” özel linki alınamadı (başkası kullanıyor olabilir). Kimlik linki kullanılıyor."); }
+      }
     }
     $("outIdLink").value = paylasLink;
     $("btnYanit").href = yanitLinki(id);
@@ -2288,47 +2303,137 @@ $("davetliKapat").addEventListener("click", davetliKapatFn);
 $("davetliArka").addEventListener("click", davetliKapatFn);
 document.addEventListener("keydown", e=>{ if(e.key==="Escape" && !$("davetliModal").hidden) davetliKapatFn(); });
 
-/* ---- Premium / filigran kaldırma (#33 — iyzico) ---- */
+/* ---- Yükseltme / paywall (#33 — iyzico, kademeli) ---- */
 const ODEME_FN = "https://us-central1-e-davetiye-94b6b.cloudfunctions.net/odemeBaslat";
+let _aktifPlan = "free", _aktifEnt = null;                 // sunucudan gelen plan + haklar
+function hakVar(f){ return !!(_aktifEnt && Array.isArray(_aktifEnt.features) && _aktifEnt.features.indexOf(f) >= 0); }
+function limitAl(ad, varsayilan){ return (_aktifEnt && _aktifEnt.limits && _aktifEnt.limits[ad] != null) ? _aktifEnt.limits[ad] : varsayilan; }
+function olayPlan(tip, plan){ try{ fetch(OLAY_FN, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({tip, plan}), keepalive:true }).catch(()=>{}); }catch(e){} }
+
+// Satın alınabilir ürünler (config/plans.json ile senkron; fiyat KDV dahil).
+const URUNLER = [
+  { id:"premium_watermark", ad:"Filigransız", fiyat:"99,90", vaat:["Filigran kaldırılır","Tüm premium şablonlar","90 gün yayın"] },
+  { id:"premium_event",     ad:"Premium Etkinlik", fiyat:"499", vurgu:true, vaat:["Her şey dahil + 500 LCV","Özel kısa link","20 fotoğraf, müzik, program, harita","Analitik, CSV, hatırlatma","12 ay yayın"] },
+];
+
 async function premiumDurumGuncelle(){
   const btn = $("btnPremium"), not = $("premiumKilitNot"); if(!btn) return;
   const id = localStorage.getItem(YAYIN_ANAHTAR);
   const gizle = ()=>{ if(not) not.style.display="none"; };
   if(!id){ btn.style.display = "none"; gizle(); return; }
   btn.style.display = "";
-  let premium = false;
+  _aktifPlan = "free"; _aktifEnt = null;
   try{
     await firebaseHazir();
     const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
     const s = await getDoc(doc(_db,"invitations",id));
-    if(s.exists()){ premium = !!s.data().premium; if(s.data().premiumSablon != null) _aktifPremiumSablon = !!s.data().premiumSablon; }
+    if(s.exists()){
+      const d = s.data();
+      if(d.premiumSablon != null) _aktifPremiumSablon = !!d.premiumSablon;
+      _aktifEnt = d.entitlements || null;
+      _aktifPlan = d.plan || (d.premium ? "premium_watermark" : "free");
+    }
   }catch(e){ /* sessiz */ }
-  if(premium){
-    btn.textContent = "✦ Premium etkin — filigransız ✓"; btn.disabled = true; btn.style.opacity = ".75"; gizle();
+  if(_aktifPlan === "premium_event" || _aktifPlan === "pro_monthly"){
+    btn.textContent = "✦ Premium Etkinlik etkin ✓"; btn.disabled = true; btn.style.opacity = ".75"; gizle();
+  } else if(_aktifPlan === "premium_watermark"){
+    btn.textContent = "⬆︎ Premium Etkinlik'e yükselt (₺499)"; btn.disabled = false; btn.style.opacity = ""; gizle();
   } else if(_aktifPremiumSablon){
-    btn.textContent = "🔒 Premium şablon — Kilidi Aç (99,90 ₺)"; btn.disabled = false; btn.style.opacity = "";
+    btn.textContent = "🔒 Premium şablon — Kilidi Aç"; btn.disabled = false; btn.style.opacity = "";
     if(not) not.style.display = "";
   } else {
-    btn.textContent = "✦ Filigranı Kaldır — Premium (99,90 ₺)"; btn.disabled = false; btn.style.opacity = ""; gizle();
+    btn.textContent = "✦ Filigranı Kaldır / Yükselt"; btn.disabled = false; btn.style.opacity = ""; gizle();
   }
 }
-$("btnPremium").addEventListener("click", async ()=>{
-  const id = localStorage.getItem(YAYIN_ANAHTAR);
-  if(!id){ alert("Önce davetiyeyi yayınlayın."); return; }
-  const btn = $("btnPremium"); const t0 = btn.textContent;
-  btn.disabled = true; btn.textContent = "Ödeme başlatılıyor…";
-  try{
-    const r = await fetch(ODEME_FN, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ inviteId: id }) });
-    const j = await r.json();
-    if(j.paymentPageUrl){
-      window.open(j.paymentPageUrl, "_blank", "noopener");
-      btn.textContent = "Ödeme sekmesi açıldı — tamamlayıp bu sayfayı yenileyin";
-    } else {
-      alert("Ödeme başlatılamadı: " + (j.detay || j.hata || "bilinmeyen"));
-      btn.disabled = false; btn.textContent = t0;
-    }
-  }catch(e){ alert("Ödeme hatası: " + e.message); btn.disabled = false; btn.textContent = t0; }
+
+// Kendinden barındıran paywall modalı (tek sefer kurulur).
+function paywallKur(){
+  if($("paywallArka")) return;
+  const arka = document.createElement("div");
+  arka.id = "paywallArka";
+  arka.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;z-index:9999;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 12px";
+  arka.innerHTML =
+    '<div role="dialog" aria-modal="true" aria-labelledby="pwBaslik" style="background:var(--panel,#1b1e2b);color:var(--ink,#eef);max-width:560px;width:100%;border:1px solid var(--edge,#333);border-radius:18px;padding:20px 18px;font:15px/1.5 system-ui,sans-serif">'
+    + '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2 id="pwBaslik" style="margin:0;font-size:1.15rem">Davetiyeni yükselt</h2>'
+    + '<button type="button" id="pwKapat" aria-label="Kapat" style="border:0;background:transparent;color:inherit;font-size:1.5rem;cursor:pointer;min-width:44px;min-height:44px">×</button></div>'
+    + '<div id="pwUrunler" style="display:grid;gap:10px;margin:14px 0"></div>'
+    + '<form id="pwForm" style="display:grid;gap:8px">'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input name="name" aria-label="Ad" placeholder="Ad" autocomplete="given-name" required><input name="surname" aria-label="Soyad" placeholder="Soyad" autocomplete="family-name" required></div>'
+    + '<input name="email" type="email" aria-label="E-posta" placeholder="E-posta" autocomplete="email" required>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input name="gsm" type="tel" aria-label="Telefon" placeholder="Telefon (5xx…)" autocomplete="tel" required><input name="identityNumber" inputmode="numeric" maxlength="11" aria-label="T.C. Kimlik No" placeholder="T.C. Kimlik No" required></div>'
+    + '<div style="display:grid;grid-template-columns:1fr 2fr;gap:8px"><input name="city" aria-label="İl" placeholder="İl" required><input name="address" aria-label="Adres" placeholder="Adres" required></div>'
+    + '<label style="display:flex;gap:8px;align-items:flex-start;font-size:.85rem;color:var(--soft,#aab)"><input type="checkbox" id="pwOnay" required style="margin-top:3px"><span><a href="./legal.html" target="_blank" rel="noopener" style="color:inherit">Mesafeli satış sözleşmesi, ön bilgilendirme ve KVKK aydınlatma metnini</a> okudum; dijital ürünün ödeme sonrası <b>anında açılmasını</b> ve bu nedenle <b>cayma hakkımın olmadığını</b> kabul ediyorum.</span></label>'
+    + '<p id="pwToplam" style="margin:4px 0;font-weight:700"></p>'
+    + '<button type="submit" id="pwOde" class="btn pri block">Güvenli Ödemeye Geç</button>'
+    + '<p id="pwHata" style="min-height:1em;margin:2px 0;font-size:.85rem;color:#f88"></p>'
+    + '<p style="font-size:.78rem;color:var(--soft,#aab);margin:0">Ödeme iyzico güvenli sayfasında alınır; kart bilgin sunucularımıza uğramaz. Fiyatlar KDV dahildir.</p>'
+    + '</form></div>';
+  document.body.appendChild(arka);
+  arka.querySelectorAll("input:not([type=checkbox])").forEach(i=>{ i.style.cssText = "width:100%;padding:11px;border-radius:10px;border:1px solid var(--edge,#444);background:var(--field,#12141d);color:inherit;font:inherit"; });
+
+  let _secili = "premium_event";
+  const urunlerKutu = arka.querySelector("#pwUrunler");
+  function urunleriCiz(){
+    urunlerKutu.innerHTML = "";
+    const list = URUNLER.filter(u=> !(_aktifPlan==="premium_watermark" && u.id==="premium_watermark")); // filigransız olan yalnız üste yükseltir
+    if(!list.some(u=>u.id===_secili)) _secili = list[0] ? list[0].id : "premium_event";
+    list.forEach(u=>{
+      const sec = u.id===_secili;
+      const kart = document.createElement("button");
+      kart.type = "button";
+      kart.style.cssText = "text-align:left;border:2px solid "+(sec?"var(--gold,#c8a24a)":"var(--edge,#444)")+";background:var(--field,#12141d);color:inherit;border-radius:14px;padding:12px 14px;cursor:pointer";
+      kart.innerHTML = "<div style='display:flex;justify-content:space-between;align-items:center;gap:8px'><strong>"+u.ad+(u.vurgu?" ★":"")+"</strong><span style='font-size:1.1rem;font-weight:750'>₺"+u.fiyat+"</span></div><ul style='margin:8px 0 0;padding-left:18px;font-size:.85rem;color:var(--soft,#aab)'>"+u.vaat.map(v=>"<li>"+v+"</li>").join("")+"</ul>";
+      kart.addEventListener("click", ()=>{ _secili = u.id; olayPlan("plan_secildi", u.id); urunleriCiz(); toplamGuncelle(); });
+      urunlerKutu.appendChild(kart);
+    });
+  }
+  function seciliUrun(){ return URUNLER.find(u=>u.id===_secili) || URUNLER[1]; }
+  function toplamGuncelle(){ arka.querySelector("#pwToplam").textContent = "Toplam: ₺"+seciliUrun().fiyat+" (KDV dahil, tek ödeme)"; }
+
+  arka.querySelector("#pwKapat").addEventListener("click", ()=>{ olay("yukseltme_kapatildi"); paywallKapat(); });
+  arka.addEventListener("click", e=>{ if(e.target===arka){ olay("yukseltme_kapatildi"); paywallKapat(); } });
+
+  arka.querySelector("#pwForm").addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const id = localStorage.getItem(YAYIN_ANAHTAR);
+    const hataAlan = arka.querySelector("#pwHata");
+    hataAlan.style.color = "#f88"; hataAlan.textContent = "";
+    if(!id){ hataAlan.textContent = "Önce davetiyeyi yayınlayın."; return; }
+    const f = e.target;
+    const buyer = { name:f.name.value, surname:f.surname.value, email:f.email.value, gsm:f.gsm.value, identityNumber:f.identityNumber.value, city:f.city.value, address:f.address.value };
+    try{ localStorage.setItem("pwBuyer", JSON.stringify({name:buyer.name,surname:buyer.surname,email:buyer.email,gsm:buyer.gsm,city:buyer.city,address:buyer.address})); }catch(_){} // TCKN saklanmaz (KVKK)
+    const ode = arka.querySelector("#pwOde"), t0 = ode.textContent;
+    ode.disabled = true; ode.textContent = "Ödeme başlatılıyor…";
+    olayPlan("odeme_baslatildi", _secili);
+    try{
+      const r = await fetch(ODEME_FN, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ inviteId:id, urun:_secili, buyer }) });
+      const j = await r.json();
+      if(j.paymentPageUrl){
+        window.open(j.paymentPageUrl, "_blank", "noopener");
+        hataAlan.style.color = "var(--soft,#aab)";
+        hataAlan.textContent = "Ödeme sekmesi açıldı — tamamlayıp bu sayfaya dönün.";
+        ode.textContent = "Ödeme sekmesi açıldı";
+      } else {
+        hataAlan.textContent = "Ödeme başlatılamadı: " + (j.hata || j.detay || "bilinmeyen");
+        ode.disabled = false; ode.textContent = t0;
+      }
+    }catch(err){ hataAlan.textContent = "Ödeme hatası: " + err.message; ode.disabled = false; ode.textContent = t0; }
+  });
+
+  arka._ac = ()=>{
+    urunleriCiz(); toplamGuncelle();
+    try{ const b = JSON.parse(localStorage.getItem("pwBuyer")||"{}"); const f = arka.querySelector("#pwForm"); ["name","surname","email","gsm","city","address"].forEach(k=>{ if(b[k]) f[k].value = b[k]; }); }catch(_){}
+    arka.style.display = "flex";
+  };
+}
+function paywallAc(){ paywallKur(); olay("paywall_goruntulendi"); const a=$("paywallArka"); if(a && a._ac) a._ac(); }
+function paywallKapat(){ const a=$("paywallArka"); if(a) a.style.display="none"; }
+
+$("btnPremium").addEventListener("click", ()=>{
+  if(!localStorage.getItem(YAYIN_ANAHTAR)){ alert("Önce davetiyeyi yayınlayın."); return; }
+  paywallAc();
 });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape"){ const a=$("paywallArka"); if(a && a.style.display!=="none"){ olay("yukseltme_kapatildi"); paywallKapat(); } } });
 
 /* ---- Başlat ---- */
 temaCiz();
@@ -2338,6 +2443,19 @@ onizle();
 galeriYukle();
 ortakBaslangic();   // paylaşılan #ortak= linkiyle açıldıysa canlı taslağa bağlan
 olayBir("kayit","analitik.kayit.v1");   // funnel: bu tarayıcıda ilk studio açılışı
+// Ödeme dönüşü (odemeCallback yönlendirir): planı tazele ve kullanıcıyı bilgilendir.
+(function(){
+  try{
+    const p = new URLSearchParams(location.search);
+    const o = p.get("odeme");
+    if(!o) return;
+    if(o === "ok"){ premiumDurumGuncelle(); setTimeout(()=> alert("Ödeme alındı ✓ Planınız güncellendi. Filigran ve premium özellikler açıldı."), 300); }
+    else if(o === "hata"){ alert("Ödeme tamamlanamadı. Tutar tahsil edildiyse birkaç dakika içinde yansır; sorun sürerse destekle iletişime geçin."); }
+    // URL'yi temizle (yenilemede tekrar uyarmasın)
+    p.delete("odeme"); const yeni = location.pathname + (p.toString() ? "?" + p.toString() : "") + location.hash;
+    history.replaceState(null, "", yeni);
+  }catch(e){}
+})();
 </script>
 <footer style="padding:24px 16px;text-align:center;font:13px/1.6 var(--f-sans,system-ui);color:var(--soft,#565C77)">
   <a href="./pricing.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px">Paketler</a> · <a href="./legal.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px">Gizlilik · KVKK · Kullanım Şartları</a>
