@@ -2353,15 +2353,15 @@ function paywallKur(){
   arka.id = "paywallArka";
   arka.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;z-index:9999;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 12px";
   arka.innerHTML =
-    '<div role="dialog" aria-modal="true" aria-labelledby="pwBaslik" style="background:var(--panel,#1b1e2b);color:var(--ink,#eef);max-width:560px;width:100%;border:1px solid var(--edge,#333);border-radius:18px;padding:20px 18px;font:15px/1.5 system-ui,sans-serif">'
+    '<div role="dialog" aria-modal="true" aria-labelledby="pwBaslik" style="background:var(--panel,#1b1e2b);color:var(--ink,#eef);max-width:min(560px,100%);width:100%;box-sizing:border-box;border:1px solid var(--edge,#333);border-radius:18px;padding:20px 18px;font:15px/1.5 system-ui,sans-serif">'
     + '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2 id="pwBaslik" style="margin:0;font-size:1.15rem">Davetiyeni yükselt</h2>'
     + '<button type="button" id="pwKapat" aria-label="Kapat" style="border:0;background:transparent;color:inherit;font-size:1.5rem;cursor:pointer;min-width:44px;min-height:44px">×</button></div>'
     + '<div id="pwUrunler" style="display:grid;gap:10px;margin:14px 0"></div>'
     + '<form id="pwForm" style="display:grid;gap:8px">'
-    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input name="name" aria-label="Ad" placeholder="Ad" autocomplete="given-name" required><input name="surname" aria-label="Soyad" placeholder="Soyad" autocomplete="family-name" required></div>'
+    + '<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px"><input name="name" aria-label="Ad" placeholder="Ad" autocomplete="given-name" required><input name="surname" aria-label="Soyad" placeholder="Soyad" autocomplete="family-name" required></div>'
     + '<input name="email" type="email" aria-label="E-posta" placeholder="E-posta" autocomplete="email" required>'
-    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input name="gsm" type="tel" aria-label="Telefon" placeholder="Telefon (5xx…)" autocomplete="tel" required><input name="identityNumber" inputmode="numeric" maxlength="11" aria-label="T.C. Kimlik No" placeholder="T.C. Kimlik No" required></div>'
-    + '<div style="display:grid;grid-template-columns:1fr 2fr;gap:8px"><input name="city" aria-label="İl" placeholder="İl" required><input name="address" aria-label="Adres" placeholder="Adres" required></div>'
+    + '<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px"><input name="gsm" type="tel" aria-label="Telefon" placeholder="Telefon (5xx…)" autocomplete="tel" required><input name="identityNumber" inputmode="numeric" maxlength="11" aria-label="T.C. Kimlik No" placeholder="T.C. Kimlik No" required></div>'
+    + '<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:8px"><input name="city" aria-label="İl" placeholder="İl" required><input name="address" aria-label="Adres" placeholder="Adres" required></div>'
     + '<label style="display:flex;gap:8px;align-items:flex-start;font-size:.85rem;color:var(--soft,#aab)"><input type="checkbox" id="pwOnay" required style="margin-top:3px"><span><a href="./legal.html" target="_blank" rel="noopener" style="color:inherit">Mesafeli satış sözleşmesi, ön bilgilendirme ve KVKK aydınlatma metnini</a> okudum; dijital ürünün ödeme sonrası <b>anında açılmasını</b> ve bu nedenle <b>cayma hakkımın olmadığını</b> kabul ediyorum.</span></label>'
     + '<p id="pwToplam" style="margin:4px 0;font-weight:700"></p>'
     + '<button type="submit" id="pwOde" class="btn pri block">Güvenli Ödemeye Geç</button>'
@@ -2369,7 +2369,7 @@ function paywallKur(){
     + '<p style="font-size:.78rem;color:var(--soft,#aab);margin:0">Ödeme iyzico güvenli sayfasında alınır; kart bilgin sunucularımıza uğramaz. Fiyatlar KDV dahildir.</p>'
     + '</form></div>';
   document.body.appendChild(arka);
-  arka.querySelectorAll("input:not([type=checkbox])").forEach(i=>{ i.style.cssText = "width:100%;padding:11px;border-radius:10px;border:1px solid var(--edge,#444);background:var(--field,#12141d);color:inherit;font:inherit"; });
+  arka.querySelectorAll("input:not([type=checkbox])").forEach(i=>{ i.style.cssText = "width:100%;min-width:0;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid var(--edge,#444);background:var(--field,#12141d);color:inherit;font:inherit"; });
 
   let _secili = "premium_event";
   const urunlerKutu = arka.querySelector("#pwUrunler");
@@ -2409,10 +2409,22 @@ function paywallKur(){
       const r = await fetch(ODEME_FN, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ inviteId:id, urun:_secili, buyer }) });
       const j = await r.json();
       if(j.paymentPageUrl){
-        window.open(j.paymentPageUrl, "_blank", "noopener");
+        const url = j.paymentPageUrl;
         hataAlan.style.color = "var(--soft,#aab)";
-        hataAlan.textContent = "Ödeme sekmesi açıldı — tamamlayıp bu sayfaya dönün.";
-        ode.textContent = "Ödeme sekmesi açıldı";
+        const w = window.open(url, "_blank");
+        if(w){
+          // Yeni sekme açıldı — görünür yedek link de bırak (bazı tarayıcılar pop-up'ı sessizce engeller)
+          const a = document.createElement("a");
+          a.href = url; a.target = "_blank"; a.rel = "noopener"; a.textContent = "ödeme sayfasını açın";
+          a.style.color = "inherit"; a.style.textDecoration = "underline";
+          hataAlan.textContent = "Ödeme sekmesi açıldı — tamamlayıp bu sayfaya dönün. Açılmadıysa ";
+          hataAlan.appendChild(a); hataAlan.append(".");
+          ode.textContent = "Ödeme sekmesi açıldı";
+        } else {
+          // Pop-up engellendi → aynı sekmede yönlendir (iyzico dönüşte ?odeme=ok ile geri getirir)
+          hataAlan.textContent = "Ödeme sayfasına yönlendiriliyorsunuz…";
+          location.assign(url);
+        }
       } else {
         hataAlan.textContent = "Ödeme başlatılamadı: " + (j.hata || j.detay || "bilinmeyen");
         ode.disabled = false; ode.textContent = t0;
