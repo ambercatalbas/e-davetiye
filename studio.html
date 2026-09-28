@@ -77,7 +77,23 @@
     letter-spacing:.02em;padding:5px 10px;border-radius:999px;white-space:nowrap;
     color:var(--teal);background:color-mix(in srgb,var(--teal) 15%,transparent);
     border:1px solid color-mix(in srgb,var(--teal) 40%,transparent);}
+  .ortak-pill[hidden]{display:none;}
   .ortak-pill #ortakPillSayi{opacity:.85;}
+  .bar-actions{display:contents;}
+  /* Dar ekran: marka + tema üst satırda, eylemler alt satırda eşit paylaşır */
+  @media (max-width:760px){
+    .bar{flex-wrap:wrap;gap:8px 10px;padding:10px 14px;}
+    .bar-actions{display:flex;order:1;flex:1 0 100%;gap:6px;min-width:0;}
+    .bar-actions .btn{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;padding:9px 6px;font-size:.72rem;letter-spacing:.01em;}
+    .ortak-pill{min-width:0;}
+    #btnGiris{flex-shrink:4;}
+  }
+  .bar-actions .ikon{display:none;}
+  @media (max-width:400px){
+    #btnOrtak,#btnSifirla{flex:0 0 auto;padding-inline:12px;}
+    #btnOrtak .lbl,#btnSifirla .lbl{display:none;}
+    .bar-actions .ikon{display:inline;font-size:.95rem;}
+  }
 
   .layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);gap:clamp(16px,2.5vw,30px);
     max-width:1180px;margin:0 auto;padding:clamp(16px,3vw,30px);align-items:start;}
@@ -289,10 +305,12 @@
 <header class="bar">
   <div class="brand"><b>E-Davetiye</b><small>Studio</small></div>
   <span class="ortak-pill" id="ortakPill" hidden title="Ortak düzenleme aktif">🟢 Canlı<span id="ortakPillSayi"></span></span>
-  <button class="btn" type="button" id="btnOrtak" title="Eşinizle/ailenizle birlikte düzenleyin">👥 Birlikte</button>
-  <button class="btn" type="button" id="btnDavetlerim" title="Yayınladığın davetiyeler">Davetlerim</button>
-  <button class="btn" type="button" id="btnGiris" title="Google ile giriş — yanıtları her cihazdan gör">☁︎ Giriş</button>
-  <button class="btn" type="button" id="btnSifirla" title="Yeni davetiye">Sıfırla</button>
+  <div class="bar-actions">
+    <button class="btn" type="button" id="btnOrtak" title="Eşinizle/ailenizle birlikte düzenleyin" aria-label="Birlikte düzenle">👥<span class="lbl"> Birlikte</span></button>
+    <button class="btn" type="button" id="btnDavetlerim" title="Yayınladığın davetiyeler">Davetlerim</button>
+    <button class="btn" type="button" id="btnGiris" title="Google ile giriş — yanıtları her cihazdan gör">☁︎ Giriş</button>
+    <button class="btn" type="button" id="btnSifirla" title="Yeni davetiye" aria-label="Sıfırla"><span class="ikon">↺</span><span class="lbl">Sıfırla</span></button>
+  </div>
   <button class="theme-btn" type="button" id="btnTema" title="Açık / koyu" aria-label="Tema değiştir">◐</button>
 </header>
 
