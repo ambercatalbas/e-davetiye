@@ -88,3 +88,11 @@ test("davetiye değilse davetiyeMi=false korunur; bozuk girdi çökmez", () => {
   assert.equal(s.oneriler[0].sablonId, "dugun-klasik");
   assert.deepEqual(s.eksikler, ["isimler", "tarih", "saat", "mekan"]);
 });
+
+test("program: tek adım atılır, iki adım kalır", () => {
+  const tek = C.sonucuCozumle({ tur: "kurumsal", program: [{ saat: "18:30", baslik: "Kokteyl", yer: null }] }, { platform: "web", bugun: BUGUN });
+  assert.deepEqual(tek.program, []);
+  const iki = C.sonucuCozumle({ tur: "sunnet", program: [{ saat: null, baslik: "Mevlüt", yer: "Ev" }, { saat: "19.00", baslik: "Kutlama", yer: null }] }, { platform: "web", bugun: BUGUN });
+  assert.equal(iki.program.length, 2);
+  assert.equal(iki.program[1].saat, "19:00");
+});
