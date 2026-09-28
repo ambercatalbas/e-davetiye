@@ -30,6 +30,14 @@ try {
   }
 } catch { /* yukarıda raporlandı */ }
 
+// 1c) AI kataloğu templates.json ile senkron mu? (functions/ai/katalog.json)
+try {
+  const { katalogUret, KATALOG_YOLU } = await import("./ai-katalog.mjs");
+  const beklenen = JSON.stringify(katalogUret());
+  const mevcut = existsSync(KATALOG_YOLU) ? JSON.stringify(JSON.parse(readFileSync(KATALOG_YOLU, "utf8"))) : "";
+  if (beklenen !== mevcut) uyari("functions/ai/katalog.json eski — `node scripts/ai-katalog.mjs` çalıştır.");
+} catch (e) { uyari(`AI kataloğu denetlenemedi: ${e.message}`); }
+
 // 2) HTML'de referans verilen yerel varlıklar var mı?
 const htmlDosyalar = ["index.html", "studio.html", "yanitlar.html"];
 const yerelRefRe = /(?:src|href)\s*=\s*["']([^"']+)["']/g;

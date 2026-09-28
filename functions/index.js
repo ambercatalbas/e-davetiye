@@ -177,6 +177,8 @@ const OLAY_TIPLERI = [
   // Paywall / ödeme funnel'i (GELIR-MODELI.md):
   "paywall_goruntulendi", "plan_secildi", "odeme_baslatildi",
   "odeme_tamamlandi", "odeme_basarisiz", "yukseltme_kapatildi",
+  // AI sihirbazı funnel'i (ai_oneri sunucuda sayılır):
+  "ai_acildi", "ai_kabul",
 ];
 async function funnelArtir(alanlar) {
   const db = admin.firestore();
@@ -275,3 +277,6 @@ exports.odemeCallback = functions.region(BOLGE).https.onRequest((req, res) => {
     }
   });
 });
+
+// --- AI Davetiye Sihirbazı (Gen2, OpenAI) — ayrıntı: functions/ai/index.js ---
+exports.aiDavetiyeOner = require("./ai").aiDavetiyeOner;
