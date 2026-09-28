@@ -173,7 +173,9 @@ function maliyetMikroUsd(u) {
 }
 
 exports.aiDavetiyeOner = onRequest(
-  { region: "us-central1", secrets: [OPENAI_API_KEY], timeoutSeconds: 60, memory: "256MiB", maxInstances: 10 },
+  // invoker "public": Cloud Run kapısı açık; kimlik denetimi yukarıda (ID token + kota) yapılır.
+  // Açıkça yazılı olmalı — ilk oluşturma yarıda kalırsa CLI bu izni sonraki güncellemede eklemez.
+  { region: "us-central1", invoker: "public", secrets: [OPENAI_API_KEY], timeoutSeconds: 60, memory: "256MiB", maxInstances: 10 },
   async (req, res) => {
     cors(req, res);
     res.set("Cache-Control", "no-store");
