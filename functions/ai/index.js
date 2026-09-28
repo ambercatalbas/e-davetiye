@@ -107,6 +107,16 @@ async function kotaAyir(db, uid, ip, ayar) {
 }
 
 // ---- OpenAI ----
+// Secret biçim denetimi (değer ASLA loglanmaz). İçinde boşluk/satır sonu olan anahtar
+// fetch'te TypeError verir ve hata mesajı anahtarı içerir → baştan yakala.
+function anahtarAl() {
+  const a = String(OPENAI_API_KEY.value() || "").trim();
+  if (!a || /\s/.test(a) || !a.startsWith("sk-")) {
+    logger.error("OPENAI_API_KEY biçimi hatalı", { uzunluk: a.length, satir: a.split("\n").length, skBasi: a.startsWith("sk-") });
+    throw new ApiHata(503, "servis", "AI servisi şu an yapılandırılıyor, biraz sonra tekrar dener misin?");
+  }
+  return a;
+}
 async function gonder(url, govde, anahtar, etiket, deadline) {
   const kalan = () => deadline - Date.now();
   for (let deneme = 1; ; deneme++) {
@@ -121,7 +131,8 @@ async function gonder(url, govde, anahtar, etiket, deadline) {
       });
     } catch (e) {
       if (tekrarOlur()) { await bekle(BEKLEME_MS); continue; }
-      logger.error(`${etiket} ulaşılamadı`, { hata: String(e && e.name), deneme });
+      // e.message LOGLANMAZ: geçersiz başlık hatası Authorization değerini (anahtarı) içerir.
+      logger.error(`${etiket} ulaşılamadı`, { hata: String(e && e.name), neden: String((e && e.cause && e.cause.code) || ""), deneme });
       throw new ApiHata(503, "servis", "AI servisine şu an ulaşılamıyor.");
     }
     if (yanit.ok) return { json: await yanit.json(), deneme };
@@ -198,7 +209,7 @@ exports.aiDavetiyeOner = onRequest(
       const kota = await kotaAyir(db, uid, ipAl(req), ayar);
       iade = kota.iade;
 
-      const { sonuc, kullanim, deneme } = await oner(istek, OPENAI_API_KEY.value());
+      const { sonuc, kullanim, deneme } = await oner(istek, anahtarAl());
       if (!sonuc.davetiyeMi) {
         await iade(); iade = null;
         throw new ApiHata(422, "anlasilmadi", "Bunu bir davet olarak anlayamadım. Örneğin: “Haziranda Bodrum'da gün batımında kır düğünü”.");
