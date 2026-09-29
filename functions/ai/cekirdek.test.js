@@ -96,3 +96,16 @@ test("program: tek adım atılır, iki adım kalır", () => {
   assert.equal(iki.program.length, 2);
   assert.equal(iki.program[1].saat, "19:00");
 });
+
+test("gün belirtilmemişse model tarihi atılır (\"Haziranda\" → uydurma gün)", () => {
+  const g = C._test.gunBelirtilmis;
+  for (const e of ["14 Haziran'da düğün", "12 ekim cumartesi", "14.06.2027", "gelecek cumartesi", "yarın akşam",
+    "June 14th", "on the 3rd of May", "Saturday party", "2027-06-14", "15 июня", "am Samstag", "20 eylülde", "14/06"]) assert.ok(g(e), e);
+  for (const h of ["Haziranda Bodrum'da düğün", "next June in Istanbul", "hafta sonu mevlüt", "yakında nişan", "18:00 nikâh 19:30 yemek", "saat 19.30'da", "19.10'da başlıyor"]) assert.ok(!g(h), h);
+  const s = C.sonucuCozumle({ tur: "dugun", bilgiler: { tarih: "2027-06-05", lcvSonTarih: "2027-05-20" } },
+    { platform: "web", bugun: BUGUN, metin: "Haziranda Bodrum'da kır düğünü" });
+  assert.equal(s.bilgiler.tarih, null);
+  assert.ok(s.eksikler.includes("tarih"));
+  const k = C.sonucuCozumle({ tur: "dugun", bilgiler: { tarih: "2027-06-14" } }, { platform: "web", bugun: BUGUN, metin: "14 Haziran'da düğün" });
+  assert.equal(k.bilgiler.tarih, "2027-06-14");
+});
