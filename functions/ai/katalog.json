@@ -1,0 +1,497 @@
+{
+ "surum": 1,
+ "web": [
+  {
+   "id": "dugun-klasik",
+   "tur": "dugun",
+   "ad": "Altın Vaat",
+   "stil": "Klasik",
+   "renk": "Altın",
+   "tema": "safak",
+   "premium": false,
+   "aciklama": "Zarif serif, altın folyo ve zamansız bir düğün dili."
+  },
+  {
+   "id": "dugun-akdeniz",
+   "tur": "dugun",
+   "ad": "Akdeniz Nikâhı",
+   "stil": "Modern",
+   "renk": "Turkuaz",
+   "tema": "yaz",
+   "premium": true,
+   "aciklama": "Sahil nikâhları için turkuaz, mercan ve ferah bir kompozisyon."
+  },
+  {
+   "id": "dugun-minimal",
+   "tur": "dugun",
+   "ad": "Sessiz Zarafet",
+   "stil": "Minimal",
+   "renk": "Krem",
+   "tema": "minimal",
+   "premium": false,
+   "aciklama": "Fildişi, kömür ve adaçayıyla sakin; tipografi odaklı bir nikâh tasarımı."
+  },
+  {
+   "id": "dugun-botanik",
+   "tur": "dugun",
+   "ad": "Yeşil Yemin",
+   "stil": "Botanik",
+   "renk": "Yeşil",
+   "tema": "botanik",
+   "premium": true,
+   "aciklama": "Orman yeşili, gül tonları ve kır düğünlerine yakışan doğal bir atmosfer."
+  },
+  {
+   "id": "dugun-modern",
+   "tur": "dugun",
+   "ad": "Mavi Çizgi",
+   "stil": "Modern",
+   "renk": "Lacivert",
+   "tema": "modern",
+   "premium": false,
+   "aciklama": "İnci zemin, güçlü lacivert ve şehir düğünleri için keskin bir modernizm."
+  },
+  {
+   "id": "dugun-bohem",
+   "tur": "dugun",
+   "ad": "Toprak & Rüzgâr",
+   "stil": "Bohem",
+   "renk": "Toprak",
+   "tema": "bohem",
+   "premium": true,
+   "aciklama": "Kum, terakota ve özgür ruhlu sahil veya kır kutlamaları için sıcak tonlar."
+  },
+  {
+   "id": "dugun-gece",
+   "tur": "dugun",
+   "ad": "Gece Yarısı",
+   "stil": "Gece",
+   "renk": "Lacivert",
+   "tema": "gece",
+   "premium": true,
+   "aciklama": "Safir gece, ay ışığı ve yıldızların altında dramatik bir kutlama."
+  },
+  {
+   "id": "dugun-luks",
+   "tur": "dugun",
+   "ad": "Maison d'Or",
+   "stil": "Lüks",
+   "renk": "Siyah",
+   "tema": "luks",
+   "premium": true,
+   "aciklama": "Oniks, şampanya ve bordo detaylarla gala estetiğinde seçkin bir davetiye."
+  },
+  {
+   "id": "nisan-romantik",
+   "tur": "nisan",
+   "ad": "İlk Söz",
+   "stil": "Romantik",
+   "renk": "Altın",
+   "tema": "safak",
+   "premium": false,
+   "aciklama": "Söz ve nişan törenleri için sıcak, romantik ve sade."
+  },
+  {
+   "id": "kina-gelenek",
+   "tur": "kina",
+   "ad": "Kına Yıldızı",
+   "stil": "Geleneksel",
+   "renk": "Bordo",
+   "tema": "safak",
+   "premium": true,
+   "aciklama": "Kına geleneğini modern altın dokunuşlarla buluşturan gece teması."
+  },
+  {
+   "id": "sunnet-masallah",
+   "tur": "sunnet",
+   "ad": "Maşallah",
+   "stil": "Klasik",
+   "renk": "Altın",
+   "tema": "safak",
+   "premium": false,
+   "aciklama": "Mevlüt ve sünnet programını tek akışta anlatan zarif tasarım."
+  },
+  {
+   "id": "sunnet-bulut",
+   "tur": "sunnet",
+   "ad": "Bulutlarda Şenlik",
+   "stil": "Çocuk",
+   "renk": "Mavi",
+   "tema": "cocuk",
+   "premium": false,
+   "aciklama": "Bulutlar, güneş ve neşeli detaylarla küçük çocuklara özel sevimli tasarım."
+  },
+  {
+   "id": "sunnet-prens",
+   "tur": "sunnet",
+   "ad": "Küçük Prens",
+   "stil": "Prens",
+   "renk": "Şampanya",
+   "tema": "luks",
+   "premium": true,
+   "aciklama": "Taç, at ve şampanya tonlarıyla masalsı bir prens merasimi."
+  },
+  {
+   "id": "sunnet-osmanli",
+   "tur": "sunnet",
+   "ad": "Şehzade Alayı",
+   "stil": "Osmanlı",
+   "renk": "Bordo & Altın",
+   "tema": "bohem",
+   "premium": true,
+   "aciklama": "Sancak, kılıç ve geleneksel alay ruhunu sıcak Osmanlı tonlarında yorumlar."
+  },
+  {
+   "id": "sunnet-modern",
+   "tur": "sunnet",
+   "ad": "İlk Cesaret",
+   "stil": "Modern",
+   "renk": "Lacivert",
+   "tema": "modern",
+   "premium": false,
+   "aciklama": "Şehirli aileler için sade tipografi, net program ve modern lacivert palet."
+  },
+  {
+   "id": "sunnet-yildiz",
+   "tur": "sunnet",
+   "ad": "Ay & Yıldız",
+   "stil": "Gece",
+   "renk": "Safir",
+   "tema": "gece",
+   "premium": true,
+   "aciklama": "Ay, yıldız ve safir tonlarıyla akşam mevlütleri için huzurlu gece tasarımı."
+  },
+  {
+   "id": "bebek-narin",
+   "tur": "bebek",
+   "ad": "Narin Hoş Geldin",
+   "stil": "Minimal",
+   "renk": "Pudra",
+   "tema": "safak",
+   "premium": false,
+   "aciklama": "Bebek mevlüdü ve hoş geldin buluşmaları için yumuşak bir anlatım."
+  },
+  {
+   "id": "dogumgunu-neseli",
+   "tur": "dogumgunu",
+   "ad": "Bir Yaş Daha",
+   "stil": "Neşeli",
+   "renk": "Turkuaz",
+   "tema": "yaz",
+   "premium": false,
+   "aciklama": "Çocuk ve yetişkin partileri için canlı, enerjik ve paylaşmalık."
+  },
+  {
+   "id": "yaz-akdeniz",
+   "tur": "yaz",
+   "ad": "Akdeniz Sofrası",
+   "stil": "Akdeniz",
+   "renk": "Turkuaz",
+   "tema": "yaz",
+   "premium": true,
+   "aciklama": "Uzun yaz akşamları, deniz ve kalabalık sofralar için hazırlandı."
+  },
+  {
+   "id": "nisan-altin",
+   "tur": "nisan",
+   "ad": "Altın Yüzük",
+   "stil": "Klasik",
+   "renk": "Altın",
+   "tema": "safak",
+   "premium": false,
+   "aciklama": "Altın folyo dokunuşlu, zamansız bir nişan dili."
+  },
+  {
+   "id": "nisan-modern",
+   "tur": "nisan",
+   "ad": "İki Kalp",
+   "stil": "Modern",
+   "renk": "Lacivert",
+   "tema": "modern",
+   "premium": true,
+   "aciklama": "İnci lacivert zeminde sade, çağdaş bir kompozisyon."
+  },
+  {
+   "id": "nisan-pudra",
+   "tur": "nisan",
+   "ad": "Gül Vaadi",
+   "stil": "Zarif",
+   "renk": "Pudra",
+   "tema": "pudra",
+   "premium": true,
+   "aciklama": "Pudra pembesi ve gül altını; romantik bir nişan teması."
+  },
+  {
+   "id": "kina-bordo",
+   "tur": "kina",
+   "ad": "Kınalı Eller",
+   "stil": "Geleneksel",
+   "renk": "Bordo",
+   "tema": "luks",
+   "premium": false,
+   "aciklama": "Bordo ve altın; geleneksel kına gecesi sıcaklığı."
+  },
+  {
+   "id": "kina-yesil",
+   "tur": "kina",
+   "ad": "Hüma Kuşu",
+   "stil": "Naif",
+   "renk": "Yeşil",
+   "tema": "botanik",
+   "premium": true,
+   "aciklama": "Orman yeşili ve nazik motifler; naif bir kına teması."
+  },
+  {
+   "id": "kina-gece",
+   "tur": "kina",
+   "ad": "Telli Duvak",
+   "stil": "Modern",
+   "renk": "Lacivert",
+   "tema": "gece",
+   "premium": true,
+   "aciklama": "Gece mavisi ve ay ışığı; modern bir kına yorumu."
+  },
+  {
+   "id": "bebek-prens",
+   "tur": "bebek",
+   "ad": "Hoş Geldin Prensimiz",
+   "stil": "Erkek",
+   "renk": "Mavi",
+   "tema": "cocuk",
+   "premium": false,
+   "aciklama": "Gökyüzü mavisi ve bulut motifleri; erkek bebek için."
+  },
+  {
+   "id": "bebek-prenses",
+   "tur": "bebek",
+   "ad": "Hoş Geldin Prensesimiz",
+   "stil": "Kız",
+   "renk": "Pudra",
+   "tema": "pudra",
+   "premium": true,
+   "aciklama": "Pudra pembesi ve nazik motifler; kız bebek için."
+  },
+  {
+   "id": "bebek-notr",
+   "tur": "bebek",
+   "ad": "Minik Ayak İzleri",
+   "stil": "Nötr",
+   "renk": "Krem",
+   "tema": "minimal",
+   "premium": false,
+   "aciklama": "Fildişi ve adaçayı; sade, cinsiyet-nötr bir tema."
+  },
+  {
+   "id": "bebek-mevlut",
+   "tur": "bebek",
+   "ad": "Bebek Mevlüdü",
+   "stil": "Mevlüt",
+   "renk": "Altın",
+   "tema": "safak",
+   "premium": true,
+   "aciklama": "Altın folyo; mevlid-i şerif için zarif ve manevi."
+  },
+  {
+   "id": "dg-cocuk-mavi",
+   "tur": "dogumgunu",
+   "ad": "Bugün Benim Günüm",
+   "stil": "Çocuk",
+   "renk": "Mavi",
+   "tema": "cocuk",
+   "premium": false,
+   "aciklama": "Gökyüzü mavisi, neşeli ve çocuksu."
+  },
+  {
+   "id": "dg-cocuk-pembe",
+   "tur": "dogumgunu",
+   "ad": "Prensesin Partisi",
+   "stil": "Çocuk",
+   "renk": "Pudra",
+   "tema": "pudra",
+   "premium": true,
+   "aciklama": "Pudra pembesi; prenses temalı çocuk doğum günü."
+  },
+  {
+   "id": "dg-modern",
+   "tur": "dogumgunu",
+   "ad": "Yaşasın!",
+   "stil": "Yetişkin",
+   "renk": "Lacivert",
+   "tema": "modern",
+   "premium": false,
+   "aciklama": "İnci lacivert; sade ve modern yetişkin kutlaması."
+  },
+  {
+   "id": "dg-luks",
+   "tur": "dogumgunu",
+   "ad": "Bir Yaş Daha",
+   "stil": "Şık",
+   "renk": "Siyah",
+   "tema": "luks",
+   "premium": true,
+   "aciklama": "Oniks ve şampanya; şık bir yetişkin doğum günü."
+  },
+  {
+   "id": "std-klasik",
+   "tur": "save-the-date",
+   "ad": "Tarihi Not Alın",
+   "stil": "Klasik",
+   "renk": "Altın",
+   "tema": "safak",
+   "premium": false,
+   "aciklama": "Altın folyo; büyük gün için zarif ön-duyuru."
+  },
+  {
+   "id": "std-modern",
+   "tur": "save-the-date",
+   "ad": "Save the Date",
+   "stil": "Modern",
+   "renk": "Lacivert",
+   "tema": "modern",
+   "premium": true,
+   "aciklama": "İnci lacivert; modern ve sade ön-duyuru."
+  },
+  {
+   "id": "tesekkur-klasik",
+   "tur": "tesekkur",
+   "ad": "Teşekkür Ederiz",
+   "stil": "Klasik",
+   "renk": "Altın",
+   "tema": "safak",
+   "premium": false,
+   "aciklama": "Altın folyo; etkinlik sonrası zarif teşekkür."
+  },
+  {
+   "id": "tesekkur-yaz",
+   "tur": "tesekkur",
+   "ad": "Teşekkürler",
+   "stil": "Sıcak",
+   "renk": "Turkuaz",
+   "tema": "yaz",
+   "premium": false,
+   "aciklama": "Akdeniz turkuazı; sıcak bir teşekkür kartı."
+  },
+  {
+   "id": "kurumsal-acilis",
+   "tur": "kurumsal",
+   "ad": "Açılışa Davet",
+   "stil": "Modern",
+   "renk": "Lacivert",
+   "tema": "modern",
+   "premium": false,
+   "aciklama": "İnci lacivert, sade kurumsal çizgi — açılış ve resmî davetler."
+  },
+  {
+   "id": "kurumsal-lansman",
+   "tur": "kurumsal",
+   "ad": "Lansman",
+   "stil": "Lüks",
+   "renk": "Siyah",
+   "tema": "luks",
+   "premium": true,
+   "aciklama": "Oniks & şampanya — ürün/hizmet lansmanı için şık kurumsal tema."
+  },
+  {
+   "id": "kurumsal-gala",
+   "tur": "kurumsal",
+   "ad": "Gala Gecesi",
+   "stil": "Zarif",
+   "renk": "Lacivert",
+   "tema": "gece",
+   "premium": true,
+   "aciklama": "Safir ay ışığı — gala yemeği ve ödül geceleri."
+  },
+  {
+   "id": "kurumsal-konferans",
+   "tur": "kurumsal",
+   "ad": "Konferans",
+   "stil": "Minimal",
+   "renk": "Krem",
+   "tema": "minimal",
+   "premium": false,
+   "aciklama": "Fildişi & adaçayı — konferans, zirve ve seminerler."
+  },
+  {
+   "id": "kurumsal-yilsonu",
+   "tur": "kurumsal",
+   "ad": "Yıl Sonu",
+   "stil": "Modern",
+   "renk": "Mavi",
+   "tema": "cocuk",
+   "premium": false,
+   "aciklama": "Canlı mavi — yıl sonu kutlaması ve şirket etkinlikleri."
+  }
+ ],
+ "mobil": [
+  {
+   "id": "dugun-klasik",
+   "tur": "dugun",
+   "ad": "Klasik Düğün",
+   "tema": "safak",
+   "aciklama": "Zarif serif, altın tonlar, zamansız klasik düğün."
+  },
+  {
+   "id": "dugun-minimal",
+   "tur": "dugun",
+   "ad": "Minimal Düğün",
+   "tema": "minimal",
+   "aciklama": "Sade, krem-bej, az süslü modern minimal düğün/nikâh."
+  },
+  {
+   "id": "nisan-pudra",
+   "tur": "nisan",
+   "ad": "Pudra Nişan",
+   "tema": "pudra",
+   "aciklama": "Romantik pudra pembe nişan / söz."
+  },
+  {
+   "id": "kina-bohem",
+   "tur": "kina",
+   "ad": "Bohem Kına",
+   "tema": "bohem",
+   "aciklama": "Toprak tonlu, sıcak, geleneksel-bohem kına gecesi."
+  },
+  {
+   "id": "sunnet-cocuk",
+   "tur": "sunnet",
+   "ad": "Çocuk Sünnet",
+   "tema": "cocuk",
+   "aciklama": "Neşeli mavi tonlu sünnet düğünü / mevlüt."
+  },
+  {
+   "id": "bebek-pudra",
+   "tur": "bebek",
+   "ad": "Bebek Hoş Geldin",
+   "tema": "pudra",
+   "aciklama": "Yumuşak tonlu bebek hoş geldin, baby shower, bebek mevlüdü."
+  },
+  {
+   "id": "dogumgunu-cocuk",
+   "tur": "dogumgunu",
+   "ad": "Doğum Günü",
+   "tema": "cocuk",
+   "aciklama": "Renkli, eğlenceli doğum günü partisi (çocuk ya da yetişkin)."
+  },
+  {
+   "id": "kurumsal-modern",
+   "tur": "kurumsal",
+   "ad": "Kurumsal",
+   "tema": "modern",
+   "aciklama": "Açılış, lansman, gala, konferans gibi kurumsal etkinlikler."
+  },
+  {
+   "id": "std-gece",
+   "tur": "save-the-date",
+   "ad": "Save the Date",
+   "tema": "gece",
+   "aciklama": "Tarihi önceden duyuran zarif 'tarihi ayırın' kartı."
+  },
+  {
+   "id": "tesekkur-luks",
+   "tur": "tesekkur",
+   "ad": "Teşekkür",
+   "tema": "luks",
+   "aciklama": "Etkinlik sonrası katılım için teşekkür kartı."
+  }
+ ]
+}

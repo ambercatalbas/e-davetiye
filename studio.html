@@ -110,6 +110,16 @@
   /* ---- Şablon galerisi ---- */
   .gallery-tools{display:grid;grid-template-columns:minmax(140px,1.5fr) repeat(3,minmax(105px,1fr));gap:8px;margin-bottom:14px;}
   .gallery-tools input,.gallery-tools select{font-size:.78rem;padding:9px 10px;}
+  /* AI sihirbazı girişi (sihirbazın kendisi ai-sihirbaz.js'te, tembel yüklenir) */
+  .ai-davet{position:relative;border-color:var(--hair);background:
+    radial-gradient(120% 140% at 100% 0%,color-mix(in srgb,var(--gold) 14%,transparent),transparent 60%),var(--panel);}
+  .ai-davet-ic{display:flex;align-items:center;gap:14px;}
+  .ai-davet-ik{width:44px;height:44px;flex:none;border-radius:12px;display:grid;place-items:center;font-size:1.3rem;
+    background:color-mix(in srgb,var(--gold) 14%,var(--panel-2));border:1px solid var(--hair);}
+  .ai-davet h2{margin:0 0 3px;font-size:1.12rem;}
+  .ai-davet p{margin:0;color:var(--soft);font-size:.86rem;line-height:1.45;}
+  .ai-davet .btn{margin-left:auto;flex:none;padding-inline:18px;}
+  @media (max-width:520px){ .ai-davet-ic{flex-wrap:wrap;} .ai-davet .btn{width:100%;margin-left:0;} }
   .gallery-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
   .tpl{position:relative;overflow:hidden;border:1px solid var(--edge);border-radius:10px;background:var(--panel-2);
     min-width:0;transition:transform .16s,border-color .16s,box-shadow .16s;}
@@ -318,6 +328,17 @@
 
   <!-- SOL: EDİTÖR -->
   <form class="editor" id="form" autocomplete="off">
+
+    <section class="card ai-davet" aria-labelledby="aiDavetBaslik">
+      <div class="ai-davet-ic">
+        <span class="ai-davet-ik" aria-hidden="true">✨</span>
+        <div>
+          <h2 id="aiDavetBaslik">Anlat, biz hazırlayalım</h2>
+          <p>Davetini birkaç cümleyle yaz ya da söyle — yapay zekâ sana uygun şablonu seçip bilgilerinle doldursun.</p>
+        </div>
+        <button class="btn pri" type="button" id="btnAi">Başla</button>
+      </div>
+    </section>
 
     <section class="card" aria-labelledby="galeriBaslik">
       <h2 id="galeriBaslik"><span class="no">✦</span> Şablon Galerisi</h2>
@@ -974,6 +995,15 @@ function metinVaryantlariniKur(t){
   select.disabled=!secenekler.length;
 }
 
+// Şablonu editöre uygula (galeri + AI sihirbazı ortak yolu). t=null → seçimi temizle.
+function sablonUygula(t){
+  AKTIF_SABLON=t||null;
+  _aktifPremiumSablon=!!(t&&t.premium);
+  if(t){ PRESETS[t.id]=t.preset; setVal("selTur",t.type); preseti_uygula(t.id); }
+  metinVaryantlariniKur(t);
+  premiumDurumGuncelle();
+}
+
 function sablonKarti(t){
   const card=document.createElement("article"); card.className="tpl"+(t.premium?" premium":""); card.dataset.color=t.color||"altin";
   const art=document.createElement("div"); art.className="tpl-art";
@@ -988,17 +1018,11 @@ function sablonKarti(t){
   const p=document.createElement("p"); p.textContent=t.description;
   const use=document.createElement("button"); use.type="button"; use.className="btn pri tpl-use"; use.textContent="Bu şablonu kullan";
   use.addEventListener("click",()=>{
-    AKTIF_SABLON=t;
     olay("sablon", t.id);
-    _aktifPremiumSablon = !!t.premium;
-    PRESETS[t.id]=t.preset;
-    setVal("selTur",t.type);
-    preseti_uygula(t.id);
-    metinVaryantlariniKur(t);
+    sablonUygula(t);
     planla();
     $("inUst").focus({preventScroll:true});
     $("selTur").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"});
-    premiumDurumGuncelle();
   });
   body.append(meta,h,p,use); card.append(art,body); return card;
 }
@@ -2465,14 +2489,40 @@ $("btnPremium").addEventListener("click", ()=>{
 });
 document.addEventListener("keydown", e=>{ if(e.key==="Escape"){ const a=$("paywallArka"); if(a && a.style.display!=="none"){ olay("yukseltme_kapatildi"); paywallKapat(); } } });
 
+/* ---- AI Davetiye Sihirbazı köprüsü (ai-sihirbaz.js yalnız açılınca yüklenir) ---- */
+const AI_API = {
+  galeriHazir: null,
+  sablon: id => TEMPLATES.find(t=>t.id===id) || null,
+  aktifSablon: () => AKTIF_SABLON,
+  sablonUygula, durumTopla, durumUygula, cfgKur, b64url, syncBodies, planla,
+  val, setVal, chk, setChk, olay,
+  render: RENDER,
+  haritaAyarla: liste => { _haritaMekanlar = liste; haritaMekanCiz(); },
+  editoreOdaklan: () => { const n=$("inBaslik"); n.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"}); n.focus({preventScroll:true}); },
+  idToken: async () => { await firebaseHazir(); return _auth.currentUser.getIdToken(); },
+  mock: null,
+};
+function aiAc(){
+  AI_API.galeriHazir = galeriHazir;
+  // ?v= : service worker stale-while-revalidate kullanır; studio↔sihirbaz API uyumu için sürümle.
+  import("./ai-sihirbaz.js?v=3").then(m=>m.ac(AI_API)).catch(()=> alert("AI asistanı yüklenemedi. Bağlantını kontrol edip tekrar dener misin?"));
+}
+$("btnAi").addEventListener("click", aiAc);
+addEventListener("hashchange", ()=>{ if(location.hash==="#ai") aiAc(); });
+// Yerel geliştirme: ?aiMock=1 → sunucuya gitmeden örnek yanıt (yalnız localhost).
+if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && new URLSearchParams(location.search).has("aiMock")){
+  AI_API.mock = async () => { await new Promise(r=>setTimeout(r,2400)); return (await import("./dev/ai-mock.js")).default; };
+}
+
 /* ---- Başlat ---- */
 temaCiz();
 if(!yukle()){ preseti_uygula("dugun"); }
 temaAktifGuncelle();
 onizle();
-galeriYukle();
+const galeriHazir = galeriYukle();
 ortakBaslangic();   // paylaşılan #ortak= linkiyle açıldıysa canlı taslağa bağlan
-olayBir("kayit","analitik.kayit.v1");   // funnel: bu tarayıcıda ilk studio açılışı
+olayBir("kayit","analitik.kayit.v1");
+if(location.hash==="#ai") aiAc();   // açılış sayfasındaki "Anlat, hazırlayalım" → studio.html#ai   // funnel: bu tarayıcıda ilk studio açılışı
 // Ödeme dönüşü (odemeCallback yönlendirir): planı tazele ve kullanıcıyı bilgilendir.
 (function(){
   try{
