@@ -359,7 +359,7 @@ function sonucEkrani(){
   if(b.yas) cip("🎈", b.yas+" yaş");
   if(b.tarih) cip("📅", tarihOkunur(b.tarih));
   if(b.saat) cip("🕖", b.saat);
-  if(b.mekanAd||b.mekanAdres||b.sehir) cip("📍", [b.mekanAd, b.sehir].filter(Boolean).join(", ") || b.mekanAdres);
+  if(b.mekanAd||b.mekanAdres||b.sehir) cip("📍", yerMetni(b) || b.mekanAdres);
   if(b.kiyafet) cip("👗", b.kiyafet);
   if(s.dil && s.dil!=="tr") cip("🌐", s.dil.toUpperCase());
   ciplerB.append(cipler);
@@ -433,6 +433,13 @@ function secimCiz(){
   onizle();
 }
 
+// "Bodrum" hem mekân hem şehir geldiğinde "Bodrum, Bodrum" yazmasın.
+function yerMetni(b){
+  const m=(b.mekanAd||"").trim(), sh=(b.sehir||"").trim();
+  if(m && sh && m.toLocaleLowerCase("tr")===sh.toLocaleLowerCase("tr")) return m;
+  return [m, sh].filter(Boolean).join(", ");
+}
+
 // Öneriyi editöre uygula (geçici) ve gerçek motorla önizle.
 function uygula(){
   const s=durum.sonuc, o=s.oneriler[durum.secili], t=api.sablon(o.sablonId);
@@ -452,19 +459,22 @@ function uygula(){
   if(m.muhur && api.chk("chkMuhur")) sv("inMuhur", m.muhur);
   if(s.dil) sv("selDil", s.dil==="tr" ? "tr" : s.dil);
   if(b.isimler){ sv("inKurum", b.isimler); sv("inKapakIsim", b.isimler); }
-  if(b.tarih){ sv("inTarih", b.tarih); sc("chkTarih", true); }
-  if(b.saat) sv("inSaat", b.saat);
+  // Bilinmeyen tarih/saat boş kalır: şablonun örnek tarihi ("13 Aralık") gerçek sanılmasın.
+  if(b.tarih){ sv("inTarih", b.tarih); sc("chkTarih", true); } else sv("inTarih", "");
+  sv("inSaat", b.saat || "");
+  // Şablonun örnek hediye bilgisi (isim + IBAN) kullanıcıdan gelmedikçe yayına çıkmasın.
+  sc("chkHediye", false);
   if(b.lcvSonTarih) sv("inLcvSonTarih", b.lcvSonTarih);
   // Detaylar yalnız bilinen gerçeklerden kurulur: şablonun örnek satırları ("Nikâh: 18.00")
   // kullanıcının verdiği saatle çelişebilir. Tarih satırını motor kendisi ekler.
-  const yer=[b.mekanAd, b.sehir].filter(Boolean).join(", ") || b.mekanAdres;
+  const yer=yerMetni(b) || b.mekanAdres;
   const satirlar=[];
   if(b.saat) satirlar.push(`Saat: ${b.saat}`);
   if(yer) satirlar.push(`Yer: ${yer}`);
   if(b.kiyafet) satirlar.push(`Kıyafet: ${b.kiyafet}`);
   sv("taDetaylar", satirlar.join("\n"));
   if(b.mekanAd||b.mekanAdres){
-    api.haritaAyarla([{ ad:b.mekanAd||"", adres:b.mekanAdres || [b.mekanAd,b.sehir].filter(Boolean).join(", "), url:"" }]);
+    api.haritaAyarla([{ ad:b.mekanAd||"", adres:b.mekanAdres || yerMetni(b), url:"" }]);
     sc("chkHarita", true);
   }
   if(s.program && s.program.length){

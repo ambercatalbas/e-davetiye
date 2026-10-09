@@ -2487,7 +2487,7 @@ const AI_API = {
 function aiAc(){
   AI_API.galeriHazir = galeriHazir;
   // ?v= : service worker stale-while-revalidate kullanır; studio↔sihirbaz API uyumu için sürümle.
-  import("./ai-sihirbaz.js?v=2").then(m=>m.ac(AI_API)).catch(()=> alert("AI asistanı yüklenemedi. Bağlantını kontrol edip tekrar dener misin?"));
+  import("./ai-sihirbaz.js?v=3").then(m=>m.ac(AI_API)).catch(()=> alert("AI asistanı yüklenemedi. Bağlantını kontrol edip tekrar dener misin?"));
 }
 $("btnAi").addEventListener("click", aiAc);
 addEventListener("hashchange", ()=>{ if(location.hash==="#ai") aiAc(); });
