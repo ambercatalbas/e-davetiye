@@ -10,8 +10,8 @@
 //  kopyasıdır; plans.json değişince buradaki price/limits/features güncellenmeli.
 //
 //  Test: iyzico SANDBOX örnek anahtarları (herkese açık). CANLI için
-//  `firebase functions:config:set iyzico.api_key=... iyzico.secret_key=... iyzico.uri=https://api.iyzipay.com`
-//  ya da ortam değişkenleri (IYZICO_API_KEY / IYZICO_SECRET_KEY / IYZICO_URI).
+//  functions/.env içinde IYZICO_API_KEY / IYZICO_SECRET_KEY / IYZICO_URI=https://api.iyzipay.com
+//  (functions.config() firebase-functions v7'de kaldırıldı).
 // ============================================================
 const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
@@ -20,17 +20,14 @@ const Iyzipay = require("iyzipay");
 
 admin.initializeApp();
 
-let _cfg = {};
-try { _cfg = functions.config().iyzico || {}; } catch (e) { _cfg = {}; }
-
 // Örnek (herkese açık) sandbox anahtarları — yalnızca test içindir.
 const ORNEK_API = "sandbox-afXhZPW0MQlE4dCUUlHcEopnMBgXnAZI";
 const ORNEK_SECRET = "sandbox-wbwpzKIiplZxI3hh5ALI4FJyAcZKL6kq";
 
 const IYZICO = {
-  apiKey: process.env.IYZICO_API_KEY || _cfg.api_key || ORNEK_API,
-  secretKey: process.env.IYZICO_SECRET_KEY || _cfg.secret_key || ORNEK_SECRET,
-  uri: process.env.IYZICO_URI || _cfg.uri || "https://sandbox-api.iyzipay.com",
+  apiKey: process.env.IYZICO_API_KEY || ORNEK_API,
+  secretKey: process.env.IYZICO_SECRET_KEY || ORNEK_SECRET,
+  uri: process.env.IYZICO_URI || "https://sandbox-api.iyzipay.com",
 };
 const iyzipay = new Iyzipay(IYZICO);
 
